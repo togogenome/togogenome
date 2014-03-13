@@ -1,0 +1,34 @@
+!!! 5
+
+%html
+  %head
+    %meta(charset='utf-8')
+    %title TogoGenome
+    = stylesheet_link_tag    'application', :media => 'all'
+    = stylesheet_link_tag    'togo', :media => 'all'
+    = javascript_include_tag 'application'
+    = javascript_include_tag 'togogenome'
+    = csrf_meta_tags
+
+  %body(data-spy='scroll' data-target='#navbar')
+    %header
+      .navbar.navbar-inverse.navbar-fixed-top
+        .navbar-inner
+          = link_to 'TogoGenome', root_path, class: 'brand'
+
+    #main
+      %section
+        = yield
+
+    #footer
+      %footer
+        %a#link-DBCLS(href='http://dbcls.rois.ac.jp' target='_blank') DBCLS - Database Center for Life Science, ライフサイエンス統合データベースセンター
+        %address
+          Address:
+          %a(href='https://maps.google.com/maps?q=35.716152,139.764419&hl=ja&num=1&t=m&z=16' target='_blank') 2-11-16 Yayoi, Bunkyo-ku, Tokyo
+          %br/
+          Phone: +81 (3) 5841 6754
+
+        %p#copyright Copyright &copy; 2008-2013 Database Center for Life Science (DBCLS)
+
+    = yield :javascript

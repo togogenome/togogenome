@@ -1,0 +1,152 @@
+defaults: &defaults
+  providers:
+    togostanza:
+      url: http://localhost:9292/stanza
+      genes:
+        -
+          id:   protein_names
+          name: Protein names
+        -
+          id:   genome_jbrowse
+          name: Genomic context
+        -
+          id:   gene_attributes
+          name: Gene attributes
+        -
+          id:   nucleotide_sequence
+          name: Nucleotide sequence
+        -
+          id:   protein_attributes
+          name: Protein attributes
+        -
+          id:   protein_sequence
+          name: Protein sequence
+        -
+          id:   protein_general_annotation
+          name: Protein general annotation
+        -
+          id:   protein_ontologies
+          name: Protein ontologies
+        -
+          id:   protein_sequence_annotation
+          name: Protein sequence annotation
+        -
+          id:   protein_pfam_plot
+          name: Pfam plot
+        -
+          id:   protein_orthologs
+          name: Protein orthologs
+        -
+          id:   protein_references
+          name: Protein references
+        -
+          id:   protein_cross_references
+          name: Protein cross references
+
+      organisms:
+        -
+          id:   organism_names
+          name: Organism name
+        -
+          id:   genome_information
+          name: Genome information
+        -
+          id:   organism_jbrowse
+          name: Genomic context
+        -
+          id:   taxonomy_ortholog_profile
+          name: Ortholog profile
+        -
+          id:   lineage_information
+          name: Taxonomic information
+        -
+          id:   organism_culture_collections
+          name: Culture collections
+        -
+          id:   organism_medium_information
+          name: Medium information
+        -
+          id:   organism_phenotype
+          name: Phenotype information
+        -
+          id:   genome_plot
+          name: Genomic plot
+        -
+          id:   organism_pathogen_information
+          name: Pathogen information
+        -
+          id:   organism_cross_references
+          name: Organism cross references
+        -
+          id:   genome_cross_references
+          name: Genome cross references
+
+      environments:
+        -
+          id:   environment_attributes
+          name: Environment attributes
+        -
+          id:   environment_inhabitants_statistics
+          name: Inhabitants statistics
+        -
+          id:   environment_inhabitants
+          name: Inhabitants
+        -
+          id:   environment_geographical_map
+          name: Geographical map
+        -
+          id:   environment_taxonomic_composition
+          name: Taxonomic composition
+        -
+          id:   environment_environmental_ontology
+          name: Environmental ontology (MEO)
+
+    nanostanza:
+      url: http://localhost:8181/stanza
+      genes:
+        -
+          id: protein_3d_structure_nano
+          span: 1
+        -
+          id: protein_ec_number_nano
+          span: 1
+        -
+          id: protein_references_timeline_nano
+          span: 2
+        -
+          id: gene_length_nano
+          span: 1
+
+      organisms:
+        -
+          id: organism_gc_nano
+          span: 1
+        -
+          id: organism_gene_number_nano
+          span: 1
+        -
+          id: organism_genome_size_nano
+          span: 1
+        -
+          id: organism_ph_nano
+          span: 1
+
+      environments:
+        -
+          id: environment_inhabitants_statistics_nano
+          span: 1
+        -
+          id: environment_organism_distribution_on_ph_nano
+          span: 1
+        -
+          id: environment_organism_distribution_on_temperature_nano
+          span: 1
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

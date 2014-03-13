@@ -1,0 +1,24 @@
+.container-fluid
+  #nav-wrapper
+    #navbar.navbar
+      .navbar-inner
+        %ul.nav
+          - Stanza.providers.togostanza.organisms.each do |stanza|
+            %li= link_to stanza.name, "##{stanza.id}"
+
+  #header
+    %h1 Organism: #{@taxonomic_id}
+
+  %secti#nanostanzas.row-fluid
+    - Stanza.providers.nanostanza.organisms.each do |stanza|
+      .nanostanza-container{data: {stanza: "#{Stanza.providers.nanostanza.url}/#{stanza.id}", stanza_tax_id: @taxonomic_id, nanostanza_span: stanza.span}}
+
+  - Stanza.providers.togostanza.organisms.each do |stanza|
+    %section{id: stanza.id}
+      .page-header
+        %h2= stanza.name
+      - stanza_attr = {stanza: "#{Stanza.providers.togostanza.url}/#{stanza.id}", stanza_tax_id: @taxonomic_id}
+      %div{data: stanza_height(stanza, stanza_attr)}
+
+= content_for :javascript do
+  = javascript_include_tag "#{Stanza.providers.togostanza.url}/assets/stanza.js"

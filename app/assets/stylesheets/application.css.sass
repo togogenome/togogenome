@@ -1,0 +1,62 @@
+//= require_self
+//= require jquery.ui.all
+//= require jqtree
+//= require dataTables/jquery.dataTables
+
+$gridColumns: 10
+@import 'bootstrap'
+@import 'font-awesome'
+
+.facet
+  background-color: #EEE
+.facet .tree
+  height: 300px
+  overflow-y: scroll
+  position: relative
+
+a.jqtree-toggler:hover
+  text-decoration: none
+ul.jqtree-tree
+  margin-left: 20px !important
+
+.settlement
+  font-weight: bold
+.description
+  font-size: xx-small
+  color: #aaa
+.limit-message
+  font-size: x-small
+  text-align: center
+  background-color: #aaa
+
+.dataTables_processing
+  top: 100px !important
+  border: 3px solid #ddd !important
+  font-weight: bold
+  color: #666
+
+.dataTables_length
+  float: right !important
+
+input.facet-selected
+  background-color: #97BDD6
+  background: -webkit-gradient(linear, left top, left bottom, from(#BEE0F5), to(#89AFCA))
+
+.dataTables_paginate
+  float: none !important
+  text-align: center !important
+  margin: 0 auto 5px auto !important
+
+#navbar
+  position: relative
+
+#navbar.affix
+  position: fixed
+  top: 0
+  width: 100%
+
+.page-header
+  padding-top: 26px
+
+td.numeric
+  text-align: right

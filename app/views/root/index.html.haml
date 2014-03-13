@@ -1,0 +1,566 @@
+= content_for :javascript do
+  :javascript
+    // 永野さん: HTMLのみで動作確認する場合は、以下に変更をお願いします。
+    // FACETS_ROOT_URL = "http://bio.tky.esm.co.jp/facets/"
+    var FACETS_ROOT_URL = "/facets/",
+        facetAllClearButton;
+    $(function() {
+      // ファセットをすべて消去するボタン
+      $facetAllClearButton = $("#facet-all-clear-button");
+      $facetAllClearButton.click(function(){
+        for (var i = 0; i < this.clearButtons.length; i++) {
+          this.clearButtons[i].trigger("click");
+        }
+      })
+      facetAllClearButton = $facetAllClearButton.get(0);
+      facetAllClearButton.clearButtons = [];
+      facetAllClearButton.addClearButton = function(clearButton) {
+        this.clearButtons.push(clearButton);
+      }
+    })
+
+    /* facetを生成する関数
+     * @param String  key     ファセット名称。e.g. environment, taxonomy...
+     * @param Object  facetDatum  ファセット情報。
+     *
+     */
+
+    function createFacet(key, facetDatum) {
+      var $facet = $("article.facet[data-facet-name='" + key + "']");
+      var self = $facet.get(0);
+      self.$this = $facet;
+      self.key = key;
+      // ルートのファセットのデータ
+      /// この変数いらないかも
+      self.rootNodeData = facetDatum;
+      // 関連するフォーム類の参照
+      self.formSet = {
+        target: $("#_" + key),
+        clear: $("#_" + key + "_clear"),
+        id: $("#_" + key + "_id")
+      }
+      // 連続的にノードを生成する場合のキューを保存する配列（インクリメンタルサーチで利用）
+      self.createNodesQueue = [];
+      // 「Clear」ボタンへの登録
+      facetAllClearButton.addClearButton(self.formSet.clear);
+
+      // フィルタリングの実行
+      self.filtering = function(id, name) {
+        self.formSet.target.val(name);
+        self.formSet.id.val(id);
+        self.toggle_clear(true);
+        window.query();
+      }
+
+      // ノードの全削除
+      self.clearAllNodes = function() {
+        this.$classesContainer.children().remove();
+        createFacetNode(this.$classesContainer, null, this.rootNodeData, this);
+      }
+
+      // ルートのノード生成
+      self.$this.append("<ul class='classes-container'>");
+      self.$classesContainer = $(".classes-container", self.$this);
+      createFacetNode(self.$classesContainer, null, self.rootNodeData, self);
+
+      // クリアボタン
+      self.toggle_clear = function(clear_on) {
+        var _target = self.formSet.target;
+        if (clear_on) {
+          _target.addClass('facet-selected').attr('readonly', true);
+          self.formSet.clear.css('display', '').parent().addClass('input-prepend');
+        } else {
+          _target.removeClass('facet-selected').attr('readonly', false);
+          self.formSet.clear.css('display', 'none').parent().removeClass('input-prepend');
+        }
+      }
+
+      // テキストフィールドに値がセットされた時に出る「×」ボタンをクリックした時に呼び出される関数
+      self.formSet.clear.on('click', function() {
+        self.toggle_clear(false);
+        self.formSet.target.val('');
+        self.formSet.id.val('');
+        window.query();
+        self.clearAllNodes();
+      });
+
+      // インクリメンタルサーチを設置する関数
+      $.widget("custom.limitedcomplete", $.ui.autocomplete, {
+        _renderMenu: function(ul, items) {
+          var that = this;
+          $.each(items, function(index, item) {
+            if (index >= 15) {
+              ul.append("<li class='ui-autocomplete-category limit-message'>more items.</li>");
+            } else {
+              that._renderItemData(ul, item);
+            }
+          });
+        },
+        _renderItem: function(ul, item) {
+          return $('<li>')
+          .append('<a><div class="description">' + item.description + '</div><div>' + item.label + '</div></a>')
+          .appendTo(ul);
+        }
+      });
+
+      // インクリメンタルサーチで項目を選択したあとに呼ばれる関数
+      self.settlement = function(ancestor) {
+        // 全ノードを削除
+        self.clearAllNodes();
+        // facetのパスをノード作成キューに追加
+        self.createNodesQueue = ancestor;
+      }
+
+      // インクリメンタルサーチを実行する関数
+      self.formSet.target
+        .limitedcomplete({
+          delay: 1000,
+          source: function(request, response) {
+            $.getJSON(FACETS_ROOT_URL + self.key + '/search.json', {word: $(this.element).val()}, response);
+          },
+          select: function(event, ui) {
+            self.formSet.id.val(ui.item.id);
+            var ancestor = ui.item.ancestor;
+            self.settlement(ancestor);
+            self.toggle_clear(true);
+            window.query();
+          }
+        })
+        .on('click', function() {
+          self.toggle_clear(false);
+        });
+
+      // ノードを作成して、jsonを受けたらコールバックされる関数
+      self.didCreatedNode = function(node) {
+        if (self.createNodesQueue.length > 0) {
+          // キューが残っていたらファセットノードツリーの作成を続行
+          var nextFacetData;
+          for (var i = 0; i < node.childFacets.length; i++) {
+            // 子のファセットから、パスにあるファセットIDに合致するものを探す
+            if (self.createNodesQueue[0] == node.childFacets[i].id) {
+              nextFacetData = node.childFacets[i];
+              break;
+            }
+          }
+          if (nextFacetData) {
+            var $children = this.$classesContainer.children();
+            var $parentNode = $($children.get($children.length - 1));
+            node.selectItem(node.items[i], false);
+            createFacetNode(self.$classesContainer, $parentNode, nextFacetData, self);
+            self.createNodesQueue.shift();
+          } else {
+            window.console.log("パスの内容と次にくるべきファセットが合致しないので、ノードの生成を中止します。\n次のファセットID: " + self.  createNodesQueue  [0]);
+            self.createNodesQueue = [];
+          }
+        }
+      }
+    }
+
+    /* facetの階層を1つ追加生成する関数
+    * @param jQObj   $target   対象となるfacet（UL）。この要素の配下に階層が生成される。
+    * @param jQObj   parentNode  親となるノード（LI）。この次の位置に階層が生成される。省略された場合はtargetの末尾に階層が生成される。
+    * @param Object    facetDatum  ファセット情報。
+    * @param HTMLElement facet   ファセットの参照。
+    *
+    */
+    function createFacetNode($target, $parentNode, facetDatum, facet) {
+      var $node, self,
+          DURATION = 200,
+          SELECTED = "selected",
+          ITEM_HEIGHT = 26;
+      if ($parentNode) {
+        // 深い階層の削除
+        $parentNode.nextAll().remove();
+      }
+      $target.append("<li class='class-node'><span class='node-name'>" + facetDatum.name + "</span></li>");
+      $node = $(".class-node:last-child", $target);
+      self = $node.get(0);
+      self.$this = $node;
+      self.$container = $target;
+      self.currentItem = 0;
+      self.facet = facet;
+
+      // ノードの名前の部分をクリック
+      $(".node-name", $node).click(function(){
+        if ($node.index() == 0) {
+          // 「All」であれば、「×」ボタン押下と同じ挙動
+          self.facet.formSet.clear.trigger("click");
+        } else {
+          // それ以外であれば、通常のフィルタリング
+          createFacetNode($target, $parentNode, facetDatum, facet);
+          self.facet.filtering(facetDatum.id, facetDatum.name);
+        }
+      })
+
+      // セレクタを開く
+      self.openSelector = function(e) {
+        var originTop = this.currentItem * ITEM_HEIGHT * -1;
+        this.$selector
+          .css({ visibility: "visible", opacity: 0, top: originTop + "px" })
+          .animate(
+            { opacity: 1 },
+            { duration: DURATION }
+          );
+        {
+          var over, overTop, overBottom,
+              top = this.$selector.offset().top,
+              st = $(window).scrollTop();
+          overTop = top - st;
+          overBottom = overTop + this.$selector.outerHeight() - window.innerHeight;
+          // もしセレクタのサイズがウインドウに納まっていなければ、自動スクロールを設定
+          if (overTop < 0 || overBottom > 0) {
+            var originMouseY = e.clientY,
+                scrolling = 20, // 20はマージン
+                distance;
+            if ((overTop < 0) && (Math.abs(overTop) > overBottom)) {
+              scrolling += Math.abs(overTop);
+              distance = originMouseY;
+            } else {
+              scrolling += overBottom;
+              distance = window.innerHeight - originMouseY;
+            }
+            var coefficient = scrolling / distance;
+            $(window)
+              .on("mousemove.facetNodeSelector", function(e){
+                var diffY, top;
+                diffY = (e.clientY - originMouseY) * coefficient;
+                top = originTop - diffY;
+                top = top > 0 ? 0 : top;
+                top = top < (self.selectorHeight * -1 + ITEM_HEIGHT + 16)  ? self.selectorHeight * -1 + ITEM_HEIGHT + 16 : top;
+                self.$selector.css("top", top + "px");
+              })
+          }
+        }
+        this.$hittest
+          .css({ display: "block" });
+      }
+
+      // セレクタを閉じる
+      self.closeSelector = function() {
+        this.$selector
+          .animate(
+            { opacity: 0 },
+            {
+              duration: DURATION, complete: function(){
+                this.$hittest.css("display", "none");
+                this.$this.css("visibility", "hidden");
+              }
+            }
+          );
+        $(window)
+          .off("mousemove.facetNodeSelector");
+      }
+
+      // セレクタ内の項目の選択
+      self.selectItem = function($item, isNeedQuery) {
+        // アイテムのハイライトの切り替え
+        this.items[this.currentItem].removeClass(SELECTED);
+        $item.addClass(SELECTED);
+        this.currentItem = $item.get(0).index;
+        // フィルタリング実行
+        if (!isNeedQuery) return;
+        var facetData = $item.get(0).facetData;
+        this.facet.filtering(facetData.id, facetData.name);
+      }
+
+      // プルダウンメニューの生成
+      var requestUrl = FACETS_ROOT_URL + facet.dataset.facetName + ".json?node=" + escape(facetDatum.id);
+      $.getJSON(requestUrl, function(data){
+        self.childFacets = data;
+        // 子の要素を持たなかったら中断
+        if (data.length == 0) return;
+
+        // セレクタを表示するボタンとセレクタを生成
+        var html = "<div class='selector-display-button'><ul class='classes-selector'>";
+        for(var i = 0; i < data.length; i++){
+          html += "<li>" + data[i].name + "</li>";
+        }
+        html += "</ul></div><div class='hit-test'></div>";
+        $node.append(html);
+        self.$button = $(".selector-display-button", $node);
+        self.$selector = $(".classes-selector", $node);
+        self.$hittest = $(".hit-test", $node);
+
+        // セレクタの位置調整
+        self.selectorHeight = self.$selector.innerHeight();
+        var overWidth = self.$selector.offset().left + self.$selector.outerWidth() + 20 - window.innerWidth;
+        if (overWidth > 0) self.$selector.css("left", "-" + overWidth + "px");
+
+        // 参照
+        self.items = [];
+        self.$selector.get(0).$this = self.$selector;
+        self.$selector.get(0).$hittest = self.$hittest;
+        self.$selector.get(0).facetNode = self;
+        self.$button.get(0).facetNode = self;
+        self.$hittest.get(0).facetNode = self;
+
+        // セレクタの開閉
+        self.$button.click(function(e){
+          e.stopPropagation();
+          this.facetNode.openSelector(e);
+        })
+        self.$hittest.mouseover(function(){
+          var closeSelectorTimer;
+          self.$hittest.on('mouseout', function(){
+            self.$hittest.off('mouseout');
+            clearTimeout(closeSelectorTimer);
+          })
+          closeSelectorTimer = setTimeout(function(){
+            self.closeSelector();
+          }, 400);
+        })
+
+        // セレクタの選択
+        {
+          var i = 0;
+          $("li", self.$selector)
+            .each(function(){
+              this.facetNode = self;
+              this.$container = $target;
+              this.index = i;
+              this.$this = $(this);
+              this.facetData = data[i];
+              i++;
+              self.items.push(this.$this);
+            })
+            .click(function(e){
+              e.stopPropagation();
+              if (this.facetData) {
+                this.facetNode.selectItem(this.$this, true);
+                createFacetNode(this.$container, $node, this.facetData, this.facetNode.facet);
+                this.facetNode.closeSelector();
+              }
+            })
+        }
+        // ノード作成のコールバック関数を呼ぶ
+        self.facet.didCreatedNode(self);
+      });
+    }
+
+
+.main-container
+  #search-methods-container
+    %ul#search-methods-selector
+      %li.current Facet
+      %li= link_to 'Sequence', genomes_path
+      %li= link_to 'Identifier', mappings_path
+      // %li= link_to 'Text' 実装途中のため一時的に削除
+      %li.search-methods-visibility-button Hide
+
+    #methods
+      .method-container#facets
+        - %w(environment taxonomy biological_process molecular_function cellular_component phenotype).each do |facet|
+          = render partial: 'facets/facet', locals: {name: facet, f_name: "facets::#{facet}"}
+
+        .text-center.padding
+          .tg-button.clear#facet-all-clear-button Clear
+
+  #genomes.row-fluid
+    = render partial: 'proteins/results', locals: { results: [] }
+
+= content_for :javascript do
+  :javascript
+    var paginationSlider;
+
+    $(function() {
+      var dataTable = $('#results').dataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+        "bSort" : false,
+        "bFilter" : true,
+        "iDisplayLength": 25,
+        "sAjaxSource": "#{search_proteins_path(format: :json)}",
+        "fnServerData" : function(sSource, aoData, fnCallback) {
+          return $.getJSON(sSource, aoData, function(json) {
+            url = "#{search_proteins_path(format: :csv)}" +
+              "?taxonomy="           + $('#_taxonomy_id').val() +
+              "&environment="        + $('#_environment_id').val() +
+              "&biological_process=" + $('#_biological_process_id').val() +
+              "&molecular_function=" + $('#_molecular_function_id').val() +
+              "&cellular_component=" + $('#_cellular_component_id').val() +
+              "&phenotype="          + encodeURIComponent($('#_phenotype_id').val())
+            $('div#csv-export > a').attr("href", url);
+
+            return fnCallback(json);
+          }).fail(function() {
+            alert('failing query...');
+            return;
+          });
+        },
+        "fnServerParams": function(data) {
+          data.push({"name": "taxonomy", "value": $('#_taxonomy_id').val()});
+          data.push({"name": "environment", "value": $('#_environment_id').val()});
+          data.push({"name": "biological_process", "value": $('#_biological_process_id').val()});
+          data.push({"name": "molecular_function", "value": $('#_molecular_function_id').val()});
+          data.push({"name": "cellular_component", "value": $('#_cellular_component_id').val()});
+          data.push({"name": "phenotype", "value": $('#_phenotype_id').val()});
+        },
+        "aoColumns": [
+          { "mData": "name",             "sWidth" : "220px" },
+          { "mData": "gene_links" },
+          { "mData": "entry_identifier", "sWidth" : "100px" },
+          { "mData": "go_links" },
+          { "mData": "organism_link" },
+          { "mData": "environment_links" },
+          { "mData": "phenotype_links" }
+        ],
+        "sDom": "<'span5'i><'span5'l>r<p><<'#csv-export.span2'>>t<<'span5'i><'span5'><p>>",
+        "sPaginationType": "custom-bootstrap",
+        "fnDrawCallback": function () {
+
+            // スライダーの生成
+            if (!paginationSlider) {
+              var $ul = $(".dataTables_paginate ul");
+              $ul.before(
+                "<div class='pagination-slider'>" +
+                "<div class='pagination-slider-bar'></div>" +
+                "<div class='pagination-slider-current-bar'></div>" +
+                "<div class='pagination-slider-indicator'><div class='inner'>0</div></div>" +
+                "<div class='pagination-slider-dotted-line-left'></div>" +
+                "<div class='pagination-slider-dotted-line-right'></div>" +
+                "</div>"
+              );
+              paginationSlider = {
+                ul: $ul,
+                container: $(".pagination-slider"),
+                bar: $(".pagination-slider-bar"),
+                currentBar: $(".pagination-slider-current-bar"),
+                indicator: $(".pagination-slider-indicator"),
+                indicatorInner: $(".pagination-slider-indicator > .inner"),
+                dottedLineLeft: $(".pagination-slider-dotted-line-left"),
+                dottedLineRight: $(".pagination-slider-dotted-line-right"),
+                pagination: $(".pagination")
+              }
+
+              // スライダーイベント
+              paginationSlider.indicator.mousedown(function(e){
+                var startX = e.clientX,
+                originX = paginationSlider.indicator.position().left,
+                maxWidth = paginationSlider.bar.outerWidth(),
+                unit = maxWidth / paginationSlider.totalPage,
+                page;
+
+                $(window)
+                  .on("mousemove.paginationSlider", function(e){
+                    // インジケータをマウスに追随して移動
+                    var x = originX + e.clientX - startX;
+                    x = x < 0 ? 0 : x;
+                    x = x > maxWidth ? maxWidth : x;
+                    paginationSlider.indicator.css("left", x + "px");
+                    // インジケータの数字
+                    x = x < unit * .5 ? unit * .5 : x;
+                    x = x > maxWidth - unit * .5 ? maxWidth - unit * .5 : x;
+                    page = Math.floor(x / unit);
+                    paginationSlider.currentPage = page;
+                    paginationSlider.indicatorInner.text(page + 1);
+                    paginationSlider.setPaginationRange();
+                    paginationSlider.render();
+                  })
+                  .on("mouseup.paginationSlider", function(e){
+                    // イベント削除
+                    $(window).off("mousemove.paginationSlider mouseup.paginationSlider");
+                    // 検索をリクエスト
+                    dataTable.fnPageChange(page);
+                  });
+              });
+
+              // ページネーションの範囲定義
+              paginationSlider.setPaginationRange = function(currentPage) {
+                // ページネーションの開始ページ
+                paginationSlider.startPage = paginationSlider.currentPage - PAGENATION_MARGIN;
+                paginationSlider.startPage = paginationSlider.startPage < 0 ? 0 : paginationSlider.startPage;
+                if ((paginationSlider.startPage + paginationSlider.displayPagination) > paginationSlider.  totalPage) {
+                  paginationSlider.startPage = paginationSlider.totalPage - paginationSlider.  displayPagination;
+                }
+              }
+
+              // スライダーの表示
+              paginationSlider.render = function() {
+                var bl, br, bb, pl, pr, pt, bw, cw;
+                bw = paginationSlider.bar.width();
+                // インジケータの位置
+                paginationSlider.indicatorInner
+                  .text(paginationSlider.currentPage + 1);
+                paginationSlider.indicator
+                  .css("left", Math.round(bw * (paginationSlider.currentPage + .5) / (paginationSlider.  totalPage)) + "px");
+                // バーの位置と大きさ
+                cw = Math.ceil(bw * (paginationSlider.displayPagination / paginationSlider.totalPage));
+                bl = Math.floor(bw * (paginationSlider.startPage / paginationSlider.totalPage));
+                paginationSlider.currentBar
+                  .width(cw)
+                  .css("left", bl + "px");
+                // 破線
+                var $pThird = paginationSlider.ul.children("li:nth-child(3)"),
+                    $pLastThird = paginationSlider.ul.children("li:nth-last-child(3)");
+                br = bl + cw;
+                bb = paginationSlider.bar.position().top + paginationSlider.bar.outerHeight();
+                pl = paginationSlider.ul.position().left + $pThird.position().left;
+                pr = paginationSlider.ul.position().left + $pLastThird.position().left + $pLastThird.  outerWidth();
+                pt = paginationSlider.ul.position().top - paginationSlider.container.position().top + $pThird  .outerHeight() * .5;
+                var lLength = Math.sqrt(Math.pow(pl - bl, 2) + Math.pow(pt - bb, 2));
+                var rad = Math.atan2(pt - bb, pl - bl);
+                var deg = (180 * rad) / Math.PI;
+                paginationSlider.dottedLineLeft
+                  .width(lLength).height(1)
+                  .css({
+                    top: ((pt + bb) * .5) + "px",
+                    left: ((pl + bl) * .5 - lLength * .5) + "px",
+                    transform: "rotate(" + (deg + 0) + "deg)"}
+                  );
+                var rLength = Math.sqrt(Math.pow(pr - br, 2) + Math.pow(pt - bb, 2));
+                rad = Math.atan2(pt - bb, pr - br);
+                deg = (180 * rad) / Math.PI;
+                paginationSlider.dottedLineRight
+                  .width(rLength).height(1)
+                  .css({
+                    top: ((pt + bb) * .5) + "px",
+                    left: ((pr + br) * .5 - rLength * .5) + "px",
+                    transform: "rotate(" + (deg + 0) + "deg)"}
+                  );
+              }
+              $(window).resize(function(){
+                paginationSlider.render();
+              })
+            }
+
+            // 諸元の保持
+            var PAGENATION_MAX = 5, PAGENATION_MARGIN = 2;
+            // 一度に表示されるレコード数
+            var iLength = this.fnPagingInfo().iLength;
+            // 総レコード数
+            paginationSlider.totalDisplayRecords = this.fnPagingInfo().iFilteredTotal;
+            // 総ページ数
+            paginationSlider.totalPage = this.fnPagingInfo().iTotalPages;
+            // ページネーションの数
+            paginationSlider.displayPagination = paginationSlider.totalPage;
+            paginationSlider.displayPagination = paginationSlider.displayPagination > PAGENATION_MAX ?   PAGENATION_MAX : paginationSlider.displayPagination;
+            // 現在のページ
+            var currentPage = Math.floor( this.fnPagingInfo().iStart / iLength );
+            paginationSlider.currentPage = currentPage;
+            paginationSlider.setPaginationRange();
+
+            // ページネーションのレンダリング
+            if (paginationSlider.totalDisplayRecords <= iLength) {
+              paginationSlider.pagination.hide();
+            } else {
+              paginationSlider.pagination.show();
+              paginationSlider.render();
+            }
+
+        }
+      });
+
+
+      $("div#csv-export")
+        .addClass("result-download-container")
+        .append('<a>Download CSV</a>');
+
+      $("div#csv-export > a").on('click', function() {
+        location.href = $("div#csv-export > a").attr("href");
+        return false;
+      });
+
+      window.query = function() {
+        return $('#results').dataTable().fnDraw();
+      };
+    });

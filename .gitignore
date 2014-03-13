@@ -1,0 +1,9 @@
+.bundle
+.sass-cache
+capybara-*.html
+config/database.yml
+config/endpoint.yml
+config/stanza.yml
+log/*
+spec/tmp/*
+tmp/*

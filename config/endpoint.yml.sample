@@ -1,0 +1,11 @@
+defaults: &defaults
+  uri: 'http://ep.dbcls.jp/sparql7upd2'
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

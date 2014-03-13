@@ -1,0 +1,18 @@
+%article.facet(data-name=name data-facet-name=name)
+  %h3.icon-search
+    %span= facet_title(name)
+  .selected
+    %div
+      %span.add-on{id: "_#{name}_clear", style: 'display:none'}
+        %i.icon-remove
+      = search_field_tag "_#{name}", '', placeholder: search_placeholder(name), class: 'input-xlarge'
+      = hidden_field_tag "_#{name}_id"
+
+=content_for :javascript do
+  :javascript
+    $(function() {
+      var datum = #{Facets::Base.lookup(name).root.to_json}
+      // facet ごとに以下の関数を呼びます。
+      // 引数に「ファセット名」文字列と連想配列を渡すと、JSONを読み込んでツリーを生成します。
+      createFacet("#{j name}", datum);
+    })
