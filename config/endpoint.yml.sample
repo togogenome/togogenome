@@ -1,5 +1,5 @@
 defaults: &defaults
-  uri: 'http://ep.dbcls.jp/sparql7upd2'
+  uri: 'http://togostanza.org/sparql'
 
 development:
   <<: *defaults
