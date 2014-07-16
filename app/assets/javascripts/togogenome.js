@@ -393,7 +393,7 @@ $(function(){
 
       {
         $('#execute').on('click', function(){
-          $.get("/mappings/convert", { identifiers: $('#identifiers').val(), databases: IDM.route } );
+          $.get("/converter/convert", { identifiers: $('#identifiers').val(), databases: IDM.route } );
         });
       }
     }
