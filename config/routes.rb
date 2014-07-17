@@ -11,7 +11,8 @@ TogoGenome::Application.routes.draw do
   end
 
   match '/converter', via: :get, as: :converter, to: 'converter#index'
-  match '/converter/convert', via: :get, as: :convert_converter
+  match '/resolver', via: :get, as: :resolver, to: 'resolver#index'
+  match '/identifiers/convert', via: :get
 
   # 複数形にしたい所だけど、利用者にはこちらの方が分かりやすいらしい
   resources :gene,        only: %w(show), constraints: { id: /[\w\-\:\.\/]+/ }

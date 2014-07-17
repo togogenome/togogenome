@@ -841,7 +841,7 @@ $(function(){
         IDM.selectRoute = function(route) {
 
           IDM.route = route;
-          $.get("/converter/convert", { identifiers: $('#identifiers').val(), databases: IDM.route } );
+          $.get("/identifiers/convert", { identifiers: $('#identifiers').val(), databases: IDM.route } );
 
           // URLパラメータ
           window.location.hash = route.length > 0 ? route.join(":") : "";
@@ -1273,7 +1273,7 @@ $(function(){
 
   {
     $('#execute').on('click', function(){
-      $.get("/converter/convert", { identifiers: $('#identifiers').val(), databases: IDM.route } );
+      $.get("/identifiers/convert", { identifiers: $('#identifiers').val(), databases: IDM.route } );
     });
   }
 });
