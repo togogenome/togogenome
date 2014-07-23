@@ -9,6 +9,9 @@ TogoGenome::Application.routes.draw do
   resources :genomes, only: %w(index) do
     get :search, on: :collection
   end
+  resources :text, only: %w(index) do
+    get :search, on: :collection
+  end
 
   get '/converter', as: :converter, to: 'converter#index'
   get '/resolver', as: :resolver, to: 'resolver#index'
