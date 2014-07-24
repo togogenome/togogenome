@@ -1241,36 +1241,6 @@ $(function(){
     }
   }
 
-
-  // Nano Stanza
-  {
-    var counter = 1;
-    // iframe の生成
-    $(".nanostanza-container").each(function(){
-      var $this = $(this);
-      $this.append("<iframe class='unload'></iframe>");
-      var $iframe = $("iframe", $this);
-      // 遅延させてソースの読み込み
-      setTimeout(function(){
-        //window.console.log($this.data());
-        var params = "";
-        for (var i in $this.data()) {
-          if (i != "nanostanza" && i != "nanostanzaSpan") {
-            var key = i.replace(/[A-Z]/g, function(letter) { return '_' + letter.toLowerCase();} ).replace("stanza_", "");
-            params += (params == "" ? "?" : "&") + key + "=" + $this.data(i);
-          }
-        }
-        //parameter = $this.data("stanzaMeoId") ? "?meo_id=" + $this.data("stanzaMeoId") : "";
-        //parameter = $this.data("stanzaTaxId") ? "?tax_id=" + $this.data("stanzaTaxId") : "";
-        $iframe
-          .attr("src", $this.data("nanostanza") + params)
-          .load(function(){
-            $(this).removeClass("unload");
-          });
-      }, (++counter) * 500);
-    });
-  }
-
   {
     $('#execute').on('click', function(){
       $.get("/identifiers/convert", { identifiers: $('#identifiers').val(), databases: IDM.route } );
