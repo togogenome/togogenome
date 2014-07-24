@@ -21,13 +21,11 @@
       .alert.alert-error
         = @error
     - unless @result.blank?
-      %table.table.table-striped.table-bordered.table-hover.table-condensed
-        %thead
-          %tr
-            %th Sequence name
-            %th Locus tag
-        %tbody
-          - @result[:stanzas].each do |genome|
-            %tr
-              %td= 'name'
-              %td= 'locus_tag'
+      %ul
+        - @result.each do |stanza|
+          %li
+            = stanza[:name]
+          %ul
+            - stanza[:urls].each do |url|
+              %li
+                %a{href: url, target: '_blank'}= url
