@@ -1902,14 +1902,14 @@ div#mapping-reset-button {
 }
 .nanostanza-container iframe,
 .nanostanza-container[data-nanostanza-span="1"] iframe {
-  width: 160px;
+  width: 160px !important;
 }
 .nanostanza-container[data-nanostanza-span="2"] iframe {
-  width: 326px;
+  width: 326px !important;
 }
 .nanostanza-container[data-nanostanza-span="3"] iframe {
-  width: 492px;
+  width: 492px !important;
 }
 .nanostanza-container[data-nanostanza-span="4"] iframe {
-  width: 658px;
+  width: 658px !important;
 }
