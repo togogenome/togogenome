@@ -9,7 +9,7 @@
   #header
     %h1 Organism: #{@taxonomic_id}
 
-  %secti#nanostanzas.row-fluid
+  %section#nanostanzas.row-fluid
     - Stanza.providers.nanostanza.organisms.each do |stanza|
       .nanostanza-container{data: {stanza: "#{Stanza.providers.nanostanza.url}/#{stanza.id}", stanza_tax_id: @taxonomic_id, nanostanza_span: stanza.span}}
 

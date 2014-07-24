@@ -9,7 +9,7 @@
   #header
     %h1 Gene: #{@taxonomic_id}:#{@locus_tag}
 
-  %secti#nanostanzas.row-fluid
+  %section#nanostanzas.row-fluid
     - Stanza.providers.nanostanza.genes.each do |stanza|
       .nanostanza-container{data: {stanza: "#{Stanza.providers.nanostanza.url}/#{stanza.id}", stanza_tax_id: @taxonomic_id, stanza_gene_id: @locus_tag, nanostanza_span: stanza.span}}
 
