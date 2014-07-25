@@ -9,7 +9,7 @@
   #header
     %h1 Environment: #{@meo_id}
 
-  %secti#nanostanzas.row-fluid
+  %section#nanostanzas.row-fluid
     - Stanza.providers.nanostanza.environments.each do |stanza|
       .nanostanza-container{data: {stanza: "#{Stanza.providers.nanostanza.url}/#{stanza.id}", stanza_meo_id: @meo_id, nanostanza_span: stanza.span}}
 

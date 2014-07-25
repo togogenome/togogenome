@@ -1,0 +1,2 @@
+class ResolverController < ApplicationController
+end

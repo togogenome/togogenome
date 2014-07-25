@@ -1,0 +1,29 @@
+.main-container
+  #search-methods-container
+    %ul#search-methods-selector
+      %li= link_to 'Facet', root_path
+      %li= link_to 'Sequence', genomes_path
+      %li.current ID converter
+      %li= link_to 'ID resolver', resolver_path
+      // %li= link_to 'Text' 実装途中のため一時的に削除
+      %li.search-methods-visibility-button Hide
+
+    #methods.no-result-column
+      .method-container#mappings-container(data-mapping-mode='converter')
+        .inner
+          #mappings-selector-container
+          #mappings-id-container
+            %h2
+              Identifiers
+              %span.result-upload-container
+                %a Upload CSV
+              %span.result-download-container
+                %a Download CSV
+            #add-new-id
+              %p + Add new ID
+              %textarea#identifiers{name:'identifiers', required: 'required'}
+              .text-center.padding
+                = button_tag 'Execute', {id: 'execute', class: "tg-button"}
+            %table#mapped-ids
+              %thead
+              %tbody
