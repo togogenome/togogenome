@@ -86,6 +86,7 @@ $(function(){
       IDM.RESOLVER_DEFAULT_STEP = 5;
       IDM.selectedDb = { from: "", to: "" };
       IDM.THE_OHTER_DB_NAMES = { from: "to", to: "from" };
+      IDM.LOCATIVE_CAPITALIZED = { from: "From", to: "To" };
       IDM.selectedDbListItem = { from: undefined, to: undefined };
       IDM.arrowLayers = [];
       IDM.routes = [];
@@ -243,7 +244,7 @@ $(function(){
             var $icon = IDM.dbLargeIcon[locative];
             $(".side, .lid", $icon).css("background-color", IDM.DB_ICON_DEFAULT_COLOR);
             IDM.$dbList[locative].removeClass("open");
-            IDM.dbLargeIconLabel[locative].text(locative);
+            IDM.dbLargeIconLabel[locative].text(IDM.LOCATIVE_CAPITALIZED[locative]);
             IDM.dbLargeIconLabel[locative].removeClass("selected");
             IDM.selectedDb[locative] = undefined;
             $("dd > p", IDM.$dbList[locative]).removeClass("disable");
@@ -572,12 +573,14 @@ $(function(){
                       },
                       "click.selecteingRoute": function(){
                         if (!$this.hasClass(IDM.CLASSES.SELECTED)) {
-                          // 未選択のDBの場合、お片づけ
+                          // 未選択のDBの場合
+                          // 同ルートを選択状態にする
                           $(".r" + aRoute, IDM.$resultsContainer).attr("class", function(index, classNames){
                             return classNames + " " + IDM.CLASSES.SELECTED;
                           });
                           IDM.$resultsContainer.removeClass(IDM.CLASSES.HIGHLIGHTING);
                         }
+                        // 新しいルートの生成
                         makeResolverRoutes($this.data("db"), parseInt($this.data("step")));
                       }
                     })
@@ -839,7 +842,6 @@ $(function(){
          * @param Array route
          */
         IDM.selectRoute = function(route) {
-
           IDM.route = route;
           $.get("/identifiers/convert", { identifiers: $('#identifiers').val(), databases: IDM.route } );
 
@@ -1114,7 +1116,7 @@ $(function(){
             <div class='top side'></div>\
             <div class='top lid'></div>\
             </div>\
-            <div class='db-name-container'><p class='db-name'>" + LOCATIVE[l] + "</p></div>\
+            <div class='db-name-container'><p class='db-name'>" + IDM.LOCATIVE_CAPITALIZED[LOCATIVE[l]] + "</p></div>\
             </div>\
             <div class='db-list-container'><div class='bg'></div><div class='arrow'></div><div class='inner'></div></div>\
             ";

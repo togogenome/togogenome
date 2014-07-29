@@ -89,8 +89,8 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 #search-methods-selector li.current:after, #methods:after, .method-container input[type="search"]:before, .input-append .add-on, .input-prepend .add-on, .facet .tree:before, #search-methods-selector li.search-methods-visibility-button:after,
 .selector-display-button, .pagination-slider-indicator:after,
 .result-download-container a:before, .result-upload-container a:before,
-[data-mapping-mode="resolver"] #mapping-results-container .node.selected-route:hover .small-db-icon:after,
-[data-mapping-mode="resolver"] #mapping-from-db .icon:hover .top.lid:before {
+[data-mapping-mode="resolver"] #mapping-results-container .node.selected-route .small-db-icon:hover:after,
+[data-mapping-mode="resolver"] #mapping-from-db .icon .top.lid:hover:before {
   background-image: image-url('csssprite.png');
   background-repeat: no-repeat;
 }
@@ -103,8 +103,8 @@ only screen and (min-device-pixel-ratio: 2),
 #search-methods-selector li.current:after, #methods:after, .method-container input[type="search"]:before, .input-append .add-on, .input-prepend .add-on, .facet .tree:before, #search-methods-selector li.search-methods-visibility-button:after,
 .selector-display-button, .pagination-slider-indicator:after,
 .result-download-container a:before, .result-upload-container a:before,
-[data-mapping-mode="resolver"] #mapping-results-container .node.selected-route:hover .small-db-icon:after,
-[data-mapping-mode="resolver"] #mapping-from-db .icon:hover .top.lid:before {
+[data-mapping-mode="resolver"] #mapping-results-container .node.selected-route .small-db-icon:hover:after,
+[data-mapping-mode="resolver"] #mapping-from-db .icon .top.lid:hover:before {
   background-image: image-url('csssprite@2x.png');
   background-size: 600px auto;
 }
@@ -1093,7 +1093,6 @@ table#results li {
   width: 27px;
   height: 26px;
   position: absolute;
-  cursor: pointer;
   top: 50%;
   -webkit-transform: translateY(-50%);
   transform: translateY(-50%);
@@ -1159,6 +1158,7 @@ table#results li {
   height: 40px;
   display: table;
   position: relative;
+  cursor: pointer;
 }
 .db-selector .db-name {
   font-size: 12px;
@@ -1324,8 +1324,8 @@ table#results li {
 [data-mapping-mode="resolver"] #mapping-results-container .node {
   cursor: pointer;
 }
-[data-mapping-mode="resolver"] #mapping-results-container .node.selected-route:hover .small-db-icon:after,
-[data-mapping-mode="resolver"] #mapping-from-db .icon:hover .top.lid:before {
+[data-mapping-mode="resolver"] #mapping-results-container .node.selected-route .small-db-icon:hover:after,
+[data-mapping-mode="resolver"] #mapping-from-db .icon .top.lid:hover:before {
   content: "";
   display: block;
   position: absolute;
