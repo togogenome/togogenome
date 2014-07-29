@@ -15,7 +15,26 @@ class Identifier
         WHERE {
           VALUES ?node0 { #{values} }
           #{mapping(convert_databases)}
-       } 
+       }
+      SPARQL
+
+      query(sparql)
+    end
+
+    def sample(db_names)
+      sparql_vars = db_names.count.times.map {|i| "?node#{i}" }.join(' ')
+
+      input_database, *convert_databases = db_names
+
+      sparql =<<-SPARQL.strip_heredoc
+        DEFINE sql:select-option "order"
+        SELECT #{sparql_vars}
+        FROM <http://togogenome.org/graph/edgestore/>
+        WHERE {
+          ?node0 rdf:type <http://identifiers.org/#{input_database}/> .
+          #{mapping(convert_databases)}
+        }
+        LIMIT 1
       SPARQL
 
       query(sparql)

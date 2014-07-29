@@ -1,4 +1,7 @@
+- if @sample_id.present?
+  $("textarea#identifiers").val("#{@sample_id}");
+
 :plain
   $("table#mapped-ids tbody").html(
     "#{j(render 'results')}"
-  )
+  );
