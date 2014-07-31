@@ -24,8 +24,4 @@
       %ul
         - @result.each do |stanza|
           %li
-            = stanza[:name]
-          %ul
-            - stanza[:urls].each do |url|
-              %li
-                %a{href: url, target: '_blank'}= url
+            = "#{stanza[:name]}(#{stanza[:count]})"

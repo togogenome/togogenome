@@ -13,7 +13,7 @@ class TextSearch
         url = e[:url]
         res = JSON.parse(open(url).read).with_indifferent_access
         {
-          name: "#{name} (#{res[:count]})",
+          name: name,
           enabled: res[:enabled],
           count: res[:count],
           urls: res[:urls]
