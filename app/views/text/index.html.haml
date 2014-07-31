@@ -24,4 +24,7 @@
       %ul
         - @result.each do |stanza|
           %li
-            = "#{stanza[:name]}(#{stanza[:count]})"
+            - url = URI.encode_www_form_component(stanza[:stanza_url])
+            %a{href: "/stanza/#{url}/search?q=PCC7120", target: '_blank'}= stanza[:name]
+            - "http://localhost:3000/stanza/hoge/search?utf8=%E2%9C%93&q=PCC7120&button="
+            = "(#{stanza[:count]})"
