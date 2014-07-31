@@ -14,26 +14,13 @@ class TextSearch
         res = JSON.parse(open(url).read).with_indifferent_access
         {
           name: "#{name} (#{res[:count]})",
+          enabled: res[:enabled],
           count: res[:count],
           urls: res[:urls]
         }
+      }.reject {|e|
+        e[:enabled] == false
       }
-      # [
-      #   {
-      #     name: 'stanza name',
-      #     count: 3,
-      #     urls: [
-      #       'http://example.com/1',
-      #       'http://example.com/2',
-      #       'http://example.com/3'
-      #     ]
-      #   },
-      #   {
-      #     name: 'stanza name again',
-      #     count: 0,
-      #     urls: []
-      #   }
-      # ]
     end
   end
 end
