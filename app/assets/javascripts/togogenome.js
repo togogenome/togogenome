@@ -1,7 +1,6 @@
 var ___c = window.console;
 
 $(function(){
-
   $w = $(window);
 
   // ナビゲーションのインジケータとスクロール位置の連動
@@ -102,6 +101,7 @@ $(function(){
       IDM.d3ArrowheadLine = d3.svg.line()
         .x(function(d){ return d[0]; })
         .y(function(d){ return d[1]; });
+      IDM.sampleMode = true;
 
       /* DBリストクラス
        */
@@ -843,7 +843,8 @@ $(function(){
          */
         IDM.selectRoute = function(route) {
           IDM.route = route;
-          $.get("/identifiers/convert", { identifiers: $('#identifiers').val(), databases: IDM.route } );
+
+          idConvert(IDM.route, IDM.sampleMode);
 
           // URLパラメータ
           window.location.hash = route.length > 0 ? route.join(":") : "";
@@ -1238,14 +1239,27 @@ $(function(){
             }
           }
         }
-
       }); // DB情報の読み込みをトリガーとする処理、ここまで
-    }
-  }
 
-  {
-    $('#execute').on('click', function(){
-      $.get("/identifiers/convert", { identifiers: $('#identifiers').val(), databases: IDM.route } );
-    });
+      $('textarea#identifiers').on('change', function(){
+        if ($(this).val() == '') {
+          IDM.sampleMode = true;
+        } else {
+          IDM.sampleMode = false;
+          $(this).removeClass('sample');
+        }
+      });
+
+      $('#execute').on('click', function(){
+        idConvert(IDM.route, IDM.sampleMode);
+      });
+
+      function idConvert(route, sampleMode) {
+        $('#loading').html("<div class='dataTables_processing'>Processing...</div>");
+        $.get("/identifiers/convert",
+          { identifiers: $('textarea#identifiers').val(), databases: route, sample_mode: sampleMode }
+        );
+      }
+    }
   }
 });

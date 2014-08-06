@@ -1,7 +1,10 @@
-- if @sample_id.present?
-  $("textarea#identifiers").val("#{@sample_id}");
+- if @sample_mode && @sample_id
+  var textarea = $("textarea#identifiers");
+  textarea.val("#{@sample_id}");
+  textarea.addClass('sample');
 
 :plain
+  $('#loading').html('');
   $("table#mapped-ids tbody").html(
     "#{j(render 'results')}"
   );
