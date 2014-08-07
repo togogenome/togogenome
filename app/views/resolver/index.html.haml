@@ -19,7 +19,7 @@
               %span.result-download-container
                 %a Download CSV
             #add-new-id
-              %p + Add new ID
+              %p#add-new-id-description + Add new ID
               %textarea#identifiers{name:'identifiers', required: 'required'}
               .text-center.padding
                 = button_tag 'Execute', {id: 'execute', class: "tg-button"}

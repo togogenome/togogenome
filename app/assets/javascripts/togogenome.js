@@ -1247,6 +1247,7 @@ $(function(){
         } else {
           IDM.sampleMode = false;
           $(this).removeClass('sample');
+          $('#add-new-id p#add-new-id-description').text(' + Add new ID');
         }
       });
 
