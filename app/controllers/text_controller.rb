@@ -4,6 +4,7 @@ class TextController < ApplicationController
 
   def search(q)
     begin
+      @q = q
       @result = TextSearch.search(q)
     rescue StandardError => ex
       @error = ex
@@ -14,6 +15,6 @@ class TextController < ApplicationController
 
   def search_stanza(id, q)
     stanza_url = id
-    render text: TextSearch.search_stanza('No Name', stanza_url, q)
+    @result = TextSearch.search_stanza('No Name', stanza_url, q)
   end
 end

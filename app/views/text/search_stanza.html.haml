@@ -1,0 +1,13 @@
+%h2 Stanza Name
+%p= @result[:name]
+
+%h2 Stnaza URL
+%p= @result[:stanza_url]
+
+%h2 Count
+%p= @result[:count]
+
+%h2 Result
+- @result[:urls].each do |url|
+  %p= url
+  %iframe{src: "#{url}"}

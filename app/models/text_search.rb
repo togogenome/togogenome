@@ -41,6 +41,13 @@ class TextSearch
         count: res[:count],
         urls: res[:urls]
       }
+      # {
+      #   name: "Dummy Result",
+      #   stanza_url: "dummy url",
+      #   enabled: true,
+      #   count: 99,
+      #   urls: ["http://example.com/1", "http://example.com/2"]
+      # }
     end
   end
 end
