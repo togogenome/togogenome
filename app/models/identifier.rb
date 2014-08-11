@@ -28,13 +28,13 @@ class Identifier
 
       sparql =<<-SPARQL.strip_heredoc
         DEFINE sql:select-option "order"
-        SELECT #{sparql_vars}
+        SELECT DISTINCT #{sparql_vars}
         FROM <http://togogenome.org/graph/edgestore/>
         WHERE {
           ?node0 rdf:type <http://identifiers.org/#{input_database}/> .
           #{mapping(convert_databases)}
         }
-        LIMIT 1
+        LIMIT 2
       SPARQL
 
       query(sparql)

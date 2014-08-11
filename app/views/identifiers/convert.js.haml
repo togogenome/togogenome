@@ -1,8 +1,13 @@
-- if @sample_mode && @sample_id
+- if @sample_mode && @sample_ids
   var textarea = $("textarea#identifiers");
-  textarea.val("#{@sample_id}");
+  textarea.val("#{@sample_ids}");
   textarea.addClass('sample');
-  $('#add-new-id p#add-new-id-description').text('This is a sample identifier');
+  $('#add-new-id p#add-new-id-description').text('Replace your identifiers');
+
+- if @message
+  $("#message").html("<div class='alert'><i class='icon-warning-sign'> #{@message}</i></div>");
+- else
+  $("#message").html('');
 
 :plain
   $('#loading').html('');

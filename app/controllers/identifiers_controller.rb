@@ -11,9 +11,9 @@ class IdentifiersController < ApplicationController
       @db_links  =  Identifier.sample(databases)
 
       if @db_links.empty?
-        @message = 'Identifiers not found.'
+        @message = 'Not found.'
       else
-        @sample_id = @db_links.first[:node0].split('/').last
+        @sample_ids = @db_links.map {|item| item[:node0].split('/').last }.join('\n')
       end
     else
       @db_links = Identifier.convert(identifiers, databases)
