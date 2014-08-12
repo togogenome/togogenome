@@ -1,16 +1,4 @@
-- if @sample_mode && @sample_ids
-  var textarea = $("textarea#identifiers");
-  textarea.val("#{@sample_ids}");
-  textarea.addClass('sample');
-  $('#add-new-id p#add-new-id-description').text('Replace with your identifiers');
+- if @db_links.empty?
+  $("#message").html("<div class='alert'><i class='icon-warning-sign'> Not found.</i></div>");
 
-- if @message
-  $("#message").html("<div class='alert'><i class='icon-warning-sign'> #{@message}</i></div>");
-- else
-  $("#message").html('');
-
-:plain
-  $('#loading').html('');
-  $("table#mapped-ids tbody").html(
-    "#{j(render 'results')}"
-  );
+$("table#mapped-ids tbody").html("#{j(render 'results')}");

@@ -262,7 +262,9 @@ $(function(){
               d3.select("#mapping-arrows-container svg").remove();
               break;
           }
+
           // テーブルの初期化
+          $("table#mapped-ids tbody").html('');
           IDM.selectRoute([]);
         }
 
@@ -844,7 +846,9 @@ $(function(){
         IDM.selectRoute = function(route) {
           IDM.route = route;
 
-          idConvert(IDM.route, IDM.sampleMode);
+          if (IDM.route.length > 0) {
+            idConvert(IDM.route, IDM.sampleMode);
+          };
 
           // URLパラメータ
           window.location.hash = route.length > 0 ? route.join(":") : "";
@@ -1242,7 +1246,7 @@ $(function(){
       }); // DB情報の読み込みをトリガーとする処理、ここまで
 
       $('textarea#identifiers').on('change', function(){
-        if ($(this).val() == '') {
+        if ($(this).val() === '') {
           IDM.sampleMode = true;
         } else {
           IDM.sampleMode = false;
@@ -1256,10 +1260,41 @@ $(function(){
       });
 
       function idConvert(route, sampleMode) {
+        var identifiers = split_lines($('textarea#identifiers').val());
+        $("#message").html('');
+
+        if (identifiers.length === 0 && route.length === 0) {
+          $("#message").html("<div class='alert'><i class='icon-warning-sign'> Input identifiers to be converted and select target and intermediate databases.</i></div>");
+          return;
+        };
+
+        if (route.length === 0 ) {
+          $("#message").html("<div class='alert'><i class='icon-warning-sign'> Select target and intermediate databases.</i></div>");
+          return;
+        };
+
+
+        var url = sampleMode ? "/identifiers/teach" : "/identifiers/convert";
+
         $('#loading').html("<div class='dataTables_processing'>Processing...</div>");
-        $.get("/identifiers/convert",
-          { identifiers: $('textarea#identifiers').val(), databases: route, sample_mode: sampleMode }
-        );
+        $.get(url, { identifiers: identifiers, databases: route }).done(function() {
+          $('#loading').html('');
+        });
+      }
+
+      // "hoge\nmoge" => ["hoge", "moge"]
+      // "\n\n\n"     => []
+      function split_lines(value) {
+        var lines = value.split(/\r\n|\r|\n/);
+        var array = [];
+
+        for (var i=0; i < lines.length; i++) {
+          if (/\S/.test(lines[i])) {
+            array.push($.trim(lines[i]));
+          }
+        }
+
+        return array;
       }
     }
   }

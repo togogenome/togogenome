@@ -1,0 +1,10 @@
+- if @sample_ids
+  var textarea = $("textarea#identifiers");
+  textarea.val("#{@sample_ids}");
+  textarea.addClass('sample');
+  $('#add-new-id p#add-new-id-description').text('Replace with your identifiers');
+
+- if @db_links.empty?
+  $("#message").html("<div class='alert'><i class='icon-warning-sign'> Not found.</i></div>");
+
+$("table#mapped-ids tbody").html("#{j(render 'results')}");
