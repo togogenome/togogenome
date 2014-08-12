@@ -1273,7 +1273,6 @@ $(function(){
           return;
         };
 
-
         var url = sampleMode ? "/identifiers/teach" : "/identifiers/convert";
 
         $('#loading').html("<div class='dataTables_processing'>Processing...</div>");
