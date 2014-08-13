@@ -5,6 +5,6 @@ class IdentifiersController < ApplicationController
 
   def teach(databases)
     @db_links   = Identifier.sample(databases)
-    @sample_ids = @db_links.map {|item| item[:node0].split('/').last }.join('\n')
+    @sample_ids = @db_links.map {|item| item[:node0].split('/').last }
   end
 end
