@@ -6,7 +6,7 @@ class Identifier
       sparql_vars = db_names.count.times.map {|i| "?node#{i}" }.join(' ')
 
       input_database, *convert_databases = db_names
-      values = identifiers.map {|identifier| "<http://identifiers.org/#{input_database}/#{identifier}>"}.join(' ')
+      values = identifiers.map {|identifier| "<http://identifiers.org/#{input_database}/#{identifier}>" }.join(' ')
 
       sparql = <<-SPARQL.strip_heredoc
         DEFINE sql:select-option "order"
