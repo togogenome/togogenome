@@ -1,1 +1,1 @@
-<%=render "db_link" %>
+<%= render 'db_link' %>
