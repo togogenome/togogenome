@@ -6,4 +6,4 @@ $('#message').html """
 """
 <% end %>
 
-$("table#mapped-ids tbody").html("#{j(render 'results')}")
+$("table#mapped-ids tbody").html "#{j(render 'results')}"
