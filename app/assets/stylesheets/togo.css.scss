@@ -1062,6 +1062,7 @@ table#results li {
   position: relative;
   top: 56px;
 }
+
 #id_mapper_identifiers textarea#identifiers:focus, #id_mapper_identifiers textarea#identifiers:hover {
   z-index: 201;
   border-color: #33717f;
@@ -1843,6 +1844,9 @@ table#results li {
   -webkit-box-shadow: 0 0 6px #45b8cc;
   -moz-box-shadow: 0 0 6px #45b8cc;
   box-shadow: 0 0 6px #45b8cc;
+}
+#add-new-id textarea#identifiers.sample {
+  background-color: rgba(0,0,0,.20);
 }
 #add-new-id button {
   position: absolute;

@@ -1,7 +1,6 @@
 var ___c = window.console;
 
 $(function(){
-
   $w = $(window);
 
   // ナビゲーションのインジケータとスクロール位置の連動
@@ -102,6 +101,7 @@ $(function(){
       IDM.d3ArrowheadLine = d3.svg.line()
         .x(function(d){ return d[0]; })
         .y(function(d){ return d[1]; });
+      IDM.sampleMode = true;
 
       /* DBリストクラス
        */
@@ -262,7 +262,9 @@ $(function(){
               d3.select("#mapping-arrows-container svg").remove();
               break;
           }
+
           // テーブルの初期化
+          $("table#mapped-ids tbody").html('');
           IDM.selectRoute([]);
         }
 
@@ -843,7 +845,10 @@ $(function(){
          */
         IDM.selectRoute = function(route) {
           IDM.route = route;
-          $.get("/identifiers/convert", { identifiers: $('#identifiers').val(), databases: IDM.route } );
+
+          if (IDM.route.length > 0) {
+            idConvert(IDM.route, IDM.sampleMode);
+          };
 
           // URLパラメータ
           window.location.hash = route.length > 0 ? route.join(":") : "";
@@ -1238,14 +1243,58 @@ $(function(){
             }
           }
         }
-
       }); // DB情報の読み込みをトリガーとする処理、ここまで
-    }
-  }
 
-  {
-    $('#execute').on('click', function(){
-      $.get("/identifiers/convert", { identifiers: $('#identifiers').val(), databases: IDM.route } );
-    });
+      $('textarea#identifiers').on('change', function(){
+        if ($(this).val() === '') {
+          IDM.sampleMode = true;
+        } else {
+          IDM.sampleMode = false;
+          $(this).removeClass('sample');
+          $('#add-new-id p#add-new-id-description').text(' + Add new ID');
+        }
+      });
+
+      $('#execute').on('click', function(){
+        idConvert(IDM.route, IDM.sampleMode);
+      });
+
+      function idConvert(route, sampleMode) {
+        var identifiers = split_lines($('textarea#identifiers').val());
+        $("#message").html('');
+
+        if (identifiers.length === 0 && route.length === 0) {
+          $("#message").html("<div class='alert'><i class='icon-warning-sign'> Input identifiers to be converted and select target and intermediate databases.</i></div>");
+          return;
+        };
+
+        if (route.length === 0 ) {
+          $("#message").html("<div class='alert'><i class='icon-warning-sign'> Select target and intermediate databases.</i></div>");
+          return;
+        };
+
+        var url = sampleMode ? "/identifiers/teach" : "/identifiers/convert";
+
+        $('#loading').html("<div class='dataTables_processing'>Processing...</div>");
+        $.get(url, { identifiers: identifiers, databases: route }).done(function() {
+          $('#loading').html('');
+        });
+      }
+
+      // "hoge\nmoge" => ["hoge", "moge"]
+      // "\n\n\n"     => []
+      function split_lines(value) {
+        var lines = value.split(/\r\n|\r|\n/);
+        var array = [];
+
+        for (var i=0; i < lines.length; i++) {
+          if (/\S/.test(lines[i])) {
+            array.push($.trim(lines[i]));
+          }
+        }
+
+        return array;
+      }
+    }
   }
 });

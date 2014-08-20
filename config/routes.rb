@@ -5,14 +5,15 @@ TogoGenome::Application.routes.draw do
     get :search, on: :member
   end
 
-  match '/proteins/search', via: :get, as: :search_proteins
+  get '/proteins/search', as: :search_proteins
   resources :genomes, only: %w(index) do
     get :search, on: :collection
   end
 
-  match '/converter', via: :get, as: :converter, to: 'converter#index'
-  match '/resolver', via: :get, as: :resolver, to: 'resolver#index'
-  match '/identifiers/convert', via: :get
+  get '/converter', as: :converter, to: 'converter#index'
+  get '/resolver', as: :resolver, to: 'resolver#index'
+  get '/identifiers/convert'
+  get '/identifiers/teach'
 
   # 複数形にしたい所だけど、利用者にはこちらの方が分かりやすいらしい
   resources :gene,        only: %w(show), constraints: { id: /[\w\-\:\.\/]+/ }
@@ -21,6 +22,6 @@ TogoGenome::Application.routes.draw do
   resources :phenotype,   only: %w(show), constraints: { id: /MPO_\d+/ }
 
   namespace :api do
-    match '/gggenome' => 'gggenome#show', via: :post
+    post '/gggenome', to: 'gggenome#show'
   end
 end

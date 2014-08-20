@@ -1,17 +1,10 @@
 class IdentifiersController < ApplicationController
   def convert(identifiers, databases)
-    #identifiers ['P16033', 'G0JEW3']
-    #databases ['uniprot', 'pfam', 'refseq', 'ec-code']
+    @db_links = Identifier.convert(identifiers, databases)
+  end
 
-    if databases.nil? and identifiers.empty?
-      @message = 'Input identifiers to be converted and select target and intermediate databases.'
-    elsif databases.nil?
-      @message = 'Select target and intermediate databases.'
-    elsif identifiers.empty?
-      @message = 'Input identifiers to be converted.'
-    else
-      @db_links = Identifier.convert(identifiers, databases)
-      @message = 'Identifiers not found.' if @db_links.empty?
-    end
+  def teach(databases)
+    @db_links   = Identifier.sample(databases)
+    @sample_ids = @db_links.map {|item| item[:node0].split('/').last }
   end
 end

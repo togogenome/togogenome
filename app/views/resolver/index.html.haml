@@ -13,16 +13,16 @@
           #mappings-selector-container
           #mappings-id-container
             %h2
-              Identifiers
-              %span.result-upload-container
-                %a Upload CSV
-              %span.result-download-container
-                %a Download CSV
+              From identifiers
             #add-new-id
-              %p + Add new ID
+              %p#add-new-id-description + Add new ID
               %textarea#identifiers{name:'identifiers', required: 'required'}
               .text-center.padding
                 = button_tag 'Execute', {id: 'execute', class: "tg-button"}
+              #loading
+
             %table#mapped-ids
               %thead
               %tbody
+
+            #message.text-center
