@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'action_args'
 gem 'active_attr'
 gem 'csv_builder'
+gem 'coffee-rails', '~> 3.2.1'
 gem 'dalli'
 gem 'haml-rails'
 gem 'httpclient'
@@ -14,9 +15,9 @@ gem 'rails', '~> 3.2.12'
 gem 'settingslogic'
 gem 'unicorn'
 
+
 group :assets do
   gem 'bootstrap-sass'
-  gem 'coffee-rails', '~> 3.2.1'
   gem 'font-awesome-sass-rails'
   gem 'jqtree-rails'
   gem 'jquery-datatables-rails'
