@@ -13,22 +13,6 @@ class TextSearch
       }.reject {|e|
         e[:enabled] == false
       }
-      # [
-      #   {
-      #     name: 'stanza_name',
-      #     stanza_url: 'http://example.com/stanza/hoge',
-      #     enabled: true,
-      #     count: 0,
-      #     urls: []
-      #   },
-      #   {
-      #     name: 'stanza_name',
-      #     stanza_url: 'http://example.com/stanza/hoge',
-      #     enabled: true,
-      #     count: 0,
-      #     urls: []
-      #   }
-      # ]
     end
 
     def search_stanza(stanza_name, stanza_url, q)
@@ -41,13 +25,6 @@ class TextSearch
         count: res[:count],
         urls: res[:urls]
       }
-      # {
-      #   name: "Dummy Result",
-      #   stanza_url: "dummy url",
-      #   enabled: true,
-      #   count: 99,
-      #   urls: ["http://example.com/1", "http://example.com/2"]
-      # }
     end
 
     def get_with_cache(url)
