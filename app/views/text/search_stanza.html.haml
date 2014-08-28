@@ -8,6 +8,8 @@
 %p= @result[:count]
 
 %h2 Result
+- if @result[:urls].empty?
+  %p No Results Found
 - @result[:urls].each do |url|
   %p= url
   %div{data: url2stanza_params(url)}
