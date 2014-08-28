@@ -3,10 +3,11 @@ require 'open-uri'
 class TextSearch
   class << self
     def search(q)
-      # [togostanza] の [organisms] のスタンザを検索
-      stanza_root = Stanza.providers.togostanza.url
-      name_and_urls = Stanza.providers.togostanza.organisms.map {|stanza|
-        {name: stanza.name, url: "#{stanza_root}/#{stanza.id}"}
+      # XXX nanostanza は検索してない
+      stanza_endpoint = Stanza.providers.togostanza
+      stanza_root = stanza_endpoint.url
+      name_and_urls = get_stanzas(stanza_endpoint).map {|stanza|
+        {name: stanza['name'], url: "#{stanza_root}/#{stanza['id']}"}
       }
       name_and_urls.map {|e|
         search_stanza(e[:name], e[:url], q)
@@ -32,6 +33,10 @@ class TextSearch
       Rails.cache.fetch Digest::MD5.hexdigest(url), expires_in: 1.day do
         open(url).read
       end
+    end
+
+    def get_stanzas(stanza_endpoint)
+      stanza_endpoint.reject {|key| key == 'url' }.values.flatten
     end
   end
 end

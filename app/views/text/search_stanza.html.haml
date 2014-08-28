@@ -10,4 +10,7 @@
 %h2 Result
 - @result[:urls].each do |url|
   %p= url
-  %iframe{src: "#{url}", style: 'width: 100%; height: 300px;'}
+  %div{data: url2stanza_params(url)}
+
+= content_for :javascript do
+  = javascript_include_tag "#{Stanza.providers.togostanza.url}/assets/stanza.js"
