@@ -15,6 +15,9 @@ class TextController < ApplicationController
 
   def search_stanza(id, q)
     stanza_url = id
-    @result = TextSearch.search_stanza('No Name', stanza_url, q)
+    stanza_id = URI(stanza_url).path.split('/').last
+    # XXX id に対応する stanza が見つからなかったら落ちる
+    stanza_name = Stanza.providers.togostanza.reject {|key, val| key == 'url' }.flat_map {|key, val| val }.find {|e| e['id'] == stanza_id }['name']
+    @result = TextSearch.search_stanza(stanza_name, stanza_url, q)
   end
 end
