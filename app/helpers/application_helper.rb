@@ -11,7 +11,7 @@ module ApplicationHelper
   def url2stanza_params(url)
     url_without_query = url.sub(/\?.*/, '')
 
-    # パラメータ名に stanza_ のプリフィックをつける
+    # パラメータ名に stanza_ のプリフィックスをつける
     ary = Rack::Utils.parse_query(URI(url).query).map {|key, val| ["stanza_#{key}", val] }
     stanza_prefix_params = Hash[ary]
 
