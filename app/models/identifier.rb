@@ -37,7 +37,7 @@ class Identifier
         LIMIT 2
       SPARQL
 
-      query(sparql)
+      uniq_first_identifier(query(sparql))
     end
 
     private
@@ -49,6 +49,17 @@ class Identifier
           ?node#{i.succ} rdf:type <http://identifiers.org/#{db_name}/> .
         SPARQL
       }.join("\n")
+    end
+
+    # [ {node0: "http://identifiers.org/pfam/PF00004", node1: "http://identifiers.org/uniprot/F8JPC8"},
+    #   {node0: "http://identifiers.org/pfam/PF00004", node1: "http://identifiers.org/uniprot/F8JPD8"} ]
+    # => [ {node0: "http://identifiers.org/pfam/PF00004", node1: "http://identifiers.org/uniprot/F8JPC8"} ]
+    def uniq_first_identifier(identifiers)
+      if identifiers.map {|i| i[:node0] }.uniq.size == 1
+        Array[identifiers.first]
+      else
+        identifiers
+      end
     end
   end
 end
