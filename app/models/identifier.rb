@@ -37,7 +37,7 @@ class Identifier
         LIMIT 2
       SPARQL
 
-      query(sparql)
+      query(sparql).uniq_by {|i| i[:node0] }
     end
 
     private
