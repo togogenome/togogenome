@@ -20,11 +20,10 @@
     - if @error
       .alert.alert-error
         = @error
-    - unless @result.blank?
+    - unless @stanzas.blank?
       %ul
-        - @result.each do |stanza|
+        - @stanzas.each do |stanza|
           %li
-            - url = URI.encode_www_form_component(stanza[:stanza_url])
             - q = URI.encode_www_form_component(@q)
-            %a{href: "/stanza/#{url}/search?q=#{q}", target: '_blank'}= stanza[:name]
+            = link_to stanza[:name], search_stanza_path(stanza[:id], q: q, target: '_blank')
             = "(#{stanza[:count]})"

@@ -1,18 +1,18 @@
 %h2 Stanza Name
-%p= @result[:name]
+%p= @stanza[:name]
 
 %h2 Stnaza URL
-%p= @result[:stanza_url]
+%p= @stanza[:url]
 
 %h2 Count
-%p= @result[:count]
+%p= @stanza[:count]
 
 %h2 Result
-- if @result[:urls].empty?
+- if @stanza[:attrs].empty?
   %p No Results Found
-- @result[:urls].each do |url|
-  %p= url
-  %div{data: url2stanza_params(url)}
+- @stanza[:attrs].each do |stanza_attr|
+  %p= link_to_report_page(@stanza[:report_type], stanza_attr)
+  %div{data: stanza_prefix(@stanza[:url], stanza_attr)}
 
 = content_for :javascript do
   = javascript_include_tag "#{Stanza.providers.togostanza.url}/assets/stanza.js"
