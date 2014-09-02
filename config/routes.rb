@@ -10,19 +10,21 @@ TogoGenome::Application.routes.draw do
     get :search, on: :collection
   end
 
-  resources :text, only: %w(index) do
-    get :search, on: :collection
-  end
-
   get '/converter', as: :converter, to: 'converter#index'
   get '/resolver', as: :resolver, to: 'resolver#index'
   get '/identifiers/convert'
   get '/identifiers/teach'
 
-  # デフォルトだと id にドットを含められないので、id が取り得る文字列を正規表現で指定する
-  resources :stanza, only: [], id: /[^\/]+/ do
-    get :search, on: :member, controller: :text, action: :search_stanza
+  resources :text, only: %w(index) do
+    get :search, on: :collection
   end
+
+  scope '/text' do
+    resources :stanza, only: [], id: /[^\/]+/ do
+      get :search, on: :member, controller: :text, action: :search_stanza
+    end
+  end
+
 
   # 複数形にしたい所だけど、利用者にはこちらの方が分かりやすいらしい
   resources :gene,        only: %w(show), constraints: { id: /[\w\-\:\.\/]+/ }
