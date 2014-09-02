@@ -16,13 +16,14 @@ class TextSearch
       url = "#{stanza_url}/text_search?q=#{q}"
 
       res = JSON.parse(get_with_cache(url))
+      entry_ids = res['urls'].map {|url| Rack::Utils.parse_query(URI(url).query) }
 
       Stanza.all.find {|s| s['id'] == stanza_id }.merge(
         {
-          url:     stanza_url,
-          enabled: res['enabled'],
-          count:   res['count'],
-          attrs:   res['urls'].map {|url| Rack::Utils.parse_query(URI(url).query) }
+          url:       stanza_url,
+          enabled:   res['enabled'],
+          count:     res['count'],
+          entry_ids: entry_ids
         }
       ).with_indifferent_access
     end

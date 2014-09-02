@@ -12,7 +12,7 @@ describe TextSearch do
       it { should include(report_type: 'organisms') }
       it { subject[:url].should match /\/stanza\/organism_names/ }
       it {
-        should include(attrs:
+        should include(entry_ids:
           [
             {'tax_id' => '163908'},
             {'tax_id' => '1168'},
