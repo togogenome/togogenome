@@ -22,9 +22,14 @@
       .alert.alert-error
         = @error
     - unless @stanzas.blank?
-      %ul
-        - @stanzas.each do |stanza|
-          %li
-            - q = URI.encode_www_form_component(@q)
-            = link_to stanza[:name], search_stanza_path(stanza[:id], q: q), target: '_blank'
-            = "(#{stanza[:count]})"
+      %table#results.table.table-striped.table-bordered.table-hover.table-condensed
+        %thead
+          %td Gene
+          %td Organism
+          %td Environments
+          %td Phenotypes
+        %tr
+          %td= render partial: 'count_list', locals: {stanzas: @stanzas['genes']}
+          %td= render partial: 'count_list', locals: {stanzas: @stanzas['organisms']}
+          %td= render partial: 'count_list', locals: {stanzas: @stanzas['environments']}
+          %td= render partial: 'count_list', locals: {stanzas: @stanzas['phenotypes']}
