@@ -16,5 +16,6 @@ class TextController < ApplicationController
   def search_stanza(id, q)
     # XXX id に対応する stanza が見つからなかったら落ちる
     @stanza = TextSearch.search_stanza(id, q)
+    @entry_ids = Kaminari.paginate_array(@stanza[:entry_ids]).page(params[:page]).per(10)
   end
 end

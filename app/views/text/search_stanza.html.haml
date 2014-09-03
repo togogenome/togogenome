@@ -8,9 +8,11 @@
 %p= @stanza[:count]
 
 %h2 Result
-- if @stanza[:entry_ids].empty?
+= paginate @entry_ids
+
+- if @entry_ids.empty?
   %p No Results Found
-- @stanza[:entry_ids].each do |entry_id|
+- @entry_ids.each do |entry_id|
   %p= link_to_report_page(@stanza[:report_type], entry_id)
   %div{data: stanza_prefix(@stanza[:url], entry_id)}
 
