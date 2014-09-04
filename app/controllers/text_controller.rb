@@ -2,20 +2,25 @@ class TextController < ApplicationController
   def index
   end
 
-  def search(q)
+  def search(q, target)
     begin
       @q = q
-      @stanzas = TextSearch.search(q)
+      result = TextSearch.search(q, target)
+
+      @stanzas_group_by_report_type = result.group_by {|e| e[:report_type] }
+
+      stanzas = result.flat_map {|stanza|
+        stanza[:urls].map {|url|
+          stanza.slice(:report_type, :stanza_url).merge(
+            {stanza_query: Rack::Utils.parse_query(URI(url).query)}
+          )
+        }
+      }
+      @stanzas = Kaminari.paginate_array(stanzas).page(params[:page]).per(10)
     rescue StandardError => ex
       @error = ex
     ensure
       render 'index'
     end
-  end
-
-  def search_stanza(id, q)
-    # XXX id に対応する stanza が見つからなかったら落ちる
-    @stanza = TextSearch.search_stanza(id, q)
-    @entry_ids = Kaminari.paginate_array(@stanza[:entry_ids]).page(params[:page]).per(10)
   end
 end

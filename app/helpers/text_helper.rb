@@ -1,22 +1,27 @@
 module TextHelper
-  def link_to_report_page(report_type, entry_id)
-    path = case report_type
+  def link_to_report_page(stanza)
+    path = case stanza[:report_type]
            when 'genes'
-             gene_path("#{entry_id['tax_id']}:#{entry_id['gene_id']}")
+             gene_path("#{stanza[:stanza_query]['tax_id']}:#{stanza[:stanza_query]['gene_id']}")
            when 'organisms'
-             organism_path(entry_id['tax_id'])
+             organism_path(stanza[:stanza_query]['tax_id'])
            when 'environments'
-             environment_path(entry_id['env_id'])
+             environment_path(stanza[:stanza_query]['env_id'])
            end
 
     link_to('Report page', path, target: '_blank')
   end
 
-  def stanza_prefix(stanza_url, entry_id)
+  def stanza_prefix(stanza)
     # パラメータ名に stanza_ のプリフィックスをつける
-    ary = entry_id.map {|key, val| ["stanza_#{key}", val] }
+    ary = stanza[:stanza_query].map {|key, val| ["stanza_#{key}", val] }
     stanza_prefix_params = Hash[ary]
 
-    {stanza: stanza_url}.merge(stanza_prefix_params)
+    {stanza: stanza[:stanza_url]}.merge(stanza_prefix_params)
+  end
+
+  def stanza_collection
+    search_target = [['All', 'all'], ['Genes', 'gene_reports'], ['Organisms', 'organism_reports'], ['Environments', 'environment_reports']]
+    search_target + Stanza.all.map{|s| [s['name'], s['id']] }
   end
 end

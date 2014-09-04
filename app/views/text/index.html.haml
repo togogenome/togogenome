@@ -12,6 +12,7 @@
       .method-container#sequence-container
         .inner
           = form_tag(search_text_index_path, method: :get, class: 'form-search') do
+            = select_tag :target, options_for_select(stanza_collection, params[:target])
             = search_field_tag 'q', params[:q], class: 'input-xlarge'
             = button_tag 'search', class: 'tg-button'
           .small-note
@@ -21,7 +22,7 @@
     - if @error
       .alert.alert-error
         = @error
-    - unless @stanzas.blank?
+    - unless @stanzas_group_by_report_type.blank?
       %table#results.table.table-striped.table-bordered.table-hover.table-condensed
         %thead
           %td Gene
@@ -29,7 +30,20 @@
           %td Environments
           %td Phenotypes
         %tr
-          %td= render partial: 'count_list', locals: {stanzas: @stanzas['genes']}
-          %td= render partial: 'count_list', locals: {stanzas: @stanzas['organisms']}
-          %td= render partial: 'count_list', locals: {stanzas: @stanzas['environments']}
-          %td= render partial: 'count_list', locals: {stanzas: @stanzas['phenotypes']}
+          %td= render partial: 'count_list', locals: {stanzas: @stanzas_group_by_report_type['genes']}
+          %td= render partial: 'count_list', locals: {stanzas: @stanzas_group_by_report_type['organisms']}
+          %td= render partial: 'count_list', locals: {stanzas: @stanzas_group_by_report_type['environments']}
+          %td= render partial: 'count_list', locals: {stanzas: @stanzas_group_by_report_type['phenotypes']}
+
+  .row-fluid
+    - if @stanzas
+      - if @stanzas.empty?
+        %p No Results Found
+      - if @stanzas.present?
+        = paginate @stanzas
+        - @stanzas.each do |stanza|
+          %p= link_to_report_page(stanza)
+          %div{data: stanza_prefix(stanza)}
+
+        = content_for :javascript do
+          = javascript_include_tag "#{Stanza.providers.togostanza.url}/assets/stanza.js"

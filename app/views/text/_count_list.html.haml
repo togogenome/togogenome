@@ -3,5 +3,5 @@
     - stanzas.each do |stanza|
       %li
         - q = URI.encode_www_form_component(@q)
-        = link_to stanza[:name], search_stanza_path(stanza[:id], q: q), target: '_blank'
+        = link_to stanza[:stanza_name], search_text_index_path(q: q, target: stanza[:stanza_id])
         = "(#{stanza[:count]})"

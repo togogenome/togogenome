@@ -2,30 +2,27 @@ require 'open-uri'
 
 class TextSearch
   class << self
-    def search(q)
+    def search(q, target='all')
       # XXX nanostanza は検索してない
-      Stanza.ids.map {|id|
-        search_stanza(id, q)
+      search_targets(target).map {|id|
+        search_by_stanza_id(q, id)
       }.reject {|e|
         e[:enabled] == false
-      }.group_by{|e|
-        e[:report_type]
       }
     end
 
-    def search_stanza(stanza_id, q)
+    def search_by_stanza_id(q, stanza_id)
       stanza_url = "#{Stanza.providers.togostanza.url}/#{stanza_id}"
       url = "#{stanza_url}/text_search?q=#{q}"
 
-      res = JSON.parse(get_with_cache(url))
-      entry_ids = res['urls'].map {|url| Rack::Utils.parse_query(URI(url).query) }
+      stanza_data = Stanza.all.find {|s| s['id'] == stanza_id }
 
-      Stanza.all.find {|s| s['id'] == stanza_id }.merge(
+      JSON.parse(get_with_cache(url)).merge(
         {
-          url:       stanza_url,
-          enabled:   res['enabled'],
-          count:     res['count'],
-          entry_ids: entry_ids
+          stanza_id:    stanza_id,
+          stanza_name:  stanza_data['name'],
+          report_type:  stanza_data['report_type'],
+          stanza_url:   stanza_url
         }
       ).with_indifferent_access
     end
@@ -34,8 +31,23 @@ class TextSearch
 
     def get_with_cache(url)
       # 「件数取得」と「検索結果取得」で2回同じ検索が行われるのでキャッシュしておく
-      Rails.cache.fetch Digest::MD5.hexdigest(url), expires_in: 1.day do
+      Rails.cache.fetch Digest::MD5.hexdigest(url), expires_in: 1.day, compress: true do
         open(url).read
+      end
+    end
+
+    def search_targets(key)
+      case key
+      when 'all'
+        Stanza.ids
+      when 'gene_reports'
+        Stanza.gene_ids
+      when 'organism_reports'
+        Stanza.organism_ids
+      when 'environment_reports'
+        Stanza.env_ids
+      else
+        [key]
       end
     end
   end
