@@ -11,7 +11,7 @@ class TextController < ApplicationController
 
       stanzas = result.flat_map {|stanza|
         stanza[:urls].map {|url|
-          stanza.slice(:report_type, :stanza_url).merge(
+          stanza.slice(:report_type, :stanza_url, :stanza_name).merge(
             {stanza_query: Rack::Utils.parse_query(URI(url).query)}
           )
         }

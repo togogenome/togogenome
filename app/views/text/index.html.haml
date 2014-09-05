@@ -40,10 +40,17 @@
       - if @stanzas.empty?
         %p No Results Found
       - if @stanzas.present?
-        = paginate @stanzas
+        = paginate @stanzas, window: 2
+
         - @stanzas.each do |stanza|
-          %p= link_to_report_page(stanza)
-          %div{data: stanza_prefix(stanza)}
+          %section
+            .page-header
+              %h2
+                = stanza[:stanza_name]
+                %small= link_to_report_page(stanza)
+            %div{data: stanza_prefix(stanza)}
+
+        = paginate @stanzas, window: 2
 
         = content_for :javascript do
           = javascript_include_tag "#{Stanza.providers.togostanza.url}/assets/stanza.js"

@@ -208,7 +208,6 @@ only screen and (min-device-pixel-ratio: 2),
   position: relative;
 }
 .pagination ul > li > a, .pagination ul > li > span {
-  float: none;
   display: inline-block;
   padding: 4px 9px;
   line-height: 14px;
@@ -1747,4 +1746,9 @@ div#mapping-reset-button {
 }
 .nanostanza-container[data-nanostanza-span="4"] iframe {
   width: 658px !important;
+}
+
+/* Text search */
+.textsearch_paginate {
+  text-align: center;
 }
