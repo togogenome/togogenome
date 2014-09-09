@@ -1753,25 +1753,49 @@ div#mapping-reset-button {
   padding: 10px 20px 4px 20px;
   position: relative;
 }
+
+#textsearch-container .form-line {
+  display: table;
+  width: 100%;
+}
+
 #textsearch-container select {
-  width: 240px;
-  display: inline-block;
+  display: table-cell;
+  vertical-align: middle;
 }
-#textsearch-container.method-container input[type="search"] {
-  width: 80%;
-  margin-right: -90px;
-  padding-right: 100px;
+
+#textsearch-container .form-line span {
+  display: table-cell;
+  width: 100%;
+  padding: 0px 0px 0px 10px;
+  vertical-align: middle;
+}
+
+#textsearch-container.method-container .form-line span input[type="search"] {
+  width: 100%;
   height: 28px;
-  display: inline-block;
 }
-#textsearch-container.method-container input[type="search"]:before {
+
+#textsearch-container.method-container .form-line span input[type="search"]:before {
   top: 7px;
 }
+
 #textsearch-container button {
   width: 90px;
-  left: 10px;
-  margin-left: -10px;
+  vertical-align: middle;
+  display: table-cell;
 }
+
+#stanzas {
+  -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+  z-index: 3;
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
 .textsearch_paginate {
   text-align: center;
 }

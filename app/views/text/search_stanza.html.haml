@@ -12,13 +12,15 @@
       .method-container#textsearch-container
         .inner
           = form_tag(search_stanza_text_index_path, method: :get, class: 'form-search') do
-            = select_tag :target, options_for_select(stanza_collection, params[:target])
-            = search_field_tag 'q', params[:q], class: 'input-xlarge'
-            = button_tag 'search', class: 'tg-button'
+            .form-line
+              = select_tag :target, options_for_select(stanza_collection, params[:target])
+              %span
+                = search_field_tag 'q', params[:q], class: 'input-xlarge'
+              = button_tag 'search', class: 'tg-button'
           .small-note
             %p Search Text (e.g., "PCC7120" )
 
-  .row-fluid
+  #stanzas.row-fluid
     - if @stanzas
       - if @stanzas.empty?
         %p No Results Found

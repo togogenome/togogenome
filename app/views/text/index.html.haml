@@ -10,14 +10,17 @@
 
     #methods
       .method-container#textsearch-container
-        = form_tag(search_text_index_path, method: :get, class: 'form-search form-inline') do
-          = select_tag :target, options_for_select(stanza_collection, params[:target])
-          = search_field_tag 'q', params[:q], class: 'input-xlarge'
-          = button_tag 'search', class: 'tg-button'
-        .small-note
-          %p Search Text (e.g., "PCC7120" )
+        .inner
+          = form_tag(search_text_index_path, method: :get, class: 'form-search form-inline') do
+            .form-line
+              = select_tag :target, options_for_select(stanza_collection, params[:target])
+              %span
+                = search_field_tag 'q', params[:q], class: 'input-xlarge'
+              = button_tag 'search', class: 'tg-button'
+          .small-note
+            %p Search Text (e.g., "PCC7120" )
 
-  #genomes.row-fluid
+  #stanzas.row-fluid
     - if @error
       .alert.alert-error
         = @error
