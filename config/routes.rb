@@ -17,6 +17,7 @@ TogoGenome::Application.routes.draw do
 
   resources :text, only: %w(index) do
     get :search, on: :collection
+    get :search_stanza, on: :collection
   end
 
   # 複数形にしたい所だけど、利用者にはこちらの方が分かりやすいらしい

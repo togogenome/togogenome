@@ -8,6 +8,8 @@ class TextSearch
         search_by_stanza_id(q, id)
       }.reject {|e|
         e[:enabled] == false
+      }.group_by {|e|
+        e[:report_type]
       }
     end
 

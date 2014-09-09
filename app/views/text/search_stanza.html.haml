@@ -1,0 +1,176 @@
+.main-container
+  #search-methods-container
+    %ul#search-methods-selector
+      %li= link_to 'Facet', root_path
+      %li= link_to 'Sequence', genomes_path
+      %li= link_to 'ID converter', converter_path
+      %li= link_to 'ID resolver', resolver_path
+      %li.current= link_to 'Text', text_index_path
+      %li.search-methods-visibility-button Hide
+
+    #methods
+      .method-container#sequence-container
+        .inner
+          = form_tag(search_stanza_text_index_path, method: :get, class: 'form-search') do
+            = select_tag :target, options_for_select(stanza_collection, params[:target])
+            = search_field_tag 'q', params[:q], class: 'input-xlarge'
+            = button_tag 'search', class: 'tg-button'
+          .small-note
+            %p Search Text (e.g., "PCC7120" )
+
+  .row-fluid
+    - if @stanzas
+      - if @stanzas.empty?
+        %p No Results Found
+      - if @stanzas.present?
+        = render partial: 'paginate_slider', locals: {stanzas: @stanzas}
+
+        - @stanzas.each do |stanza|
+          %section
+            .page-header
+              %h2
+                %small= link_to_report_page(stanza)
+            %div{data: stanza_prefix(stanza)}
+
+        = render partial: 'paginate_slider', locals: {stanzas: @stanzas}
+
+      = content_for :javascript do
+        :javascript
+          var paginationSlider;
+          // スライダーの生成
+          if (!paginationSlider) {
+            var $ul = $(".textsearch_paginate ul");
+            paginationSlider = {
+              ul: $ul,
+              container: $(".pagination-slider"),
+              bar: $(".pagination-slider-bar"),
+              currentBar: $(".pagination-slider-current-bar"),
+              indicator: $(".pagination-slider-indicator"),
+              indicatorInner: $(".pagination-slider-indicator > .inner"),
+              dottedLineLeft: $(".pagination-slider-dotted-line-left"),
+              dottedLineRight: $(".pagination-slider-dotted-line-right"),
+              pagination: $(".pagination")
+            }
+
+            // スライダーイベント
+            paginationSlider.indicator.mousedown(function(e){
+              var startX = e.clientX,
+                  originX = paginationSlider.indicator.position().left,
+                  maxWidth = paginationSlider.bar.outerWidth(),
+                  unit = maxWidth / paginationSlider.totalPage,
+                  page;
+
+              $(window)
+                .on("mousemove.paginationSlider", function(e){
+                  // インジケータをマウスに追随して移動
+                  var x = originX + e.clientX - startX;
+                  x = x < 0 ? 0 : x;
+                  x = x > maxWidth ? maxWidth : x;
+                  paginationSlider.indicator.css("left", x + "px");
+                  // インジケータの数字
+                  x = x < unit * .5 ? unit * .5 : x;
+                  x = x > maxWidth - unit * .5 ? maxWidth - unit * .5 : x;
+                  page = Math.floor(x / unit);
+                  paginationSlider.currentPage = page;
+                  paginationSlider.indicatorInner.text(page + 1);
+                  paginationSlider.setPaginationRange();
+                  paginationSlider.render();
+                })
+                .on("mouseup.paginationSlider", function(e){
+                  // イベント削除
+                  $(window).off("mousemove.paginationSlider mouseup.paginationSlider");
+
+                  // 検索をリクエスト
+                  var q = "#{URI.encode_www_form_component(@q)}";
+                  var target = "#{params[:target]}";
+                  var nextPage = page + 1;
+                  location.href = "/text/search_stanza?q=" + q + "&target=" + target + "&page=" + nextPage;
+                });
+              });
+
+              // ページネーションの範囲定義
+              paginationSlider.setPaginationRange = function(currentPage) {
+                // ページネーションの開始ページ
+                paginationSlider.startPage = paginationSlider.currentPage - PAGENATION_MARGIN;
+                paginationSlider.startPage = paginationSlider.startPage < 0 ? 0 : paginationSlider.startPage;
+                if ((paginationSlider.startPage + paginationSlider.displayPagination) > paginationSlider.  totalPage) {
+                  paginationSlider.startPage = paginationSlider.totalPage - paginationSlider.  displayPagination;
+                }
+              }
+
+              // スライダーの表示
+              paginationSlider.render = function() {
+                var bl, br, bb, pl, pr, pt, bw, cw;
+                bw = paginationSlider.bar.width();
+                // インジケータの位置
+                paginationSlider.indicatorInner
+                  .text(paginationSlider.currentPage + 1);
+                paginationSlider.indicator
+                  .css("left", Math.round(bw * (paginationSlider.currentPage + .5) / (paginationSlider.  totalPage)) + "px");
+                // バーの位置と大きさ
+                cw = Math.ceil(bw * (paginationSlider.displayPagination / paginationSlider.totalPage));
+                bl = Math.floor(bw * (paginationSlider.startPage / paginationSlider.totalPage));
+                paginationSlider.currentBar
+                  .width(cw)
+                  .css("left", bl + "px");
+                // 破線
+                var $pThird = paginationSlider.ul.children("li:nth-child(3)"),
+                    $pLastThird = paginationSlider.ul.children("li:nth-last-child(3)");
+                br = bl + cw;
+                bb = paginationSlider.bar.position().top + paginationSlider.bar.outerHeight();
+                pl = paginationSlider.ul.position().left + $pThird.position().left;
+                pr = paginationSlider.ul.position().left + $pLastThird.position().left + $pLastThird.  outerWidth();
+                pt = paginationSlider.ul.position().top - paginationSlider.container.position().top + $pThird  .outerHeight() * .5;
+                var lLength = Math.sqrt(Math.pow(pl - bl, 2) + Math.pow(pt - bb, 2));
+                var rad = Math.atan2(pt - bb, pl - bl);
+                var deg = (180 * rad) / Math.PI;
+                paginationSlider.dottedLineLeft
+                  .width(lLength).height(1)
+                  .css({
+                    top: ((pt + bb) * .5) + "px",
+                    left: ((pl + bl) * .5 - lLength * .5) + "px",
+                    transform: "rotate(" + (deg + 0) + "deg)"}
+                  );
+                var rLength = Math.sqrt(Math.pow(pr - br, 2) + Math.pow(pt - bb, 2));
+                rad = Math.atan2(pt - bb, pr - br);
+                deg = (180 * rad) / Math.PI;
+                paginationSlider.dottedLineRight
+                  .width(rLength).height(1)
+                  .css({
+                    top: ((pt + bb) * .5) + "px",
+                    left: ((pr + br) * .5 - rLength * .5) + "px",
+                    transform: "rotate(" + (deg + 0) + "deg)"}
+                  );
+              }
+              $(window).resize(function(){
+                paginationSlider.render();
+              })
+            }
+
+            // 諸元の保持
+            var PAGENATION_MAX = 5, PAGENATION_MARGIN = 2;
+            // 一度に表示されるレコード数
+            //var iLength = this.fnPagingInfo().iLength;
+            var iLength = 10;
+            // 総レコード数
+            paginationSlider.totalDisplayRecords = parseInt("#{@stanzas.total_count}");
+            // 総ページ数
+            paginationSlider.totalPage = parseInt("#{@stanzas.total_pages}");
+            // ページネーションの数
+            paginationSlider.displayPagination = paginationSlider.totalPage;
+            paginationSlider.displayPagination = paginationSlider.displayPagination > PAGENATION_MAX ?   PAGENATION_MAX : paginationSlider.      displayPagination;
+            // 現在のページ
+            paginationSlider.currentPage = parseInt("#{@stanzas.current_page}" - 1)
+            paginationSlider.setPaginationRange();
+
+            // ページネーションのレンダリング
+            if (paginationSlider.totalDisplayRecords <= iLength) {
+              paginationSlider.pagination.hide();
+            } else {
+              paginationSlider.pagination.show();
+              paginationSlider.render();
+            }
+
+      = content_for :javascript do
+        = javascript_include_tag "#{Stanza.providers.togostanza.url}/assets/stanza.js"
+
