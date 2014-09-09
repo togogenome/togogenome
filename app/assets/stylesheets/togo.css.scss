@@ -1749,6 +1749,29 @@ div#mapping-reset-button {
 }
 
 /* Text search */
+#textsearch-container .inner {
+  padding: 10px 20px 4px 20px;
+  position: relative;
+}
+#textsearch-container select {
+  width: 240px;
+  display: inline-block;
+}
+#textsearch-container.method-container input[type="search"] {
+  width: 80%;
+  margin-right: -90px;
+  padding-right: 100px;
+  height: 28px;
+  display: inline-block;
+}
+#textsearch-container.method-container input[type="search"]:before {
+  top: 7px;
+}
+#textsearch-container button {
+  width: 90px;
+  left: 10px;
+  margin-left: -10px;
+}
 .textsearch_paginate {
   text-align: center;
 }

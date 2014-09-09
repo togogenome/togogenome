@@ -9,7 +9,7 @@
       %li.search-methods-visibility-button Hide
 
     #methods
-      .method-container#sequence-container
+      .method-container#textsearch-container
         .inner
           = form_tag(search_stanza_text_index_path, method: :get, class: 'form-search') do
             = select_tag :target, options_for_select(stanza_collection, params[:target])
