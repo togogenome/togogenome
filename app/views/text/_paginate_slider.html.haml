@@ -1,11 +1,15 @@
-.pagination.textsearch_paginate
-  .pagination-slider
-    .pagination-slider-bar
-    .pagination-slider-current-bar
-    .pagination-slider-indicator
-      .inner 0
-    .pagination-slider-dotted-line-left
-    .pagination-slider-dotted-line-right
+%div
+  .span5.textsearch_info
+    = textsearch_info stanzas
 
-  = fixed_link_count_paginate stanzas
+  .pagination.textsearch_paginate
+    .pagination-slider
+      .pagination-slider-bar
+      .pagination-slider-current-bar
+      .pagination-slider-indicator
+        .inner 0
+      .pagination-slider-dotted-line-left
+      .pagination-slider-dotted-line-right
+
+    = fixed_link_count_paginate stanzas
 

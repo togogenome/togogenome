@@ -25,6 +25,12 @@ module TextHelper
     search_target + Stanza.all.map{|s| [s['name'], s['id']] }
   end
 
+  def textsearch_info(stanzas)
+    start_page = (stanzas.current_page - 1) * 10 + 1
+    end_page   = start_page + stanzas.count - 1
+    "Showing #{start_page} to #{end_page} of #{stanzas.total_count} stanzas"
+  end
+
   def fixed_link_count_paginate(stanzas)
     first_page = 1
     last_page = stanzas.total_pages
