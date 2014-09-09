@@ -21,7 +21,7 @@ module TextHelper
   end
 
   def stanza_collection
-    search_target = [['All', 'all'], ['Genes', 'gene_reports'], ['Organisms', 'organism_reports'], ['Environments', 'environment_reports']]
+    search_target = [['All', 'all'], ['Genes', 'gene_reports'], ['Organisms', 'organism_reports'], ['Environments', 'environment_reports'], ['--------------', {disabled: 'disabled'}]]
     search_target + Stanza.all.map{|s| [s['name'], s['id']] }
   end
 
