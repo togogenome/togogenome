@@ -1,5 +1,5 @@
 class TextController < ApplicationController
-  before_filter :search_multiple_target, only: :search_stanza
+  before_filter :search_multiple_target, only: :search_stanza, if: :multiple_target?
 
   def index
   end
@@ -31,10 +31,11 @@ class TextController < ApplicationController
   end
 
   private
+  def multiple_target?
+    %w(all gene_reports organism_reports environment_reports).include?(params[:target])
+  end
 
   def search_multiple_target
-    if %w(all gene_reports organism_reports environment_reports).include?(params[:target])
-      redirect_to search_text_index_path(target: params[:target], q: params[:q])
-    end
+    redirect_to search_text_index_path(target: params[:target], q: params[:q])
   end
 end
