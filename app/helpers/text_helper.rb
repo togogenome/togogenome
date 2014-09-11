@@ -1,15 +1,19 @@
 module TextHelper
   def link_to_report_page(stanza)
-    path = case stanza[:report_type]
-           when 'genes'
-             gene_path("#{stanza[:stanza_query]['tax_id']}:#{stanza[:stanza_query]['gene_id']}")
-           when 'organisms'
-             organism_path(stanza[:stanza_query]['tax_id'])
-           when 'environments'
-             environment_path(stanza[:stanza_query]['env_id'])
-           end
+    label, path =
+      case stanza[:report_type]
+      when 'genes'
+        gene_id = "#{stanza[:stanza_query]['tax_id']}:#{stanza[:stanza_query]['gene_id']}"
+        ["Gene #{gene_id}", gene_path(gene_id)]
+      when 'organisms'
+        tax_id = stanza[:stanza_query]['tax_id']
+        ["Organism #{tax_id}", organism_path(tax_id)]
+      when 'environments'
+        env_id = stanza[:stanza_query]['env_id']
+        ["Environment #{env_id}", environment_path(env_id)]
+      end
 
-    link_to('Report page', path, target: '_blank')
+    link_to(label, path, target: '_blank')
   end
 
   def stanza_prefix(stanza)

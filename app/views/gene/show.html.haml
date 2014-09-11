@@ -7,7 +7,7 @@
             %li= link_to stanza.name, "##{stanza.id}"
 
   #header
-    %h1 Gene: #{@taxonomic_id}:#{@locus_tag}
+    %h1 Gene #{@taxonomic_id}:#{@locus_tag}
 
   %section#nanostanzas.row-fluid
     - Stanza.providers.nanostanza.genes.each do |stanza|

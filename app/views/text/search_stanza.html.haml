@@ -30,8 +30,7 @@
         - @stanzas.each do |stanza|
           %section
             .page-header
-              %h2
-                %small= link_to_report_page(stanza)
+              %h2= link_to_report_page(stanza)
             %div{data: stanza_prefix(stanza)}
 
         = render partial: 'paginate_slider', locals: {stanzas: @stanzas}
