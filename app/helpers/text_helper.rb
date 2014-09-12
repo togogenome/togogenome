@@ -30,8 +30,16 @@ module TextHelper
   end
 
   def stanza_collection
-    search_target = [['All', 'all'], ['Genes', 'gene_reports'], ['Organisms', 'organism_reports'], ['Environments', 'environment_reports'], ['--------------', {disabled: 'disabled'}]]
-    search_target + Stanza.all.map{|s| [s['name'], s['id']] }
+    multiple_target = [['All', 'all'], ['Genes', 'gene_reports'], ['Organisms', 'organism_reports'], ['Environments', 'environment_reports'], ['--------------', {disabled: 'disabled'}]]
+    single_target = Stanza.all.sort_by {|s| s["name"] }.map {|s|
+      if %w(organism_names organism_phenotype).include?(s['id'])
+        [s['name'], s['id']]
+      else
+        [s['name'], s['id'], {disabled: 'disabled'}]
+      end
+    }
+
+    multiple_target + single_target
   end
 
   def textsearch_info(stanzas)
