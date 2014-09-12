@@ -1,4 +1,9 @@
 module TextHelper
+  def link_to_stanza_list(stanza, q)
+    label = stanza[:enabled] ? "#{stanza[:stanza_name]} (#{stanza[:count]})" : stanza[:stanza_name]
+    link_to_if stanza[:enabled], label, search_stanza_text_index_path(q: q, target: stanza[:stanza_id])
+  end
+
   def link_to_report_page(stanza)
     label, path =
       case stanza[:report_type]
