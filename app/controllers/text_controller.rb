@@ -28,12 +28,12 @@ class TextController < ApplicationController
       }
     }
 
-    @stanzas = Kaminari.paginate_array(stanzas).page(params[:page]).per(10)
+    @stanzas = Kaminari.paginate_array(stanzas).page(params[:page]).per(TextSearch::PAGINATE[:per_page])
   end
 
   private
   def multiple_target?
-    %w(all gene_reports organism_reports environment_reports).include?(params[:target])
+    TextSearch::MULTIPLE_TARGET.map{|t| t[:key]}.include? params[:target]
   end
 
   def search_single_target

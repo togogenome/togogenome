@@ -16,7 +16,7 @@
               = select_tag :target, options_for_select(stanza_collection, params[:target])
               %span
                 = search_field_tag 'q', params[:q], class: 'input-xlarge'
-              = button_tag 'search', class: 'tg-button'
+              = button_tag 'Search', class: 'tg-button'
           .small-note
             %p Search Text (e.g., "PCC7120" )
 
@@ -152,7 +152,7 @@
             var PAGENATION_MAX = 5, PAGENATION_MARGIN = 2;
             // 一度に表示されるレコード数
             //var iLength = this.fnPagingInfo().iLength;
-            var iLength = 10;
+            var iLength = parseInt("#{TextSearch::PAGINATE[:per_page]}");
             // 総レコード数
             paginationSlider.totalDisplayRecords = parseInt("#{@stanzas.total_count}");
             // 総ページ数
@@ -174,4 +174,3 @@
 
       = content_for :javascript do
         = javascript_include_tag "#{Stanza.providers.togostanza.url}/assets/stanza.js"
-

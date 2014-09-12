@@ -1,10 +1,20 @@
 require 'open-uri'
 
 class TextSearch
+  MULTIPLE_TARGET = [
+    {label: 'All', key: 'all'},
+    {label: 'Genes', key: 'gene_reports'},
+    {label: 'Organisms', key: 'organism_reports'},
+    {label: 'Environments', key: 'environment_reports'}
+  ]
+  PAGINATE = {
+    per_page: 10
+  }
+
   class << self
     def search(q, target='all')
       # XXX nanostanza は検索してない
-      search_targets(target).map {|id|
+      search_stanza_ids(target).map {|id|
         search_by_stanza_id(q, id)
       }.group_by {|e|
         e[:report_type]
@@ -36,7 +46,7 @@ class TextSearch
       end
     end
 
-    def search_targets(key)
+    def search_stanza_ids(key)
       case key
       when 'all'
         Stanza.ids

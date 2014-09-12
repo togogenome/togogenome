@@ -30,7 +30,8 @@ module TextHelper
   end
 
   def stanza_collection
-    multiple_target = [['All', 'all'], ['Genes', 'gene_reports'], ['Organisms', 'organism_reports'], ['Environments', 'environment_reports'], ['--------------', {disabled: 'disabled'}]]
+    multiple_target = TextSearch::MULTIPLE_TARGET.map{|t| [t[:label], t[:key]] }
+
     single_target = Stanza.all.sort_by {|s| s["name"] }.map {|s|
       if %w(organism_names organism_phenotype).include?(s['id'])
         [s['name'], s['id']]
@@ -39,11 +40,11 @@ module TextHelper
       end
     }
 
-    multiple_target + single_target
+    multiple_target + [['--------------', {disabled: 'disabled'}]] + single_target
   end
 
   def textsearch_info(stanzas)
-    start_page = (stanzas.current_page - 1) * 10 + 1
+    start_page = (stanzas.current_page - 1) * TextSearch::PAGINATE[:per_page] + 1
     end_page   = start_page + stanzas.count - 1
     "Showing #{start_page} to #{end_page} of #{stanzas.total_count} stanzas"
   end
