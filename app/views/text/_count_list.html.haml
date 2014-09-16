@@ -1,5 +1,4 @@
 - if stanzas
-  - q = URI.encode_www_form_component(@q)
   %ul
     - stanzas.sort_by {|s| s['stanza_name'] }.each do |stanza|
-      %li= link_to_stanza_list(stanza, q)
+      %li= link_to_stanza_list(stanza, @q)

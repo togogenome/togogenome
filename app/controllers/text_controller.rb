@@ -1,6 +1,6 @@
 class TextController < ApplicationController
-  before_filter :search_multiple_target, only: %i(search_stanza), if: :multiple_target?
-  before_filter :search_single_target, only: %i(search), unless: :multiple_target?
+  before_filter :redirect_to_search, only: %i(search_stanza), if: :all_or_reports?
+  before_filter :redirect_to_search_stanza, only: %i(search), unless: :all_or_reports?
 
   def index
   end
@@ -9,7 +9,7 @@ class TextController < ApplicationController
     begin
       @q = q
       @stanzas = TextSearch.search(q, target)
-    rescue StandardError => ex
+    rescue => ex
       @error = ex
     ensure
       render 'index'
@@ -32,15 +32,16 @@ class TextController < ApplicationController
   end
 
   private
-  def multiple_target?
-    TextSearch::MULTIPLE_TARGET.map{|t| t[:key]}.include? params[:target]
+
+  def all_or_reports?
+      %w(all gene_reports organism_reports environment_reports).include? params[:target]
   end
 
-  def search_single_target
+  def redirect_to_search_stanza
     redirect_to action: :search_stanza, target: params[:target], q: params[:q]
   end
 
-  def search_multiple_target
+  def redirect_to_search
     redirect_to action: :search, target: params[:target], q: params[:q]
   end
 end

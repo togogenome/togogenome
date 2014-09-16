@@ -1,7 +1,10 @@
 module TextHelper
   def link_to_stanza_list(stanza, q)
-    label = stanza[:enabled] ? "#{stanza[:stanza_name]} (#{stanza[:count]})" : stanza[:stanza_name]
-    link_to_if stanza[:enabled], label, search_stanza_text_index_path(q: q, target: stanza[:stanza_id])
+    query = URI.encode_www_form_component(q)
+    id, name, count, enabled = stanza.values_at(:stanza_id, :stanza_name, :count, :enabled)
+    label = enabled ? "#{name} (#{count})" : name
+
+    link_to_if enabled, label, search_stanza_text_index_path(q: query, target: id)
   end
 
   def link_to_report_page(stanza)
@@ -23,29 +26,33 @@ module TextHelper
 
   def stanza_prefix(stanza)
     # パラメータ名に stanza_ のプリフィックスをつける
-    ary = stanza[:stanza_query].map {|key, val| ["stanza_#{key}", val] }
-    stanza_prefix_params = Hash[ary]
+    stanza_prefix_params = stanza[:stanza_query].map {|key, val| ["stanza_#{key}", val] }.to_h
 
     {stanza: stanza[:stanza_url]}.merge(stanza_prefix_params)
   end
 
   def stanza_collection
-    multiple_target = TextSearch::MULTIPLE_TARGET.map{|t| [t[:label], t[:key]] }
-
-    single_target = Stanza.all.sort_by {|s| s["name"] }.map {|s|
-      if %w(organism_names organism_phenotype).include?(s['id'])
+    stanza_ary = Stanza.all.sort_by {|s| s["name"] }.map {|s|
+      if TextSearch.searchable?(s['id'])
         [s['name'], s['id']]
       else
         [s['name'], s['id'], {disabled: 'disabled'}]
       end
     }
 
-    multiple_target + [['--------------', {disabled: 'disabled'}]] + single_target
+    [
+      ['All', 'all'],
+      ['Genes', 'gene_reports'],
+      ['Organisms', 'organism_reports'],
+      ['Environments', 'environment_reports'],
+      ['--------------', {disabled: 'disabled'}]
+    ] + stanza_ary
   end
 
   def textsearch_info(stanzas)
     start_page = (stanzas.current_page - 1) * TextSearch::PAGINATE[:per_page] + 1
     end_page   = start_page + stanzas.count - 1
+
     "Showing #{start_page} to #{end_page} of #{stanzas.total_count} stanzas"
   end
 

@@ -24,7 +24,7 @@
     - if @stanzas
       - if @stanzas.empty?
         %p No Results Found
-      - if @stanzas.present?
+      - else
         = render partial: 'paginate_slider', locals: {stanzas: @stanzas}
 
         - @stanzas.each do |stanza|

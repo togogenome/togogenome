@@ -7,9 +7,8 @@ class TextSearch
     {label: 'Organisms', key: 'organism_reports'},
     {label: 'Environments', key: 'environment_reports'}
   ]
-  PAGINATE = {
-    per_page: 10
-  }
+
+  PAGINATE = {per_page: 10}
 
   class << self
     def search(q, target='all')
@@ -35,6 +34,10 @@ class TextSearch
           stanza_url:   stanza_url
         }
       ).with_indifferent_access
+    end
+
+    def searchable?(stanza_id)
+      %w(organism_names organism_phenotype).include?(stanza_id)
     end
 
     private
