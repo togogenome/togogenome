@@ -23,6 +23,7 @@ group :assets do
   gem 'jquery-datatables-rails'
   gem 'jquery-ui-rails'
   gem 'sass-rails',   '~> 3.2.3'
+  gem 'compass-rails'
   gem 'uglifier', '>= 1.0.3'
 end
 

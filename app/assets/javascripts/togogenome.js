@@ -1,6 +1,7 @@
 var ___c = window.console;
 
 $(function(){
+
   $w = $(window);
 
   // ナビゲーションのインジケータとスクロール位置の連動
@@ -160,13 +161,13 @@ $(function(){
           $bg.css({
             width: $w.width() * 2,
             height: $w.height() * 2,
-            top:  -top,
-            left:  -left,
+            top: -top,
+            left: -left,
           });
           // 開く
           $target.addClass("open");
           $w.on("keyup.dblist", function(e){
-            if (e.keyCode == 27) close();
+            if (e.keyCode === 27) close();
           });
         }
 
@@ -202,7 +203,7 @@ $(function(){
           IDM.selectedDb[locative] = id;
 
           switch (true) {
-            case (IDM.mode == IDM.MODE_CONVERTER):
+            case (IDM.mode === IDM.MODE_CONVERTER):
             {
               // もう一方のセレクタ中の同じDBを選択不可能に
               var $theOtherDbList = IDM.$dbList[IDM.THE_OHTER_DB_NAMES[locative]];
@@ -226,7 +227,7 @@ $(function(){
               }
             }
               break;
-            case (IDM.mode == IDM.MODE_RESOLVER):
+            case (IDM.mode === IDM.MODE_RESOLVER):
             {
               if (decidedRoute) { // すでにルートが確定している場合
               }
@@ -254,15 +255,14 @@ $(function(){
           IDM.deleteResults(false);
           IDM.$resultsContainer.removeClass(IDM.CLASSES.SHOWING_RESULT);
           switch (true) {
-            case (IDM.mode == IDM.MODE_CONVERTER):
+            case (IDM.mode === IDM.MODE_CONVERTER):
               IDM.routes = [];
               IDM.routesHistory.push(IDM.routes);
               break;
-            case (IDM.mode == IDM.MODE_RESOLVER):
+            case (IDM.mode === IDM.MODE_RESOLVER):
               d3.select("#mapping-arrows-container svg").remove();
               break;
           }
-
           // テーブルの初期化
           $("table#mapped-ids tbody").html('');
           IDM.selectRoute([]);
@@ -321,7 +321,7 @@ $(function(){
                   d3ArrowGroups = d3.selectAll(selector);
               //window.console.log(selector);
               //window.console.log(d3ArrowGroups);
-              if (d3ArrowGroups.size() == 0) {
+              if (d3ArrowGroups.size() === 0) {
                 var d3ArrowsGroup = d3ArrowsSvg.append("g").attr({ "class": "s" + (i + 1) }),
                     d3Group = d3ArrowsGroup.append("g")
                       .attr({
@@ -339,7 +339,7 @@ $(function(){
               }
               d3ArrowGroups.each(function(){
                 var d3ArrowGroup = d3.select(this);
-                if (this.getAttribute("data-db") == route[i + 1]) {
+                if (this.getAttribute("data-db") === route[i + 1]) {
                   var x1 = (i * stepUnit2) * IDM.results.width + 1,
                       x2 = x1 + IDM.results.width * stepUnit2 - ARROW_HEAD_MARGIN,
                       y = IDM.results.height * .5,
@@ -375,7 +375,7 @@ $(function(){
                 x2 = x1 + IDM.results.width * stepUnit2 - ARROW_HEAD_MARGIN,
                 y1 = IDM.results.height * .5,
                 d3ArrowGroup = d3.selectAll("#mapping-arrows-container .s" + route.length),
-                isNew = d3ArrowGroup.size() == 0;
+                isNew = d3ArrowGroup.size() === 0;
             if (isNew) d3ArrowsGroup = d3ArrowsSvg.append("g").attr({ "class": "s" + route.length });
             for (var i = 0; i < links.length; i++) {
               var d3Group;
@@ -462,7 +462,7 @@ $(function(){
             links = [];
             for (var i = 0; i < IDM.DBs[db].links.length; i++) {
               var linkedDb = IDM.DBs[db].links[i];
-              if ($.inArray(linkedDb, route) == -1) {
+              if ($.inArray(linkedDb, route) === -1) {
                 links.push(linkedDb);
               }
             }
@@ -493,7 +493,7 @@ $(function(){
               // 確定済みルートのDBアイコンの移動と、それ以外の削除
               for (var i = 0; i < route.length - 1; i++) {
                 var $icons = $("[data-step='" + (i + 1) + "']", IDM.$dbIconsContainer);
-                if ($icons.length == 0) { // アイコンが存在しない場合、生成
+                if ($icons.length === 0) { // アイコンが存在しない場合、生成
                   html = IDM.makeSmallDBIconHTML({
                     category: IDM.DBs[route[i + 1]].category,
                     db: route[i + 1],
@@ -511,7 +511,7 @@ $(function(){
                 }
                 $icons.each(function(){
                   $this = $(this);
-                  if ($this.data("db") == route[i + 1]) {
+                  if ($this.data("db") === route[i + 1]) {
                     $this
                       .addClass(IDM.CLASSES.SELECTED)
                       .css({
@@ -553,7 +553,7 @@ $(function(){
                       aRoute;
                   for (var j = 0; j < classes.length; j++) {
                     var className = classes[j];
-                    if (className.indexOf("r") == 0) aRoute = parseInt(className.substring(1));
+                    if (className.indexOf("r") === 0) aRoute = parseInt(className.substring(1));
                   }
                   $this
                     .data("route", aRoute)
@@ -574,6 +574,7 @@ $(function(){
                         });
                       },
                       "click.selecteingRoute": function(){
+                        var db, step = parseInt($this.data("step"));
                         if (!$this.hasClass(IDM.CLASSES.SELECTED)) {
                           // 未選択のDBの場合
                           // 同ルートを選択状態にする
@@ -581,12 +582,15 @@ $(function(){
                             return classNames + " " + IDM.CLASSES.SELECTED;
                           });
                           IDM.$resultsContainer.removeClass(IDM.CLASSES.HIGHLIGHTING);
+                          db = $this.data("db");
+                        } else {
+                          db = route[step];
                         }
                         // 新しいルートの生成
-                        makeResolverRoutes($this.data("db"), parseInt($this.data("step")));
+                        makeResolverRoutes(db, step);
                       }
                     })
-                })
+                });
             }
 
             // 矢印の生成・変形
@@ -612,7 +616,7 @@ $(function(){
           // ステップ数の少ない順にソート
           for (var i = 2; i <= IDM.step; i++) {
             for (var j = 0; j <= routes1.length; j++) {
-              if (routes1[j] && routes1[j].length == i) {
+              if (routes1[j] && routes1[j].length === i) {
                 routes2.push(routes1[j]);
                 delete routes1[j];
               }
@@ -623,13 +627,13 @@ $(function(){
             var excludedRoutes = [];
             for (var i = 0; i < routes2.length; i++) {
               var route = routes2[i];
-              if (route.length == 2) {
+              if (route.length === 2) {
                 // 中間のDBがない場合は有効
                 excludedRoutes.push(route);
               } else {
                 var differ = true;
                 for (var j = 0; j < (route.length - 1); j++) {
-                  //if (IDM.DBs[route[j]].category == IDM.DBs[route[j + 1]].category) differ = false;
+                  //if (IDM.DBs[route[j]].category === IDM.DBs[route[j + 1]].category) differ = false;
                 }
                 if (differ) excludedRoutes.push(route);
               }
@@ -645,7 +649,7 @@ $(function(){
         IDM.makeConverterRoutes = function() {
 
           // ひとつもルートがない場合
-          if (IDM.routes.length == 0) {
+          if (IDM.routes.length === 0) {
             html = "<p class='result-message'>Found no route.</p>";
             IDM.$resultsContainer
               .append(html)
@@ -674,8 +678,8 @@ $(function(){
               // 上のリザルトと同じDBであれば、スキップする
               if (r > 0) {
                 var prevRoute = IDM.routes[r - 1];
-                if (prevRoute.length == route.length && prevRoute[c] == db) continue;
-                //if (prevRoute.length == route.length && prevRoute[c] == category) continue; // カテゴリノードの場合
+                if (prevRoute.length === route.length && prevRoute[c] === db) continue;
+                //if (prevRoute.length === route.length && prevRoute[c] === category) continue; // カテゴリノードの場合
               }
               // 後続のリザルトが同じDBか調べる
               var height = IDM.DB_ICON_SIZE;
@@ -721,7 +725,7 @@ $(function(){
                     var classes = this.className.split(" ");
                     for (var i = 0; i < classes.length; i++) {
                       var className = classes[i];
-                      if (className.charAt(0) == "r" && $.inArray(className, routeClasses) == -1) {
+                      if (className.charAt(0) === "r" && $.inArray(className, routeClasses) === -1) {
                         routeClasses.push(className);
                       }
                     }
@@ -761,7 +765,7 @@ $(function(){
               // 上のリザルトと同じDBであれば、スキップする
               if (r > 0) {
                 var prevRoute = IDM.routes[r - 1];
-                if (prevRoute.length == route.length && fromDB == prevRoute[c] && toDB == prevRoute[c + 1]) {
+                if (prevRoute.length === route.length && fromDB === prevRoute[c] && toDB === prevRoute[c + 1]) {
                   continue;
                 }
               }
@@ -769,7 +773,7 @@ $(function(){
               var routeClass = "r" + r;
               for (var r2 = r + 1; r2 < IDM.routes.length; r2++) {
                 var nextRoute = IDM.routes[r2];
-                if (!(route.length == nextRoute.length && fromDB == nextRoute[c] && toDB == nextRoute[c + 1])) {
+                if (!(route.length === nextRoute.length && fromDB === nextRoute[c] && toDB === nextRoute[c + 1])) {
                   break;
                 } else {
                   routeClass += " r" + r2;
@@ -831,7 +835,7 @@ $(function(){
           IDM.$resultsContainer.append(html);
 
           // ルートがひとつだけの場合、ルートの確定
-          if (IDM.routes.length == 1) {
+          if (IDM.routes.length === 1) {
             $(".r0", IDM.$resultsContainer).addClass(IDM.CLASSES.SELECTED);
             $(".node", IDM.$dbIconsContainer).off(".selecteingRoute");
             IDM.deleteResults(true);
@@ -870,7 +874,7 @@ $(function(){
               sortedIcons = [],
               $ths = $("th", IDM.$mappedIDsHead),
               $icons,
-              condition = IDM.mode == IDM.MODE_RESOLVER ? "[data-step='" + (route.length - 1) + "']" : "";
+              condition = IDM.mode === IDM.MODE_RESOLVER ? "[data-step='" + (route.length - 1) + "']" : "";
           $icons = $(".node." + IDM.CLASSES.SELECTED + condition, IDM.$resultsContainer).clone().appendTo(IDM.$hoveringRoute);
           $icons = $(".node." + IDM.CLASSES.SELECTED, IDM.$hoveringRoute);
           for (var i = 0; i < $icons.length; i++) {
@@ -883,7 +887,7 @@ $(function(){
                 iconPosition = $icon.position(),
                 $th = $($ths.get(thIndex++)),
                 thOffset = $th.offset();
-            if (IDM.mode == IDM.MODE_RESOLVER && i != (sortedIcons.length - 1)) continue;
+            if (IDM.mode === IDM.MODE_RESOLVER && i != (sortedIcons.length - 1)) continue;
             $("p", $icon).remove();
             $icon
               .css({ zIndex: 100 })
@@ -892,7 +896,7 @@ $(function(){
               }, {
                 duration: IDM.STEP_DURATION,
                 step: function(now, tween){
-                  if (tween.prop == "left") {
+                  if (tween.prop === "left") {
                     var $this = $(this),
                         ratio = (tween.now - tween.start) / (tween.end - tween.start),
                         radian = ratio * Math.PI,
@@ -959,7 +963,7 @@ $(function(){
           // 行（横）
           var left = param.colUnit * param.colIndex;
           var width = param.colUnit * param.colOffset;
-          borderClass += (param.colIndex == param.colNode ? "left " : "") + ((param.colIndex + param.colOffset + 1) == param.colLength ? "right " : "");
+          borderClass += (param.colIndex === param.colNode ? "left " : "") + ((param.colIndex + param.colOffset + 1) === param.colLength ? "right " : "");
           // 列（縦）
           var top = IDM.ROUTE_HEIGHT * param.rowIndex + param.topOffset;
           var height = IDM.ROUTE_HEIGHT * param.rowOffset;
@@ -985,9 +989,9 @@ $(function(){
         IDM.searchRoute = function(currentRoute, toDB, availableRoutes) {
           //var currentCategory = currentRoute[currentRoute.length - 1]; // カテゴリノードの場合
           var currentDB = currentRoute[currentRoute.length - 1];
-          //if (currentCategory == IDM.DBs[toDB].category) { // カテゴリノードの場合
-          //if (currentCategory == toDB) { // カテゴリノードの場合
-          if (currentDB == toDB) { // 確立したルート
+          //if (currentCategory === IDM.DBs[toDB].category) { // カテゴリノードの場合
+          //if (currentCategory === toDB) { // カテゴリノードの場合
+          if (currentDB === toDB) { // 確立したルート
             availableRoutes.push(currentRoute);
           } else {
             //var links = IDM.CATEGORY[currentCategory].links; // カテゴリノードの場合
@@ -996,15 +1000,15 @@ $(function(){
               //var nextCategory = links[i]; // カテゴリノードの場合
               var nextDB = links[i];
               // 同カテゴリであればパス
-              if (currentRoute.length > 0 && IDM.DBs[currentDB].category == IDM.DBs[nextDB].category) {
+              if (currentRoute.length > 0 && IDM.DBs[currentDB].category === IDM.DBs[nextDB].category) {
                 continue;
               }
               // すでに通過したDBでなければ、再帰的に検索
               var repeated = false;
               var sameCategory = false;
               for (var j = 0; j < currentRoute.length; j++) {
-                //if (currentRoute[j] == nextCategory) repeated = true; // カテゴリノードの場合
-                if (currentRoute[j] == nextDB) repeated = true;
+                //if (currentRoute[j] === nextCategory) repeated = true; // カテゴリノードの場合
+                if (currentRoute[j] === nextDB) repeated = true;
               }
               if (!repeated) {
                 if (currentRoute.length < IDM.step) {
@@ -1026,7 +1030,7 @@ $(function(){
           for (var i = 0; i < IDM.routes.length; i++) {
             var route = IDM.routes[i];
             if ((route.length - 1) > step) {
-              if (route[step] == db) {
+              if (route[step] === db) {
                 filteredRoutes.push(route);
               }
             }
@@ -1099,10 +1103,10 @@ $(function(){
           IDM.mode = $mappingsContainer.data("mappingMode");
           IDM.step = 4;
           switch (true) {
-            case (IDM.mode == IDM.MODE_CONVERTER):
+            case (IDM.mode === IDM.MODE_CONVERTER):
               IDM.step = IDM.CONVERTER_DEFAULT_STEP;
               break;
-            case (IDM.mode == IDM.MODE_RESOLVER):
+            case (IDM.mode === IDM.MODE_RESOLVER):
               IDM.step = IDM.RESOLVER_DEFAULT_STEP;
               break;
           }
@@ -1110,7 +1114,7 @@ $(function(){
           // GUI の生成: DBセレクタ
           var html = "";
           for (var l = 0; l < LOCATIVE.length; l++) {
-            if (IDM.mode == IDM.MODE_RESOLVER && l == 1) break;
+            if (IDM.mode === IDM.MODE_RESOLVER && l === 1) break;
             html += "\
             <div id='mapping-" + LOCATIVE[l] + "-db' class='db-selector'>\
             <div class='icon' data-locative='" + LOCATIVE[l] + "'>\
@@ -1226,15 +1230,17 @@ $(function(){
             // 値のチェック
             var valid = true;
             for (var i = 0; i < route.length; i++) {
-              if (!IDM.DBs[route[i]]) invalid = false;
+              if (!IDM.DBs[route[i]]) {
+                valid = false;
+              }
             }
             if (valid) {
             switch (true) {
-              case (IDM.mode == IDM.MODE_CONVERTER):
+              case (IDM.mode === IDM.MODE_CONVERTER):
                 IDM.selectDB("from", route[0], route);
                 IDM.selectDB("to", route[route.length - 1], route);
               break;
-              case (IDM.mode == IDM.MODE_RESOLVER):
+              case (IDM.mode === IDM.MODE_RESOLVER):
               {
                 IDM.selectDB("from", route[0], route);
               }
@@ -1250,8 +1256,7 @@ $(function(){
           IDM.sampleMode = true;
         } else {
           IDM.sampleMode = false;
-          $(this).removeClass('sample');
-          $('#add-new-id p#add-new-id-description').text(' + Add new ID');
+          $('div#add-new-id').removeClass('sample');
         }
       });
 

@@ -1,6 +1,6 @@
 sampleIds = <%=raw @sample_ids.to_json %>
 
-$('textarea#identifiers').val(sampleIds.join("\n")).addClass 'sample'
-$('#add-new-id p#add-new-id-description').text 'Replace with your identifiers'
+$('textarea#identifiers').val(sampleIds.join("\n"))
+$('div#add-new-id').addClass 'sample'
 
 `<%=raw render(template: 'identifiers/convert') %>`
