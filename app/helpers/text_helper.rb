@@ -33,11 +33,7 @@ module TextHelper
 
   def stanza_collection
     stanza_ary = Stanza.all.sort_by {|s| s["name"] }.map {|s|
-      if TextSearch.searchable?(s['id'])
-        [s['name'], s['id']]
-      else
-        [s['name'], s['id'], {disabled: 'disabled'}]
-      end
+      TextSearch.searchable?(s['id']) ?  [s['name'], s['id']] : [s['name'], s['id'], {disabled: 'disabled'}]
     }
 
     [
