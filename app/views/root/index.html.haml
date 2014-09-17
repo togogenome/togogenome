@@ -68,10 +68,11 @@
         var _target = self.formSet.target;
         if (clear_on) {
           _target.addClass('facet-selected').attr('readonly', true);
-          self.formSet.clear.css('display', '').parent().addClass('input-prepend');
+          self.formSet.clear.css('display', '').addClass('facet-selected');
         } else {
           _target.removeClass('facet-selected').attr('readonly', false);
-          self.formSet.clear.css('display', 'none').parent().removeClass('input-prepend');
+          self.formSet.clear.css('display', 'none').removeClass('facet-selected');
+
         }
       }
 

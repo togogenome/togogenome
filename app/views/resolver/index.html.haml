@@ -13,12 +13,10 @@
           #mappings-selector-container
           #mappings-id-container
             %h2
-              From identifiers
+              Identifiers
             #add-new-id
-              %p#add-new-id-description + Add new ID
               %textarea#identifiers{name:'identifiers', required: 'required'}
-              .text-center.padding
-                = button_tag 'Execute', {id: 'execute', class: "tg-button"}
+              = button_tag 'Execute', {id: 'execute', class: "tg-button"}
               #loading
 
             %table#mapped-ids

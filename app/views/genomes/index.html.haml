@@ -13,7 +13,7 @@
         .inner
           = form_tag(search_genomes_path, method: :get, class: 'form-search') do
             = search_field_tag 'sequence', params[:sequence], class: 'input-xlarge'
-            = button_tag 'search', class: 'tg-button'
+            = button_tag 'Search', class: 'tg-button'
           .small-note
             %p Search genomic sequences by an arbitrary sub-string of any DNA sequence fragments (e.g., "TGGAATTGTGAGCGGATAACAATT" for <i>lac</i> operator reported by <a href="http://www.ncbi.nlm.nih.gov/pubmed/4587255" target="_blank">Gilbert W and Maxam A, 1973</a>)
 
