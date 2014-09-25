@@ -1,6 +1,5 @@
 module TextHelper
-  def link_to_stanza_list(stanza, q)
-    query = URI.encode_www_form_component(q)
+  def link_to_stanza_list(stanza, query)
     id, name, count, enabled = stanza.values_at(:stanza_id, :stanza_name, :count, :enabled)
     label = enabled ? "#{name} (#{count})" : name
 
