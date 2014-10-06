@@ -7,3 +7,4 @@ $('#message').html """
 <% end %>
 
 $('table#mapped-ids tbody').html "<%= j(render 'db_link_table') %>"
+$('span#download-area').html "<%= j(render 'download_button') %>"

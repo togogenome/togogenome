@@ -14,6 +14,7 @@ TogoGenome::Application.routes.draw do
   get '/resolver', as: :resolver, to: 'resolver#index'
   get '/identifiers/convert'
   get '/identifiers/teach'
+  get '/identifiers/download'
 
   # 複数形にしたい所だけど、利用者にはこちらの方が分かりやすいらしい
   resources :gene,        only: %w(show), constraints: { id: /[\w\-\:\.\/]+/ }

@@ -1,0 +1,6 @@
+limit = 100
+(0..@count).step(limit) do |offset|
+  Identifier.convert(@identifiers, @databases, limit, offset).each do |line|
+    csv << line.values
+  end
+end

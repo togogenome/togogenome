@@ -17,7 +17,9 @@ class Identifier
     def convert(identifiers, db_names, limit=100, offset=0)
       sparql = <<-SPARQL.strip_heredoc
         DEFINE sql:select-option "order"
+
         #{build_convert_sparql(identifiers, db_names)}
+
         LIMIT #{limit}
         OFFSET #{offset}
       SPARQL
