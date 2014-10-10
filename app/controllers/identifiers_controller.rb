@@ -12,6 +12,7 @@ class IdentifiersController < ApplicationController
       format.csv do
         @database_labels = databases.map {|db| Database.find(db)['label'] }
         @filename = 'identifiers.csv'
+        @streaming = true
       end
     end
   end
