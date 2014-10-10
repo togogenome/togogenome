@@ -12,6 +12,7 @@ class IdentifiersController < ApplicationController
 
   def download(identifiers, databases)
     @identifiers, @databases = identifiers, databases
-    @count = Identifier.count(identifiers, databases)
+    @database_labels = databases.map {|db| Database.find(db)['label'] }
+    @count  = Identifier.count(identifiers, databases)
   end
 end
