@@ -8,4 +8,4 @@ $('#message').html """
 
 $('table#mapped-ids tbody').html "<%= j(render 'db_link_table') %>"
 $('span#download-area').html "<%= j(render 'download_button') %>"
-$('div#results_info').html "<%= hit_count_message(@count) %>"
+$('div#results_info').html "<%= hit_count_message(@display_count, @hits_count) %>"
