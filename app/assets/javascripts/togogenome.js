@@ -264,7 +264,9 @@ $(function(){
               break;
           }
           // テーブルの初期化
-          $("table#mapped-ids tbody").html('');
+          $('table#mapped-ids tbody').html('');
+          $('span#download-area').html('');
+          $('div#results_info').html('');
           IDM.selectRoute([]);
         }
 
