@@ -2,10 +2,10 @@ class IdentifiersController < ApplicationController
   def convert(identifiers, databases)
     @identifiers, @databases = identifiers, databases
     @hits_count    = Identifier.count(identifiers, databases)
-    @display_count = (@hits_count > 100) ? 100 : @hits_count
 
     respond_to do |format|
       format.js do
+        @display_count = [@hits_count, 100].min
         @db_links = Identifier.convert(identifiers, databases)
       end
 
