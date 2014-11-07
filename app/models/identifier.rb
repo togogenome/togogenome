@@ -2,33 +2,37 @@ class Identifier
   include Queryable
 
   class << self
-    def convert(identifiers, db_names)
-      sparql_vars = db_names.count.times.map {|i| "?node#{i}" }.join(' ')
-
-      input_database, *convert_databases = db_names
-      values = identifiers.map {|identifier| "<http://identifiers.org/#{input_database}/#{identifier}>" }.join(' ')
-
+    def count(identifiers, db_names)
       sparql = <<-SPARQL.strip_heredoc
         DEFINE sql:select-option "order"
-        SELECT DISTINCT #{sparql_vars}
-        FROM <http://togogenome.org/graph/edgestore/>
+        SELECT COUNT (?node0) AS ?hits_count
         WHERE {
-          VALUES ?node0 { #{values} }
-          #{mapping(convert_databases)}
-       }
+          #{build_convert_sparql(identifiers, db_names)}
+        }
+      SPARQL
+
+      query(sparql).first[:hits_count].to_i
+    end
+
+    def convert(identifiers, db_names, limit=100, offset=0)
+      sparql = <<-SPARQL.strip_heredoc
+        DEFINE sql:select-option "order"
+
+        #{build_convert_sparql(identifiers, db_names)}
+
+        LIMIT #{limit}
+        OFFSET #{offset}
       SPARQL
 
       query(sparql)
     end
 
     def sample(db_names)
-      sparql_vars = db_names.count.times.map {|i| "?node#{i}" }.join(' ')
-
       input_database, *convert_databases = db_names
 
       sparql = <<-SPARQL.strip_heredoc
         DEFINE sql:select-option "order"
-        SELECT DISTINCT #{sparql_vars}
+        SELECT DISTINCT #{select_target(db_names)}
         FROM <http://togogenome.org/graph/edgestore/>
         WHERE {
           ?node0 rdf:type <http://identifiers.org/#{input_database}/> .
@@ -41,6 +45,24 @@ class Identifier
     end
 
     private
+
+    def build_convert_sparql(identifiers, db_names)
+      input_database, *convert_databases = db_names
+      values = identifiers.map {|identifier| "<http://identifiers.org/#{input_database}/#{identifier}>" }.join(' ')
+
+      <<-SPARQL.strip_heredoc
+        SELECT DISTINCT #{select_target(db_names)}
+        FROM <http://togogenome.org/graph/edgestore/>
+        WHERE {
+          VALUES ?node0 { #{values} }
+          #{mapping(convert_databases)}
+        }
+      SPARQL
+    end
+
+    def select_target(db_names)
+      db_names.count.times.map {|i| "?node#{i}" }.join(' ')
+    end
 
     def mapping(databases)
       databases.map.with_index {|db_name, i|

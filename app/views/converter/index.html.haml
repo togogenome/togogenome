@@ -15,10 +15,13 @@
           #mappings-id-container
             %h2
               Identifiers
+              %span#download-area
             #add-new-id
               %textarea#identifiers{name:'identifiers', required: 'required'}
               = button_tag 'Execute', {id: 'execute', class: "tg-button"}
               #loading
+
+            #results_info
 
             %table#mapped-ids
               %thead
