@@ -1,9 +1,9 @@
-module TextHelper
+module StanzaViewHelper
   def link_to_stanza_list(stanza, query)
     id, name, count, enabled = stanza.values_at(:stanza_id, :stanza_name, :count, :enabled)
     label = enabled ? "#{name} (#{count})" : name
 
-    link_to_if enabled, label, search_stanza_text_index_path(q: query, category: id)
+    link_to_if enabled, label, search_text_path(q: query, category: id)
   end
 
   def link_to_report_page(stanza)

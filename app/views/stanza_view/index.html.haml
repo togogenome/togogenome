@@ -11,7 +11,7 @@
     #methods
       .method-container#textsearch-container
         .inner
-          = form_tag(search_text_index_path, method: :get, class: 'form-search') do
+          = form_tag(search_text_path, method: :get, class: 'form-search') do
             .form-line
               = select_tag :category, options_for_select(stanza_collection, params[:category])
               %span

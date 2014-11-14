@@ -4,7 +4,7 @@ class TextSearch
   PAGINATE = {per_page: 10}
 
   class << self
-    def search(q, category='all')
+    def search_by_category(q, category='all')
       # XXX nanostanza は検索してない
       search_stanza_ids(category).map {|id|
         search_by_stanza_id(q, id)
@@ -56,7 +56,7 @@ class TextSearch
       when 'environment_reports'
         Stanza.env_ids
       else
-        [key]
+        raise 'must not happen'
       end
     end
   end

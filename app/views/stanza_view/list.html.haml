@@ -11,7 +11,7 @@
     #methods
       .method-container#textsearch-container
         .inner
-          = form_tag(search_stanza_text_index_path, method: :get, class: 'form-search') do
+          = form_tag(search_text_path, method: :get, class: 'form-search') do
             .form-line
               = select_tag :category, options_for_select(stanza_collection, params[:category])
               %span
@@ -85,7 +85,7 @@
                   var q = "#{URI.encode_www_form_component(@q)}";
                   var category = "#{params[:category]}";
                   var nextPage = page + 1;
-                  location.href = "/text/search_stanza?q=" + q + "&category=" + category + "&page=" + nextPage;
+                  location.href = "/text/search?q=" + q + "&category=" + category + "&page=" + nextPage;
                 });
               });
 
