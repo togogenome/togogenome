@@ -5,20 +5,18 @@ class TextController < ApplicationController
   def index
   end
 
-  def search(q, target)
-    begin
-      @q = q
-      @stanzas = TextSearch.search(q, target)
-    rescue => ex
-      @error = ex
-    ensure
-      render 'index'
-    end
+  def search(q, category)
+    @q = q
+    @stanzas = TextSearch.search(q, category)
+  rescue => ex
+    @error = ex
+  ensure
+    render 'index'
   end
 
-  def search_stanza(q, target)
+  def search_stanza(q, category)
     @q = q
-    result = TextSearch.search_by_stanza_id(q, target)
+    result = TextSearch.search_by_stanza_id(q, category)
 
     stanzas = result['urls'].map {|url|
       {
@@ -34,14 +32,14 @@ class TextController < ApplicationController
   private
 
   def all_or_reports?
-      %w(all gene_reports organism_reports environment_reports).include? params[:target]
+      %w(all gene_reports organism_reports environment_reports).include? params[:category]
   end
 
   def redirect_to_search_stanza
-    redirect_to action: :search_stanza, target: params[:target], q: params[:q]
+    redirect_to action: :search_stanza, category: params[:category], q: params[:q]
   end
 
   def redirect_to_search
-    redirect_to action: :search, target: params[:target], q: params[:q]
+    redirect_to action: :search, category: params[:category], q: params[:q]
   end
 end

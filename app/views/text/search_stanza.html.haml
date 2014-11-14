@@ -13,7 +13,7 @@
         .inner
           = form_tag(search_stanza_text_index_path, method: :get, class: 'form-search') do
             .form-line
-              = select_tag :target, options_for_select(stanza_collection, params[:target])
+              = select_tag :category, options_for_select(stanza_collection, params[:category])
               %span
                 = search_field_tag 'q', params[:q], class: 'input-xlarge'
               = button_tag 'Search', class: 'tg-button'
@@ -83,9 +83,9 @@
 
                   // 検索をリクエスト
                   var q = "#{URI.encode_www_form_component(@q)}";
-                  var target = "#{params[:target]}";
+                  var category = "#{params[:category]}";
                   var nextPage = page + 1;
-                  location.href = "/text/search_stanza?q=" + q + "&target=" + target + "&page=" + nextPage;
+                  location.href = "/text/search_stanza?q=" + q + "&category=" + category + "&page=" + nextPage;
                 });
               });
 

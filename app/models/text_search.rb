@@ -1,19 +1,12 @@
 require 'open-uri'
 
 class TextSearch
-  MULTIPLE_TARGET = [
-    {label: 'All', key: 'all'},
-    {label: 'Genes', key: 'gene_reports'},
-    {label: 'Organisms', key: 'organism_reports'},
-    {label: 'Environments', key: 'environment_reports'}
-  ]
-
   PAGINATE = {per_page: 10}
 
   class << self
-    def search(q, target='all')
+    def search(q, category='all')
       # XXX nanostanza は検索してない
-      search_stanza_ids(target).map {|id|
+      search_stanza_ids(category).map {|id|
         search_by_stanza_id(q, id)
       }.group_by {|e|
         e[:report_type]
@@ -37,6 +30,9 @@ class TextSearch
     end
 
     def searchable?(stanza_id)
+      # 検索可能なスタンザか否かを返す。
+      # プロバイダーに所属する各スタンザが、テキスト検索に対応しているか否かを取得する仕組みが無いため
+      # ハードコードしている
       %w(organism_names organism_phenotype).include?(stanza_id)
     end
 
