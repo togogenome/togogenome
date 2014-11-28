@@ -1,4 +1,4 @@
-class StanzaViewController < ApplicationController
+class StanzaSearchController < ApplicationController
   def index
   end
 

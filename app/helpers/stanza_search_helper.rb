@@ -1,4 +1,4 @@
-module StanzaViewHelper
+module StanzaSearchHelper
   def link_to_stanza_list(stanza, query)
     id, name, count, enabled = stanza.values_at(:stanza_id, :stanza_name, :count, :enabled)
     label = enabled ? "#{name} (#{count})" : name
