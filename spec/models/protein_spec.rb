@@ -7,7 +7,7 @@ describe Protein do
     context "複数件取得できる検索を実行" do
       context "初期表示" do
         subject {
-          Protein.search('', '', '', '', '', '')
+          Protein.search()
         }
 
         it {
@@ -24,7 +24,16 @@ describe Protein do
         # Phenotype:         "Motile"  (http://purl.jp/bio/01/mpo#MPO_02001)
 
         subject {
-          Protein.search('http://purl.jp/bio/11/meo/MEO_0000038', 'http://identifiers.org/taxonomy/1161', 'http://purl.obolibrary.org/obo/GO_0034641', 'http://purl.obolibrary.org/obo/GO_0046872', 'http://purl.obolibrary.org/obo/GO_0005737', 'http://purl.jp/bio/01/mpo#MPO_02001')
+          args = {
+            meo_id: 'http://purl.jp/bio/11/meo/MEO_0000038',
+            tax_id: 'http://identifiers.org/taxonomy/1161',
+            bp_id: 'http://purl.obolibrary.org/obo/GO_0034641',
+            mf_id: 'http://purl.obolibrary.org/obo/GO_0046872',
+            cc_id: 'http://purl.obolibrary.org/obo/GO_0005737',
+            mpo_id: 'http://purl.jp/bio/01/mpo#MPO_02001'
+          }
+
+          Protein.search(args)
         }
 
         it {
@@ -41,7 +50,16 @@ describe Protein do
         # Phenotype:         "Motility"
 
         subject {
-          Protein.search('http://purl.jp/bio/11/meo/MEO_0000004', 'http://identifiers.org/taxonomy/2', 'http://purl.obolibrary.org/obo/GO_0065007', 'http://purl.obolibrary.org/obo/GO_0005488', 'http://purl.obolibrary.org/obo/GO_0044464', 'http://purl.jp/bio/01/mpo#MPO_02000')
+          args = {
+            meo_id: 'http://purl.jp/bio/11/meo/MEO_0000004',
+            tax_id: 'http://identifiers.org/taxonomy/2',
+            bp_id: 'http://purl.obolibrary.org/obo/GO_0065007',
+            mf_id: 'http://purl.obolibrary.org/obo/GO_0005488',
+            cc_id: 'http://purl.obolibrary.org/obo/GO_0044464',
+            mpo_id: 'http://purl.jp/bio/01/mpo#MPO_02000'
+          }
+
+          Protein.search(args)
         }
 
         it {
@@ -58,7 +76,13 @@ describe Protein do
         # Phenotype:         "Motility"
 
         subject {
-          Protein.search('http://purl.jp/bio/11/meo/MEO_0000004', 'http://identifiers.org/taxonomy/2', '', '', '', 'http://purl.jp/bio/01/mpo#MPO_02000')
+          args = {
+            meo_id: 'http://purl.jp/bio/11/meo/MEO_0000004',
+            tax_id: 'http://identifiers.org/taxonomy/2',
+            mpo_id: 'http://purl.jp/bio/01/mpo#MPO_02000'
+          }
+
+          Protein.search(args)
         }
 
         it {
@@ -75,7 +99,12 @@ describe Protein do
         # Phenotype:         "Motility"
 
         subject {
-          Protein.search('http://purl.jp/bio/11/meo/MEO_0000004', '', '', '', '', 'http://purl.jp/bio/01/mpo#MPO_02000')
+          args = {
+            meo_id: 'http://purl.jp/bio/11/meo/MEO_0000004',
+            mpo_id: 'http://purl.jp/bio/01/mpo#MPO_02000'
+          }
+
+          Protein.search(args)
         }
 
         it {
@@ -89,7 +118,7 @@ describe Protein do
         # CellularComponent: "cell junction"  (http://purl.obolibrary.org/obo/GO_0030054)
 
         subject {
-          Protein.search('', '', '', '', 'http://purl.obolibrary.org/obo/GO_0030054', '')
+          Protein.search(cc_id: 'http://purl.obolibrary.org/obo/GO_0030054')
         }
 
         it { should be_empty }
