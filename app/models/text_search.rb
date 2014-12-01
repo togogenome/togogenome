@@ -56,7 +56,7 @@ class TextSearch
       when 'environment_reports'
         Stanza.env_ids
       else
-        raise 'must not happen'
+        []
       end
     end
   end

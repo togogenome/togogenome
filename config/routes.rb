@@ -16,7 +16,7 @@ TogoGenome::Application.routes.draw do
   get '/identifiers/teach'
 
   get '/text', as: :text_index, to: 'stanza_search#index'
-  get '/text/search', as: :search_text, to: 'stanza_search#search'
+  get '/text/search', as: :text_search, to: 'stanza_search#show'
 
   # 複数形にしたい所だけど、利用者にはこちらの方が分かりやすいらしい
   resources :gene,        only: %w(show), constraints: { id: /[\w\-\:\.\/]+/ }

@@ -3,7 +3,7 @@ module StanzaSearchHelper
     id, name, count, enabled = stanza.values_at(:stanza_id, :stanza_name, :count, :enabled)
     label = enabled ? "#{name} (#{count})" : name
 
-    link_to_if enabled, label, search_text_path(q: query, category: id)
+    link_to_if enabled, label, text_search_path(q: query, stanza_id: id)
   end
 
   def link_to_report_page(stanza)
@@ -32,14 +32,14 @@ module StanzaSearchHelper
 
   def stanza_collection
     stanza_ary = Stanza.all.sort_by {|s| s["name"] }.map {|s|
-      TextSearch.searchable?(s['id']) ?  [s['name'], s['id']] : [s['name'], s['id'], {disabled: 'disabled'}]
+      TextSearch.searchable?(s['id']) ?  [s['name'], s['id'], {'data-search-target' => 'stanza'}] : [s['name'], s['id'], {disabled: 'disabled', 'data-search-target' => 'stanza'}]
     }
 
     [
-      ['All', 'all'],
-      ['Genes', 'gene_reports'],
-      ['Organisms', 'organism_reports'],
-      ['Environments', 'environment_reports'],
+      ['All', 'all', {'data-search-target' => 'category'}],
+      ['Genes', 'gene_reports', {'data-search-target' => 'category'}],
+      ['Organisms', 'organism_reports', {'data-search-target' => 'category'}],
+      ['Environments', 'environment_reports', {'data-search-target' => 'category'}],
       ['--------------', {disabled: 'disabled'}]
     ] + stanza_ary
   end

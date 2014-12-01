@@ -11,14 +11,7 @@
     #methods
       .method-container#textsearch-container
         .inner
-          = form_tag(search_text_path, method: :get, class: 'form-search') do
-            .form-line
-              = select_tag :category, options_for_select(stanza_collection, params[:category])
-              %span
-                = search_field_tag 'q', params[:q], class: 'input-xlarge'
-              = button_tag 'Search', class: 'tg-button'
-          .small-note
-            %p Search Text (e.g., "PCC7120" )
+          = render 'form', query: params[:q], selected: params[:stanza_id]
 
   #stanzas.row-fluid
     - if @stanzas
