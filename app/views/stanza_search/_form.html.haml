@@ -1,20 +1,4 @@
-:coffeescript
-  $ ->
-    $('form').on "submit", (e) ->
-      e.preventDefault()
-
-      selectTag    = $('select#category')
-      searchTarget = selectTag.find(':selected').data('searchTarget')
-
-      switch searchTarget
-        when 'category'
-          @.action = "#{text_index_path}"
-          selectTag.attr('name', 'category')
-        when 'stanza'
-          @.action = "#{text_search_path}"
-          selectTag.attr('name', 'stanza_id')
-
-      @.submit()
+= javascript_include_tag 'stanza_search'
 
 = form_tag(text_search_path, method: :get, class: 'form-search') do
   .form-line
