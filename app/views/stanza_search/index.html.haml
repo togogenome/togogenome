@@ -25,7 +25,7 @@
           %td Environments
           %td Phenotypes
         %tr
-          %td= render partial: 'count_list', locals: {stanzas: @stanzas['genes']}
-          %td= render partial: 'count_list', locals: {stanzas: @stanzas['organisms']}
-          %td= render partial: 'count_list', locals: {stanzas: @stanzas['environments']}
-          %td= render partial: 'count_list', locals: {stanzas: @stanzas['phenotypes']}
+          %td= render 'count_list', query: params[:q], stanzas: @stanzas['genes']
+          %td= render 'count_list', query: params[:q], stanzas: @stanzas['organisms']
+          %td= render 'count_list', query: params[:q], stanzas: @stanzas['environments']
+          %td= render 'count_list', query: params[:q], stanzas: @stanzas['phenotypes']

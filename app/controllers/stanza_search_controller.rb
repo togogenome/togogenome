@@ -1,13 +1,11 @@
 class StanzaSearchController < ApplicationController
   def index(q, category)
-    @q = q
-    @stanzas = StanzaSearch.search_by_category(@q, category)
+    @stanzas = StanzaSearch.search_by_category(q, category)
   rescue => ex
     @error = ex
   end
 
   def show(q, stanza_id)
-    @q = q
     result = StanzaSearch.search_by_stanza_id(q, stanza_id)
 
     stanzas = result['urls'].map {|url|
