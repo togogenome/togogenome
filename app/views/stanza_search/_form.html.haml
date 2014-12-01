@@ -1,0 +1,10 @@
+= javascript_include_tag 'stanza_search'
+
+= form_tag(text_search_path, method: :get, class: 'form-search') do
+  .form-line
+    = select_tag :category, options_for_select(stanza_collection, selected)
+    %span
+      = search_field_tag 'q', query, class: 'input-xlarge'
+    = button_tag 'Search', class: 'tg-button'
+.small-note
+  %p Search Text (e.g., "PCC7120" )

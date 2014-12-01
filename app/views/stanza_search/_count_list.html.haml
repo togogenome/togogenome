@@ -1,4 +1,4 @@
 - if stanzas
   %ul
     - stanzas.sort_by {|s| s['stanza_name'] }.each do |stanza|
-      %li= link_to_stanza_list(stanza, @q)
+      %li= link_to_stanza_list(stanza, query)

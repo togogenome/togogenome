@@ -11,14 +11,7 @@
     #methods
       .method-container#textsearch-container
         .inner
-          = form_tag(search_stanza_text_index_path, method: :get, class: 'form-search') do
-            .form-line
-              = select_tag :category, options_for_select(stanza_collection, params[:category])
-              %span
-                = search_field_tag 'q', params[:q], class: 'input-xlarge'
-              = button_tag 'Search', class: 'tg-button'
-          .small-note
-            %p Search Text (e.g., "PCC7120" )
+          = render 'form', query: params[:q], selected: params[:stanza_id]
 
   #stanzas.row-fluid
     - if @stanzas
@@ -82,10 +75,10 @@
                   $(window).off("mousemove.paginationSlider mouseup.paginationSlider");
 
                   // 検索をリクエスト
-                  var q = "#{URI.encode_www_form_component(@q)}";
-                  var category = "#{params[:category]}";
+                  var q = "#{URI.encode_www_form_component(params[:q])}";
+                  var stanza_id = "#{params[:stanza_id]}";
                   var nextPage = page + 1;
-                  location.href = "/text/search_stanza?q=" + q + "&category=" + category + "&page=" + nextPage;
+                  location.href = "/text/search?q=" + q + "&stanza_id=" + stanza_id + "&page=" + nextPage;
                 });
               });
 
@@ -152,7 +145,7 @@
             var PAGENATION_MAX = 5, PAGENATION_MARGIN = 2;
             // 一度に表示されるレコード数
             //var iLength = this.fnPagingInfo().iLength;
-            var iLength = parseInt("#{TextSearch::PAGINATE[:per_page]}");
+            var iLength = parseInt("#{StanzaSearch::PAGINATE[:per_page]}");
             // 総レコード数
             paginationSlider.totalDisplayRecords = parseInt("#{@stanzas.total_count}");
             // 総ページ数
