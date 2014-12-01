@@ -1,6 +1,6 @@
 require 'open-uri'
 
-class TextSearch
+class StanzaSearch
   PAGINATE = {per_page: 10}
 
   class << self

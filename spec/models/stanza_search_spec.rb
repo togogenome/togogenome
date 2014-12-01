@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe TextSearch do
+describe StanzaSearch do
   describe 'self.search_by_stanza_id' do
     context "'Organism name' スタンザに対して 'PCC71' でテキスト検索する" do
       subject {
-        TextSearch.search_by_stanza_id('PCC71', 'organism_names')
+        StanzaSearch.search_by_stanza_id('PCC71', 'organism_names')
       }
 
       it { should include(stanza_id: 'organism_names') }

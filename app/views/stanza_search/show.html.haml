@@ -145,7 +145,7 @@
             var PAGENATION_MAX = 5, PAGENATION_MARGIN = 2;
             // 一度に表示されるレコード数
             //var iLength = this.fnPagingInfo().iLength;
-            var iLength = parseInt("#{TextSearch::PAGINATE[:per_page]}");
+            var iLength = parseInt("#{StanzaSearch::PAGINATE[:per_page]}");
             // 総レコード数
             paginationSlider.totalDisplayRecords = parseInt("#{@stanzas.total_count}");
             // 総ページ数

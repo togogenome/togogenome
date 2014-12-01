@@ -32,20 +32,20 @@ module StanzaSearchHelper
 
   def stanza_collection
     stanza_ary = Stanza.all.sort_by {|s| s["name"] }.map {|s|
-      TextSearch.searchable?(s['id']) ?  [s['name'], s['id'], {'data-search-target' => 'stanza'}] : [s['name'], s['id'], {disabled: 'disabled', 'data-search-target' => 'stanza'}]
+      [s['name'], s['id']] << (StanzaSearch.searchable?(s['id']) ? {'data-search-target' => 'stanza'} : {disabled: 'disabled', 'data-search-target' => 'stanza'} )
     }
 
     [
-      ['All', 'all', {'data-search-target' => 'category'}],
-      ['Genes', 'gene_reports', {'data-search-target' => 'category'}],
-      ['Organisms', 'organism_reports', {'data-search-target' => 'category'}],
+      ['All',          'all',                 {'data-search-target' => 'category'}],
+      ['Genes',        'gene_reports',        {'data-search-target' => 'category'}],
+      ['Organisms',    'organism_reports',    {'data-search-target' => 'category'}],
       ['Environments', 'environment_reports', {'data-search-target' => 'category'}],
       ['--------------', {disabled: 'disabled'}]
     ] + stanza_ary
   end
 
   def textsearch_info(stanzas)
-    start_page = (stanzas.current_page - 1) * TextSearch::PAGINATE[:per_page] + 1
+    start_page = (stanzas.current_page - 1) * StanzaSearch::PAGINATE[:per_page] + 1
     end_page   = start_page + stanzas.count - 1
 
     "Showing #{start_page} to #{end_page} of #{stanzas.total_count} stanzas"

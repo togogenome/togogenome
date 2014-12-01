@@ -1,14 +1,14 @@
 class StanzaSearchController < ApplicationController
   def index(q, category)
     @q = q
-    @stanzas = TextSearch.search_by_category(@q, category)
+    @stanzas = StanzaSearch.search_by_category(@q, category)
   rescue => ex
     @error = ex
   end
 
   def show(q, stanza_id)
     @q = q
-    result = TextSearch.search_by_stanza_id(q, stanza_id)
+    result = StanzaSearch.search_by_stanza_id(q, stanza_id)
 
     stanzas = result['urls'].map {|url|
       {
@@ -18,6 +18,6 @@ class StanzaSearchController < ApplicationController
       }
     }
 
-    @stanzas = Kaminari.paginate_array(stanzas).page(params[:page]).per(TextSearch::PAGINATE[:per_page])
+    @stanzas = Kaminari.paginate_array(stanzas).page(params[:page]).per(StanzaSearch::PAGINATE[:per_page])
   end
 end
