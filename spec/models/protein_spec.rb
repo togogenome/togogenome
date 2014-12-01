@@ -7,7 +7,7 @@ describe Protein do
     context "複数件取得できる検索を実行" do
       context "初期表示" do
         subject {
-          Protein.search('', '', '', '', '', '')
+          Protein.search()
         }
 
         it {
@@ -24,11 +24,20 @@ describe Protein do
         # Phenotype:         "Motile"  (http://purl.jp/bio/01/mpo#MPO_02001)
 
         subject {
-          Protein.search('http://purl.jp/bio/11/meo/MEO_0000038', 'http://identifiers.org/taxonomy/1161', 'http://purl.obolibrary.org/obo/GO_0034641', 'http://purl.obolibrary.org/obo/GO_0046872', 'http://purl.obolibrary.org/obo/GO_0005737', 'http://purl.jp/bio/01/mpo#MPO_02001')
+          args = {
+            meo_id: 'http://purl.jp/bio/11/meo/MEO_0000038',
+            tax_id: 'http://identifiers.org/taxonomy/1161',
+            bp_id: 'http://purl.obolibrary.org/obo/GO_0034641',
+            mf_id: 'http://purl.obolibrary.org/obo/GO_0046872',
+            cc_id: 'http://purl.obolibrary.org/obo/GO_0005737',
+            mpo_id: 'http://purl.jp/bio/01/mpo#MPO_02001'
+          }
+
+          Protein.search(args)
         }
 
         it {
-          subject.map(&:id).should =~ %w(P58711 Q8YLL1 Q8YMH5 Q8YMJ0 Q8YN19 Q8YN47 Q8YN94 Q8YN97 Q8YPW9 Q8YQD7 Q8YQT0 Q8YRP2 Q8YUA5 Q8YUD4 Q8YUI2 Q8YXA3 Q8YXJ1 Q8YXW5 Q8YXY3 Q8YYV8 Q8YZV0 Q8Z023 Q8Z032 Q8Z0F5 Q8Z0I6)
+          subject.map(&:id).should =~ %w(O52749 P45480 P58711 Q8YLN3 Q8YMT4 Q8YMZ0 Q8YN49 Q8YN91 Q8YP11 Q8YP68 Q8YPR8 Q8YPT4 Q8YPV5 Q8YQB2 Q8YQR8 Q8YQV0 Q8YQZ0 Q8YQZ3 Q8YWS8 Q8YYW0 Q8YZX0 Q8Z068 Q8Z074 Q8Z0F5 Q8Z0I6)
         }
       end
 
@@ -41,7 +50,16 @@ describe Protein do
         # Phenotype:         "Motility"
 
         subject {
-          Protein.search('http://purl.jp/bio/11/meo/MEO_0000004', 'http://identifiers.org/taxonomy/2', 'http://purl.obolibrary.org/obo/GO_0065007', 'http://purl.obolibrary.org/obo/GO_0005488', 'http://purl.obolibrary.org/obo/GO_0044464', 'http://purl.jp/bio/01/mpo#MPO_02000')
+          args = {
+            meo_id: 'http://purl.jp/bio/11/meo/MEO_0000004',
+            tax_id: 'http://identifiers.org/taxonomy/2',
+            bp_id: 'http://purl.obolibrary.org/obo/GO_0065007',
+            mf_id: 'http://purl.obolibrary.org/obo/GO_0005488',
+            cc_id: 'http://purl.obolibrary.org/obo/GO_0044464',
+            mpo_id: 'http://purl.jp/bio/01/mpo#MPO_02000'
+          }
+
+          Protein.search(args)
         }
 
         it {
@@ -58,11 +76,17 @@ describe Protein do
         # Phenotype:         "Motility"
 
         subject {
-          Protein.search('http://purl.jp/bio/11/meo/MEO_0000004', 'http://identifiers.org/taxonomy/2', '', '', '', 'http://purl.jp/bio/01/mpo#MPO_02000')
+          args = {
+            meo_id: 'http://purl.jp/bio/11/meo/MEO_0000004',
+            tax_id: 'http://identifiers.org/taxonomy/2',
+            mpo_id: 'http://purl.jp/bio/01/mpo#MPO_02000'
+          }
+
+          Protein.search(args)
         }
 
         it {
-          subject.map(&:id).should =~ %w(G2Z088 G2Z0N6 G2Z0W1 G2Z150 G2Z176 G2Z1Y9 G2Z2H6 G2Z2J7 G2Z329 G2Z347 G2Z352 G2Z3P5 G2Z3Z4 G2Z414 G2Z454 G2Z4G2 G2Z4J8 G2Z4Y4 G2Z5R6 G2Z698 G2Z6C6 G2Z701 G2Z760 G2Z7A2 G2Z7W4)
+          subject.map(&:id).should =~ %w(G2YZW4 G2Z0V5 G2Z104 G2Z120 G2Z1A9 G2Z1E3 G2Z1E8 G2Z1P2 G2Z1X9 G2Z259 G2Z2E9 G2Z3W4 G2Z404 G2Z464 G2Z5C9 G2Z5X6 G2Z643 G2Z673 G2Z690 G2Z6A7 G2Z6J1 G2Z6Q1 G2Z7E8 G2Z7H5 G2Z7N5)
         }
       end
 
@@ -75,7 +99,12 @@ describe Protein do
         # Phenotype:         "Motility"
 
         subject {
-          Protein.search('http://purl.jp/bio/11/meo/MEO_0000004', '', '', '', '', 'http://purl.jp/bio/01/mpo#MPO_02000')
+          args = {
+            meo_id: 'http://purl.jp/bio/11/meo/MEO_0000004',
+            mpo_id: 'http://purl.jp/bio/01/mpo#MPO_02000'
+          }
+
+          Protein.search(args)
         }
 
         it {
@@ -89,7 +118,7 @@ describe Protein do
         # CellularComponent: "cell junction"  (http://purl.obolibrary.org/obo/GO_0030054)
 
         subject {
-          Protein.search('', '', '', '', 'http://purl.obolibrary.org/obo/GO_0030054', '')
+          Protein.search(cc_id: 'http://purl.obolibrary.org/obo/GO_0030054')
         }
 
         it { should be_empty }

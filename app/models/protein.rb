@@ -46,14 +46,14 @@ class Protein
   include ProteinSparqlBuilder
 
   class << self
-    def count(meo_id='', tax_id='', bp_id='', mf_id='', cc_id='', mpo_id='')
+    def count(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '')
       sparql  = count_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
       results = query(sparql)
 
       results.first[:hits_count]
     end
 
-    def search(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit=25, offset=0)
+    def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
       sparql  = search_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit, offset)
       results = query(sparql)
 
