@@ -1,0 +1,31 @@
+.main-container
+  #search-methods-container
+    %ul#search-methods-selector
+      %li= link_to 'Facet', root_path
+      %li= link_to 'Sequence', genomes_path
+      %li= link_to 'ID converter', converter_path
+      %li= link_to 'ID resolver', resolver_path
+      %li.current Text
+      %li.search-methods-visibility-button Hide
+
+    #methods
+      .method-container#textsearch-container
+        .inner
+          = render 'form', query: params[:q], selected: params[:category]
+
+  #stanzas.row-fluid
+    - if @error
+      .alert.alert-error
+        = @error
+    - unless @stanzas.blank?
+      %table#results.table.table-striped.table-bordered.table-condensed
+        %thead
+          %td Gene
+          %td Organism
+          %td Environments
+          %td Phenotypes
+        %tr
+          %td= render 'count_list', query: params[:q], stanzas: @stanzas['genes']
+          %td= render 'count_list', query: params[:q], stanzas: @stanzas['organisms']
+          %td= render 'count_list', query: params[:q], stanzas: @stanzas['environments']
+          %td= render 'count_list', query: params[:q], stanzas: @stanzas['phenotypes']
