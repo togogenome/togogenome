@@ -358,7 +358,27 @@
           .tg-button.clear#facet-all-clear-button Clear
 
   #genomes.row-fluid
-    = render partial: 'proteins/results', locals: { results: [] }
+    %ul.nav.nav-tabs
+      %li.active
+        %a{href: '#all', data: {toggle: 'tab'}} All
+      %li
+        %a{href: '#gene', data: {toggle: 'tab'}} Gene
+      %li
+        %a{href: '#organism', data: {toggle: 'tab'}} Organism
+      %li
+        %a{href: '#environment', data: {toggle: 'tab'}} Environment
+      %li
+        %a{href: '#phenotype', data: {toggle: 'tab'}} Phenotype
+
+    .tab-content
+      #all.tab-pane.active
+        = render partial: 'proteins/results', locals: { results: [] }
+      #gene.tab-pane
+        gene
+      #environment.tab-pane
+        env
+      #phenotype.tab-pane
+        pheno
 
 = content_for :javascript do
   :javascript
