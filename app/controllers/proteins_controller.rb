@@ -1,6 +1,6 @@
 class ProteinsController < ApplicationController
 
-  def search(environment, taxonomy, biological_process, molecular_function, cellular_component, phenotype, iDisplayLength, iDisplayStart)
+  def search(environment, taxonomy, biological_process, molecular_function, cellular_component, phenotype, length, start)
     # todo: order
     @args = {
       meo_id: environment,
@@ -15,7 +15,7 @@ class ProteinsController < ApplicationController
 
     respond_to do |format|
       format.json do
-        proteins = Protein.search(@args.merge(limit: iDisplayLength, offset: iDisplayStart))
+        proteins = Protein.search(@args.merge(limit: length, offset: start))
 
         @sEcho       = params[:sEcho].to_i
         @proteins    = proteins
