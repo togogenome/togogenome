@@ -358,21 +358,23 @@
   #genomes.row-fluid
     %ul#result_tabs.nav.nav-tabs
       %li.active
-        %a{href: '#all', data: {toggle: 'tab'}} All
+        %a{href: '#all', data: {toggle: 'tab', draw: {table: 'all'}}} All
       %li
-        %a{href: '#gene', data: {toggle: 'tab'}} Gene
+        %a{href: '#gene', data: {toggle: 'tab', draw: {table: 'gene'}}} Gene
       %li
-        %a{href: '#organism', data: {toggle: 'tab'}} Organism
+        %a{href: '#organism', data: {toggle: 'tab', draw: {table: 'organism'}}} Organism
       %li
-        %a{href: '#environment', data: {toggle: 'tab'}} Environment
+        %a{href: '#environment', data: {toggle: 'tab', draw: {table: 'environment'}}} Environment
       %li
-        %a{href: '#phenotype', data: {toggle: 'tab'}} Phenotype
+        %a{href: '#phenotype', data: {toggle: 'tab', draw: {table: 'phenotype'}}} Phenotype
 
     .tab-content#result_panes
       #all.tab-pane.active
         = render partial: 'proteins/results', locals: { results: [] }
       #gene.tab-pane
-        gene
+        = render partial: 'proteins/gene_results', locals: { results: [] }
+      #organism.tab-pane
+        tax
       #environment.tab-pane
         env
       #phenotype.tab-pane

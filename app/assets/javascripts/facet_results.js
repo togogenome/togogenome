@@ -1,7 +1,9 @@
-var paginationSlider;
+// 現在開いているタブ
+var drawTable = "all";
 
 $(function() {
-  var dataTable = $('#results').DataTable({
+  // DataTable のデフォルト値を設定
+  $.extend( $.fn.dataTable.defaults, {
     "processing": true,
     "serverSide": true,
     "ordering" : false,
@@ -16,33 +18,31 @@ $(function() {
         d.molecular_function = $('#_molecular_function_id').val();
         d.cellular_component = $('#_cellular_component_id').val();
         d.phenotype =          $('#_phenotype_id').val();
+        d.draw_table =         drawTable;
       },
       "error": function() {
         alert('failing query...');
         return;
       }
     },
-    "columns": [
-      { "data": "name",             "width" : "220px" },
-      { "data": "gene_links" },
-      { "data": "entry_identifier", "width" : "100px" },
-      { "data": "go_links" },
-      { "data": "organism_link" },
-      { "data": "environment_links" },
-      { "data": "phenotype_links" }
-    ],
-    "dom": "<'span5'i><'span5'l>r<p><<'#csv-export.span2'>>t<<'span5'i><'span5'><p>>",
+    "dom": "<'span5'i><'span5'l>r<p><<'.csv-export.span2'>>t<<'span5'i><'span5'><p>>",
     "pagingType": "custom-bootstrap",
     "drawCallback": function (setting) {
+      var api = this.api()
+      var pane = this.parent();
+
       // Donwload CSV のリンク生成
       var params = {};
       setting.ajax.data(params);
       url = "/proteins/search.csv?" + $.param(params);
-      $('div#csv-export > a').attr("href", url);
+      pane.find('.csv-export > a').attr("href", url);
+
+      // テーブル毎に paginationSlider を持つ
+      var paginationSlider = setting.oInit.paginationSlider;
 
       // スライダーの生成
       if (!paginationSlider) {
-        var $ul = $(".dataTables_paginate ul");
+        var $ul = pane.find(".dataTables_paginate ul");
         $ul.before(
           "<div class='pagination-slider'>" +
           "<div class='pagination-slider-bar'></div>" +
@@ -54,22 +54,22 @@ $(function() {
         );
         paginationSlider = {
           ul: $ul,
-          container: $(".pagination-slider"),
-          bar: $(".pagination-slider-bar"),
-          currentBar: $(".pagination-slider-current-bar"),
-          indicator: $(".pagination-slider-indicator"),
-          indicatorInner: $(".pagination-slider-indicator > .inner"),
-          dottedLineLeft: $(".pagination-slider-dotted-line-left"),
-          dottedLineRight: $(".pagination-slider-dotted-line-right"),
-          pagination: $(".pagination")
+          container: pane.find(".pagination-slider"),
+          bar: pane.find(".pagination-slider-bar"),
+          currentBar: pane.find(".pagination-slider-current-bar"),
+          indicator: pane.find(".pagination-slider-indicator"),
+          indicatorInner: pane.find(".pagination-slider-indicator > .inner"),
+          dottedLineLeft: pane.find(".pagination-slider-dotted-line-left"),
+          dottedLineRight: pane.find(".pagination-slider-dotted-line-right"),
+          pagination: pane.find(".pagination")
         }
         // スライダーイベント
         paginationSlider.indicator.mousedown(function(e){
           var startX = e.clientX,
-          originX = paginationSlider.indicator.position().left,
-          maxWidth = paginationSlider.bar.outerWidth(),
-          unit = maxWidth / paginationSlider.totalPage,
-          page;
+              originX = paginationSlider.indicator.position().left,
+              maxWidth = paginationSlider.bar.outerWidth(),
+              unit = maxWidth / paginationSlider.totalPage,
+              page;
           $(window)
             .on("mousemove.paginationSlider", function(e){
               // インジケータをマウスに追随して移動
@@ -89,8 +89,7 @@ $(function() {
             .on("mouseup.paginationSlider", function(e){
               // イベント削除
               $(window).off("mousemove.paginationSlider mouseup.paginationSlider");
-              // 検索をリクエスト
-              dataTable.page(page).draw( false );
+              api.page(page).draw( false )
             });
         });
         // ページネーションの範囲定義
@@ -172,20 +171,60 @@ $(function() {
         paginationSlider.pagination.show();
         paginationSlider.render();
       }
+
+      // 設定した PaginationSlider を、テーブルの paginationSlider に設定する
+      setting.oInit.paginationSlider = paginationSlider;
     }
   });
 
+  // 表示するデータを指定し初期化
+  var allResultsTable = $("#results").DataTable({
+    "columns": [
+      { "data": "name", "width" : "220px" },
+      { "data": "gene_links" },
+      { "data": "entry_identifier", "width" : "100px" },
+      { "data": "go_links" },
+      { "data": "organism_link" },
+      { "data": "environment_links" },
+      { "data": "phenotype_links" }
+    ],
+    "paginationSlider" : null
+  });
 
-  $("div#csv-export")
+  // 表示するデータを指定し初期化
+  var geneResultsTable = $("#gene_results").DataTable({
+    "columns": [
+      { "data": "gene_links" },
+      { "data": "name", "width" : "220px" },
+      { "data": "entry_identifier", "width" : "100px" },
+      { "data": "go_links" },
+      { "data": "organism_link" }
+    ],
+    "paginationSlider" : null
+  });
+
+  $(".csv-export")
     .addClass("result-download-container")
     .append('<a>Download CSV</a>');
 
-  $("div#csv-export > a").on('click', function() {
-    location.href = $("div#csv-export > a").attr("href");
+  $(".csv-export > a").on('click', function() {
+    location.href = $(".csv-export > a").attr("href");
     return false;
   });
 
   window.query = function() {
-    return $('#results').DataTable().draw();
+    if (drawTable === 'all') {
+      return allResultsTable.draw();
+    } else if (drawTable === 'gene') {
+      return geneResultsTable.draw();
+    }
   };
+
+  $("#result_tabs").on('click', function(e) {
+    drawTable = $(e.target).data('drawTable');
+    // タブ変更時に再度検索をする
+    // 上側 Facets 部分の変更した結果で検索するため
+    // ここを消すと前の状態を保持できるが、上側は変更されているため、選択している 各絞り込み条件と下の結果が異なるものが描画される
+    window.query();
+  });
 });
