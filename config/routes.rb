@@ -6,6 +6,15 @@ TogoGenome::Application.routes.draw do
   end
 
   get '/proteins/search', as: :search_proteins
+  get '/proteins/all/search', to: 'proteins#search'
+
+  namespace :proteins do
+    get '/gene/search'
+    get '/organism/search'
+    get '/environment/search'
+    get '/phenotype/search'
+  end
+
   resources :genomes, only: %w(index) do
     get :search, on: :collection
   end

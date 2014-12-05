@@ -1,0 +1,32 @@
+csv << [
+  'Description',
+  'Gene ID',
+  'Gene URL',
+  'UniProt ID',
+  'UniProt URL',
+  'Gene ontologies',
+  'Gene ontologies ID',
+  'Gene ontologies URL',
+  'Organism',
+  'Organism ID',
+  'Organism URL',
+]
+
+limit = 100
+(0..@hits_count).step(limit) do |offset|
+  Protein.search(@args.merge(limit: limit, offset:offset)).each do |p|
+    csv << [
+      p.name,
+      p.genes.map(&:id).join("\n"),
+      p.genes.map(&:togogenome_uri).join("\n"),
+      p.id,
+      p.uniprot,
+      p.gos.map(&:name).join("\n"),
+      p.gos.map(&:id).join("\n"),
+      p.gos.map(&:uri).join("\n"),
+      p.tax.name,
+      p.tax.id,
+      "http://togogenome.org/organism/#{p.tax.id}",
+    ]
+  end
+end
