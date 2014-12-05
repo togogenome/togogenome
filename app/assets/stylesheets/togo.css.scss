@@ -769,6 +769,10 @@ h3[class^="icon-"], h3[class*=" icon-"] {
   margin-top: -1px;
 }
 
+#result_panes.tab-content {
+  overflow: visible;
+}
+
 /* autocomplete */
 .ui-autocomplete {
 	z-index: 20 !important;
@@ -829,7 +833,7 @@ table.table {
 .table-hover tbody tr:hover > td, .table-hover tbody tr:hover > th {
   background-color: #daf1f5;
 }
-div#results_wrapper .dataTables_processing {
+div#result_panes .dataTables_processing {
 	box-shadow: 0 0 24px rgba(0,0,0,.2);
 	z-index: 100;
   position: fixed;
@@ -839,6 +843,9 @@ div#results_wrapper .dataTables_processing {
   height: 60px;
   width: 250px;
   margin-top: -30px;
+  margin-left: -125px;
+  color: #999;
+  font-size: 14px;
 }
 .dataTables_length {
   position: relative;
