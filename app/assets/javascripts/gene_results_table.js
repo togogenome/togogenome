@@ -1,8 +1,6 @@
-var geneResultsTable;
-
 $(function() {
   // 表示するデータを指定し初期化
-  geneResultsTable = $("#gene_results").DataTable({
+  dataTables.gene = $("#gene_results").DataTable({
     "ajax" : {
       "url" : "/proteins/gene/search.json",
       "data": function(d) {

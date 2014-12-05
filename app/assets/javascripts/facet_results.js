@@ -1,5 +1,6 @@
 // 現在開いているタブ
-var drawTable = "all";
+var currentTab = "all";
+var dataTables = {};
 
 $(function() {
   // DataTable のデフォルト値を設定
@@ -18,7 +19,7 @@ $(function() {
       // Donwload CSV のリンク生成
       var params = {};
       setting.ajax.data(params);
-      url = "/proteins/" + drawTable + "/search.csv?" + $.param(params);
+      url = "/proteins/" + currentTab + "/search.csv?" + $.param(params);
       pane.find('.result-download-container > a').attr("href", url);
 
       // テーブル毎に paginationSlider を持つ
@@ -167,15 +168,11 @@ $(function() {
   });
 
   window.query = function() {
-    if (drawTable === 'all') {
-      return allResultsTable.draw();
-    } else if (drawTable === 'gene') {
-      return geneResultsTable.draw();
-    }
+    dataTables[currentTab].draw();
   };
 
   $("#result_tabs").on('click', function(e) {
-    drawTable = $(e.target).data('drawTable');
+    currentTab = $(e.target).data('openTab');
     // タブ変更時に再度検索をする
     // 上側 Facets 部分の変更した結果で検索するため
     // ここを消すと前の状態を保持できるが、上側は変更されているため、選択している 各絞り込み条件と下の結果が異なるものが描画される

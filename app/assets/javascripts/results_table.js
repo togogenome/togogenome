@@ -1,8 +1,6 @@
-var allResultsTable;
-
 $(function() {
   // 表示するデータを指定し初期化
-  allResultsTable = $("#results").DataTable({
+  dataTables.all = $("#results").DataTable({
     "ajax" : {
       "url" : "/proteins/search.json",
       "data": function(d) {
