@@ -2,14 +2,26 @@
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def count_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+      def protein_count_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
         condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
-        count_base(condition)
+        protein_count_base(condition)
       end
 
-      def search_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit, offset)
+      def protein_search_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit, offset)
         condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
-        search_base(condition, limit, offset)
+        protein_search_base(condition, limit, offset)
+      end
+
+      # TODO: protein_count_sparql と同じ処理が多いのでなんとかする
+      def organism_count_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+        condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+        organism_count_base(condition)
+      end
+
+      # TODO: protein_search_sparql と同じ処理が多いのでなんとかする
+      def organism_search_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit, offset)
+        condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+        organism_search_base(condition, limit, offset)
       end
 
       def find_genes_sparql(upids)
@@ -95,7 +107,7 @@
         end
       end
 
-      def count_base(condition)
+      def protein_count_base(condition)
         <<-SPARQL.strip_heredoc
         DEFINE sql:select-option "order"
 
@@ -112,7 +124,25 @@
         SPARQL
       end
 
-      def search_base(condition, limit, offset)
+      # protein_count_base と同じ処理が多いのでなんとかする
+      def organism_count_base(condition)
+        <<-SPARQL.strip_heredoc
+        DEFINE sql:select-option "order"
+
+        PREFIX mccv: <http://purl.jp/bio/01/mccv#>
+        PREFIX meo: <http://purl.jp/bio/11/meo/>
+        PREFIX mpo: <http://purl.jp/bio/01/mpo#>
+        PREFIX up: <http://purl.uniprot.org/core/>
+
+        SELECT COUNT(DISTINCT ?taxonomy_id) AS ?hits_count
+        WHERE
+        {
+          #{condition}
+        }
+        SPARQL
+      end
+
+      def protein_search_base(condition, limit, offset)
         <<-SPARQL.strip_heredoc
         DEFINE sql:select-option "order"
 
@@ -122,6 +152,24 @@
         PREFIX up: <http://purl.uniprot.org/core/>
 
         SELECT DISTINCT ?uniprot_id ?uniprot_up ?recommended_name ?taxonomy_id ?taxonomy_name
+        WHERE
+        {
+          #{condition}
+          } LIMIT #{limit} OFFSET #{offset}
+          SPARQL
+        end
+
+      # protein_search_base と同じ処理が多いのでなんとかする
+      def organism_search_base(condition, limit, offset)
+        <<-SPARQL.strip_heredoc
+        DEFINE sql:select-option "order"
+
+        PREFIX mccv: <http://purl.jp/bio/01/mccv#>
+        PREFIX meo: <http://purl.jp/bio/11/meo/>
+        PREFIX mpo: <http://purl.jp/bio/01/mpo#>
+        PREFIX up: <http://purl.uniprot.org/core/>
+
+        SELECT DISTINCT ?taxonomy_id ?taxonomy_name
         WHERE
         {
           #{condition}

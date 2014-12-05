@@ -361,14 +361,9 @@
     %ul#result_tabs.nav.nav-tabs
       %li.active
         %a{href: '#all', data: {toggle: 'tab', open: {tab: 'all'}}} All
-      %li
-        %a{href: '#gene', data: {toggle: 'tab', open: {tab: 'gene'}}} Gene
-      %li
-        %a{href: '#organism', data: {toggle: 'tab', open: {tab: 'organism'}}} Organism
-      %li
-        %a{href: '#environment', data: {toggle: 'tab', open: {tab: 'environment'}}} Environment
-      %li
-        %a{href: '#phenotype', data: {toggle: 'tab', open: {tab: 'phenotype'}}} Phenotype
+      - %w(gene organism environment phenotype).each do |name|
+        %li
+          %a{href: "##{name}", data: {toggle: 'tab', open: {tab: name}}}= name.humanize
 
     .tab-content#result_panes
       #all.tab-pane.active
@@ -376,7 +371,7 @@
       #gene.tab-pane
         = render partial: 'proteins/gene/results', locals: { results: [] }
       #organism.tab-pane
-        tax
+        = render partial: 'proteins/organism/results', locals: { results: [] }
       #environment.tab-pane
         env
       #phenotype.tab-pane

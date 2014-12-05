@@ -47,14 +47,14 @@ class Protein
 
   class << self
     def count(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '')
-      sparql  = count_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+      sparql  = protein_count_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
       results = query(sparql)
 
       results.first[:hits_count]
     end
 
     def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
-      sparql  = search_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit, offset)
+      sparql  = protein_search_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit, offset)
       results = query(sparql)
 
       return [] if results.empty?
