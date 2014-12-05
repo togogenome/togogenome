@@ -9,23 +9,7 @@ $(function() {
     "ordering" : false,
     "searching" : true,
     "pageLength": 25,
-    "ajax" : {
-      "url" : "/proteins/search.json",
-      "data": function(d) {
-        d.taxonomy =           $('#_taxonomy_id').val();
-        d.environment =        $('#_environment_id').val();
-        d.biological_process = $('#_biological_process_id').val();
-        d.molecular_function = $('#_molecular_function_id').val();
-        d.cellular_component = $('#_cellular_component_id').val();
-        d.phenotype =          $('#_phenotype_id').val();
-        d.draw_table =         drawTable;
-      },
-      "error": function() {
-        alert('failing query...');
-        return;
-      }
-    },
-    "dom": "<'span5'i><'span5'l>r<p><<'.csv-export.span2'>>t<<'span5'i><'span5'><p>>",
+    "dom": "<'span5'i><'span5'l>r<p><<'.result-download-container.span2'>>t<<'span5'i><'span5'><p>>",
     "pagingType": "custom-bootstrap",
     "drawCallback": function (setting) {
       var api = this.api()
@@ -34,8 +18,8 @@ $(function() {
       // Donwload CSV のリンク生成
       var params = {};
       setting.ajax.data(params);
-      url = "/proteins/search.csv?" + $.param(params);
-      pane.find('.csv-export > a').attr("href", url);
+      url = "/proteins/" + drawTable + "/search.csv?" + $.param(params);
+      pane.find('.result-download-container > a').attr("href", url);
 
       // テーブル毎に paginationSlider を持つ
       var paginationSlider = setting.oInit.paginationSlider;
@@ -177,38 +161,8 @@ $(function() {
     }
   });
 
-  // 表示するデータを指定し初期化
-  var allResultsTable = $("#results").DataTable({
-    "columns": [
-      { "data": "name", "width" : "220px" },
-      { "data": "gene_links" },
-      { "data": "entry_identifier", "width" : "100px" },
-      { "data": "go_links" },
-      { "data": "organism_link" },
-      { "data": "environment_links" },
-      { "data": "phenotype_links" }
-    ],
-    "paginationSlider" : null
-  });
-
-  // 表示するデータを指定し初期化
-  var geneResultsTable = $("#gene_results").DataTable({
-    "columns": [
-      { "data": "gene_links" },
-      { "data": "name", "width" : "220px" },
-      { "data": "entry_identifier", "width" : "100px" },
-      { "data": "go_links" },
-      { "data": "organism_link" }
-    ],
-    "paginationSlider" : null
-  });
-
-  $(".csv-export")
-    .addClass("result-download-container")
-    .append('<a>Download CSV</a>');
-
-  $(".csv-export > a").on('click', function() {
-    location.href = $(".csv-export > a").attr("href");
+  $(".result-download-container > a").on('click', function(e) {
+    location.href = e.target.href;
     return false;
   });
 

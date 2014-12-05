@@ -1,3 +1,4 @@
+
 = content_for :javascript do
   :javascript
     var FACETS_ROOT_URL = "/facets/",
@@ -336,6 +337,7 @@
       });
     }
 
+  = javascript_include_tag 'facet_results'
 
 .main-container
   #search-methods-container
@@ -372,13 +374,10 @@
       #all.tab-pane.active
         = render partial: 'proteins/results', locals: { results: [] }
       #gene.tab-pane
-        = render partial: 'proteins/gene_results', locals: { results: [] }
+        = render partial: 'proteins/gene/results', locals: { results: [] }
       #organism.tab-pane
         tax
       #environment.tab-pane
         env
       #phenotype.tab-pane
         pheno
-
-= content_for :javascript do
-  = javascript_include_tag 'facet_results'
