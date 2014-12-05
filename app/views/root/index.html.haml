@@ -360,15 +360,15 @@
   #genomes.row-fluid
     %ul#result_tabs.nav.nav-tabs
       %li.active
-        %a{href: '#all', data: {toggle: 'tab', draw: {table: 'all'}}} All
+        %a{href: '#all', data: {toggle: 'tab', open: {tab: 'all'}}} All
       %li
-        %a{href: '#gene', data: {toggle: 'tab', draw: {table: 'gene'}}} Gene
+        %a{href: '#gene', data: {toggle: 'tab', open: {tab: 'gene'}}} Gene
       %li
-        %a{href: '#organism', data: {toggle: 'tab', draw: {table: 'organism'}}} Organism
+        %a{href: '#organism', data: {toggle: 'tab', open: {tab: 'organism'}}} Organism
       %li
-        %a{href: '#environment', data: {toggle: 'tab', draw: {table: 'environment'}}} Environment
+        %a{href: '#environment', data: {toggle: 'tab', open: {tab: 'environment'}}} Environment
       %li
-        %a{href: '#phenotype', data: {toggle: 'tab', draw: {table: 'phenotype'}}} Phenotype
+        %a{href: '#phenotype', data: {toggle: 'tab', open: {tab: 'phenotype'}}} Phenotype
 
     .tab-content#result_panes
       #all.tab-pane.active
