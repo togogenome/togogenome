@@ -9,16 +9,17 @@ class ProteinsController < ApplicationController
       cc_id: cellular_component,
       mpo_id: phenotype
     }
+    klass = controller_path.classify.constantize
 
-    @hits_count = Protein.count(@args).to_i
+    @hits_count = klass.count(@args).to_i
 
     respond_to do |format|
       format.json do
-        proteins = Protein.search(@args.merge(limit: length, offset: start))
+        proteins = klass.search(@args.merge(limit: length, offset: start))
 
         @sEcho       = params[:sEcho].to_i
         @proteins    = proteins
-        @total_count = Protein.count
+        @total_count = klass.count
       end
 
       format.csv do
