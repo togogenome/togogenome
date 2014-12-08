@@ -18,6 +18,8 @@ $ ->
 
     columns: [
       {data: "organism_link"}
+      {data: "environment_links"}
+      {data: "phenotype_links"}
     ]
     paginationSlider: null
   )
