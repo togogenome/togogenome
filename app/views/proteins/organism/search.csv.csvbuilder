@@ -2,15 +2,27 @@ csv << [
   'Organism',
   'Organism ID',
   'Organism URL',
+  'Environments',
+  'Environments ID',
+  'Environments URL',
+  'Phenotypes',
+  'Phenotypes ID',
+  'Phenotypes URL'
 ]
 
 limit = 100
 (0..@hits_count).step(limit) do |offset|
-  Protein.search(@args.merge(limit: limit, offset:offset)).each do |p|
+  Proteins::Organism.search(@args.merge(limit: limit, offset:offset)).each do |p|
     csv << [
       p.tax.name,
       p.tax.id,
       "http://togogenome.org/organism/#{p.tax.id}",
+      p.envs.map(&:name).join("\n"),
+      p.envs.map(&:id).join("\n"),
+      p.envs.map {|env| "http://togogenome.org/environment/#{env.id}" }.join("\n"),
+      p.phenotypes.map(&:name).join("\n"),
+      p.phenotypes.map(&:id).join("\n"),
+      p.phenotypes.map {|phenotype| "http://togogenome.org/phenotype/#{phenotype.id}" }.join("\n")
     ]
   end
 end
