@@ -1,2 +1,2 @@
-class Proteins::EnvironmentController < ApplicationController
+class Proteins::EnvironmentController < ProteinsController
 end

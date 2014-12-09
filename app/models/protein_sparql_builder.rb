@@ -24,6 +24,18 @@
         organism_search_base(condition, limit, offset)
       end
 
+      # TODO: protein_count_sparql と同じ処理が多いのでなんとかする
+      def environment_count_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+        condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+        environment_count_base(condition)
+      end
+
+      # TODO: protein_search_sparql と同じ処理が多いのでなんとかする
+      def environment_search_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit, offset)
+        condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+        environment_search_base(condition, limit, offset)
+      end
+
       def find_genes_sparql(upids)
         <<-SPARQL.strip_heredoc
         SELECT ?uniprot_id ?togogenome
@@ -142,6 +154,40 @@
         SPARQL
       end
 
+      # protein_count_base と同じ処理が多いのでなんとかする
+      def environment_count_base(condition)
+        <<-SPARQL.strip_heredoc
+        DEFINE sql:select-option "order"
+
+        PREFIX mccv: <http://purl.jp/bio/01/mccv#>
+        PREFIX meo: <http://purl.jp/bio/11/meo/>
+        PREFIX mpo: <http://purl.jp/bio/01/mpo#>
+        PREFIX up: <http://purl.uniprot.org/core/>
+
+        SELECT COUNT(DISTINCT ?meo_id) AS ?hits_count
+        WHERE {
+          {
+            SELECT DISTINCT ?taxonomy_id
+            WHERE
+            {
+              #{condition}
+            }
+          }
+
+          VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 } .
+          GRAPH  <http://togogenome.org/graph/gold/> {
+            ?gold_iri ?p_meo ?meo_iri .
+            ?gold_iri mccv:MCCV_000020 ?taxonomy_id .
+            BIND (REPLACE(STR(?meo_iri),"http://purl.jp/bio/11/meo/", "" ) AS ?meo_id)
+          }
+
+          GRAPH  <http://togogenome.org/graph/meo/> {
+            ?meo_iri rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) .
+          }
+        }
+        SPARQL
+      end
+
       def protein_search_base(condition, limit, offset)
         <<-SPARQL.strip_heredoc
         DEFINE sql:select-option "order"
@@ -173,9 +219,43 @@
         WHERE
         {
           #{condition}
-          } LIMIT #{limit} OFFSET #{offset}
-          SPARQL
-        end
+        } LIMIT #{limit} OFFSET #{offset}
+        SPARQL
+      end
+
+      # protein_count_base と同じ処理が多いのでなんとかする
+      def environment_search_base(condition, limit, offset)
+        <<-SPARQL.strip_heredoc
+        DEFINE sql:select-option "order"
+
+        PREFIX mccv: <http://purl.jp/bio/01/mccv#>
+        PREFIX meo: <http://purl.jp/bio/11/meo/>
+        PREFIX mpo: <http://purl.jp/bio/01/mpo#>
+        PREFIX up: <http://purl.uniprot.org/core/>
+
+        SELECT DISTINCT ?meo_id ?meo_name
+        WHERE {
+          {
+            SELECT DISTINCT ?taxonomy_id
+            WHERE
+            {
+              #{condition}
+            }
+          }
+
+          VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 } .
+          GRAPH  <http://togogenome.org/graph/gold/> {
+            ?gold_iri ?p_meo ?meo_iri .
+            ?gold_iri mccv:MCCV_000020 ?taxonomy_id .
+            BIND (REPLACE(STR(?meo_iri),"http://purl.jp/bio/11/meo/", "" ) AS ?meo_id)
+          }
+
+          GRAPH  <http://togogenome.org/graph/meo/> {
+            ?meo_iri rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) .
+          }
+        } LIMIT #{limit} OFFSET #{offset}
+        SPARQL
+      end
 
         def has_go_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
           <<-SPARQL

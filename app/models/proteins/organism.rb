@@ -1,5 +1,3 @@
-# coding: utf-8
-
 module Proteins
   class Organism < ::Protein
     class << self
@@ -42,9 +40,9 @@ module Proteins
     end
 
     def initialize(up_tax, envs, phenotypes)
-      @tax = Taxonomy.new(up_tax[:taxonomy_id], up_tax[:taxonomy_name])
-      @envs       = envs.map {|env| Environment.new(env[:meo_id], env[:meo_name]) }
-      @phenotypes = phenotypes.map {|phenotype| Phenotype.new(phenotype[:mpo_id], phenotype[:mpo_name]) }
+      @tax = ::Taxonomy.new(up_tax[:taxonomy_id], up_tax[:taxonomy_name])
+      @envs       = envs.map {|env| ::Environment.new(env[:meo_id], env[:meo_name]) }
+      @phenotypes = phenotypes.map {|phenotype| ::Phenotype.new(phenotype[:mpo_id], phenotype[:mpo_name]) }
     end
 
     attr_reader :tax, :envs, :phenotypes
