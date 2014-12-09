@@ -1,4 +1,4 @@
-class Genome
+class Sequence
   include Queryable
 
   class << self
