@@ -351,17 +351,18 @@
         .text-center.padding
           .tg-button.clear#facet-all-clear-button Clear
 
+  - report_types = %w(gene organism environment phenotype)
   #genomes.row-fluid
     %ul#result_tabs.nav.nav-tabs
       %li.active
         %a{href: '#all', data: {toggle: 'tab', open: {tab: 'all'}}} All
-      - %w(gene organism environment phenotype).each do |name|
+      - report_types.each do |report_type|
         %li
-          %a{href: "##{name}", data: {toggle: 'tab', open: {tab: name}}}= name.humanize
+          %a{href: "##{report_type}", data: {toggle: 'tab', open: {tab: report_type}}}= report_type.humanize
 
     .tab-content#result_panes
       #all.tab-pane.active
-        = render partial: 'proteins/results', locals: { results: [] }
-      - %w(gene organism environment phenotype).each do |name|
-        .tab-pane{id: name}
-          = render partial: "proteins/#{name}/results", locals: { results: [] }
+        = render partial: 'report_type/proteins/results', locals: { results: [] }
+      - report_types.each do |report_type|
+        .tab-pane{id: report_type}
+          = render partial: "report_type/#{report_type.pluralize}/results", locals: { results: [] }

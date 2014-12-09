@@ -1,4 +1,4 @@
-class ProteinsController < ApplicationController
+class ReportType::BaseController < ApplicationController
   def search(environment, taxonomy, biological_process, molecular_function, cellular_component, phenotype, length, start)
     # todo: order
     @args = {
@@ -9,6 +9,7 @@ class ProteinsController < ApplicationController
       cc_id: cellular_component,
       mpo_id: phenotype
     }
+
     klass = controller_path.classify.constantize
 
     @hits_count = klass.count(@args).to_i

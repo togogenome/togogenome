@@ -1,8 +1,8 @@
 $ ->
   # 表示するデータを指定し初期化
-  dataTables.gene = $("#gene_results").DataTable(
+  dataTables.all = $("#protein_results").DataTable(
     ajax:
-      url: "/proteins/gene/search.json"
+      url: "/report_type/proteins/search.json"
       data: (d) ->
         d.taxonomy = $("#_taxonomy_id").val()
         d.environment = $("#_environment_id").val()
@@ -22,8 +22,10 @@ $ ->
       {data: "entry_identifier", width: "100px"}
       {data: "go_links"}
       {data: "organism_link"}
+      {data: "environment_links"}
+      {data: "phenotype_links"}
     ]
     paginationSlider: null
   )
-  $("#gene_results").parent().find(".result-download-container").append "<a>Download CSV</a>"
+  $("#protein_results").parent().find(".result-download-container").append "<a>Download CSV</a>"
   return

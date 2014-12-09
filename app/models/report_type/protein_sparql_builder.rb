@@ -1,3 +1,4 @@
+module ReportType
   module ProteinSparqlBuilder
     extend ActiveSupport::Concern
 
@@ -201,9 +202,9 @@
         WHERE
         {
           #{condition}
-          } LIMIT #{limit} OFFSET #{offset}
-          SPARQL
-        end
+        } LIMIT #{limit} OFFSET #{offset}
+        SPARQL
+      end
 
       # protein_search_base と同じ処理が多いのでなんとかする
       def organism_search_base(condition, limit, offset)
@@ -257,165 +258,165 @@
         SPARQL
       end
 
-        def has_go_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
-          <<-SPARQL
-          #{goid_to_upid(bp_id, mf_id, cc_id)}
-          #{upid_to_togogenome_to_taxid}
-          #{up_to_upname}
-          #{taxid_to_taxname}
-          #{tax_hierarchy(tax_id)}
-          #{meoid_to_taxid(meo_id)}
-          #{mpoid_to_taxid(mpo_id)}
-          SPARQL
-        end
+      def has_go_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+        <<-SPARQL
+        #{goid_to_upid(bp_id, mf_id, cc_id)}
+        #{upid_to_togogenome_to_taxid}
+        #{up_to_upname}
+        #{taxid_to_taxname}
+        #{tax_hierarchy(tax_id)}
+        #{meoid_to_taxid(meo_id)}
+        #{mpoid_to_taxid(mpo_id)}
+        SPARQL
+      end
 
-        def has_tax_condition(meo_id, tax_id, mpo_id)
-          <<-SPARQL
-          #{tax_hierarchy(tax_id)}
-          #{taxid_to_taxname}
-          #{taxid_to_togogenome_to_upid}
-          #{up_to_upname}
-          #{meoid_to_taxid(meo_id)}
-          #{mpoid_to_taxid(mpo_id)}
-          SPARQL
-        end
+      def has_tax_condition(meo_id, tax_id, mpo_id)
+        <<-SPARQL
+        #{tax_hierarchy(tax_id)}
+        #{taxid_to_taxname}
+        #{taxid_to_togogenome_to_upid}
+        #{up_to_upname}
+        #{meoid_to_taxid(meo_id)}
+        #{mpoid_to_taxid(mpo_id)}
+        SPARQL
+      end
 
-        def has_meo_condition(meo_id, mpo_id)
-          <<-SPARQL
-          #{meoid_to_taxid(meo_id, true)}
-          #{mpoid_to_taxid(mpo_id)}
-          #{taxid_to_taxname}
-          #{taxid_to_togogenome_to_upid}
-          #{up_to_upname}
-          SPARQL
-        end
+      def has_meo_condition(meo_id, mpo_id)
+        <<-SPARQL
+        #{meoid_to_taxid(meo_id, true)}
+        #{mpoid_to_taxid(mpo_id)}
+        #{taxid_to_taxname}
+        #{taxid_to_togogenome_to_upid}
+        #{up_to_upname}
+        SPARQL
+      end
 
-        def has_mpo_condition(mpo_id)
-          <<-SPARQL
-          #{mpoid_to_taxid(mpo_id, true)}
-          #{taxid_to_taxname}
-          #{taxid_to_togogenome_to_upid}
-          #{up_to_upname}
-          SPARQL
-        end
+      def has_mpo_condition(mpo_id)
+        <<-SPARQL
+        #{mpoid_to_taxid(mpo_id, true)}
+        #{taxid_to_taxname}
+        #{taxid_to_togogenome_to_upid}
+        #{up_to_upname}
+        SPARQL
+      end
 
-        def init_condition
-          <<-SPARQL
-          #{tax_hierarchy('http://identifiers.org/taxonomy/1')}
-          #{taxid_to_taxname}
-          #{taxid_to_togogenome_to_upid}
-          #{up_to_upname}
-          SPARQL
-        end
+      def init_condition
+        <<-SPARQL
+        #{tax_hierarchy('http://identifiers.org/taxonomy/1')}
+        #{taxid_to_taxname}
+        #{taxid_to_togogenome_to_upid}
+        #{up_to_upname}
+        SPARQL
+      end
 
-        def taxid_to_taxname
-          <<-SPARQL
-          GRAPH <http://togogenome.org/graph/taxonomy/> {
-            ?taxonomy_id rdfs:label ?taxonomy_name .
-          }
-          SPARQL
-        end
+      def taxid_to_taxname
+        <<-SPARQL
+        GRAPH <http://togogenome.org/graph/taxonomy/> {
+          ?taxonomy_id rdfs:label ?taxonomy_name .
+        }
+        SPARQL
+      end
 
-        def up_to_upname
-          <<-SPARQL
-          GRAPH <http://togogenome.org/graph/uniprot/> {
-            ?uniprot_up up:recommendedName/up:fullName ?recommended_name .
-          }
-          SPARQL
-        end
+      def up_to_upname
+        <<-SPARQL
+        GRAPH <http://togogenome.org/graph/uniprot/> {
+          ?uniprot_up up:recommendedName/up:fullName ?recommended_name .
+        }
+        SPARQL
+      end
 
-        def taxid_to_togogenome_to_upid
-          <<-SPARQL
-          GRAPH <http://togogenome.org/graph/tgup/> {
-            ?togogenome rdfs:seeAlso ?taxonomy_id .
-            ?togogenome rdfs:seeAlso ?uniprot_id .
-            ?uniprot_id rdfs:seeAlso ?uniprot_up .
-          }
-          SPARQL
-        end
+      def taxid_to_togogenome_to_upid
+        <<-SPARQL
+        GRAPH <http://togogenome.org/graph/tgup/> {
+          ?togogenome rdfs:seeAlso ?taxonomy_id .
+          ?togogenome rdfs:seeAlso ?uniprot_id .
+          ?uniprot_id rdfs:seeAlso ?uniprot_up .
+        }
+        SPARQL
+      end
 
-        def upid_to_togogenome_to_taxid
-          <<-SPARQL
-          GRAPH <http://togogenome.org/graph/tgup/> {
-            ?togogenome rdfs:seeAlso ?uniprot_id .
-            ?togogenome rdfs:seeAlso ?taxonomy_id .
-            ?uniprot_id rdfs:seeAlso ?uniprot_up .
-          }
-          SPARQL
-        end
+      def upid_to_togogenome_to_taxid
+        <<-SPARQL
+        GRAPH <http://togogenome.org/graph/tgup/> {
+          ?togogenome rdfs:seeAlso ?uniprot_id .
+          ?togogenome rdfs:seeAlso ?taxonomy_id .
+          ?uniprot_id rdfs:seeAlso ?uniprot_up .
+        }
+        SPARQL
+      end
 
-        def tax_hierarchy(tax_id)
-          return '' if tax_id.empty?
+      def tax_hierarchy(tax_id)
+        return '' if tax_id.empty?
 
+        <<-SPARQL
+        GRAPH <http://togogenome.org/graph/tgtax/>
+        {
+          ?taxonomy_id rdfs:subClassOf <#{tax_id}>
+        }
+        SPARQL
+      end
+
+      def meoid_to_taxid(meo_id, upper_side = false)
+        return '' if meo_id.empty?
+
+        if upper_side
           <<-SPARQL
-          GRAPH <http://togogenome.org/graph/tgtax/>
+          VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
+          GRAPH <http://togogenome.org/graph/meo_descendants/>
           {
-            ?taxonomy_id rdfs:subClassOf <#{tax_id}>
+            ?meo_id rdfs:subClassOf <#{meo_id}> .
+          }
+          GRAPH <http://togogenome.org/graph/gold/>
+          {
+            ?gold_id mccv:MCCV_000020 ?taxonomy_id .
+            ?gold_id ?gold_meo ?meo_id .
+          }
+          SPARQL
+        else
+          <<-SPARQL
+          VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
+          GRAPH <http://togogenome.org/graph/gold/>
+          {
+            ?gold_id mccv:MCCV_000020 ?taxonomy_id .
+            ?gold_id ?gold_meo ?meo_id .
+          }
+          GRAPH <http://togogenome.org/graph/meo_descendants/>
+          {
+            ?meo_id rdfs:subClassOf <#{meo_id}> .
           }
           SPARQL
         end
+      end
 
-        def meoid_to_taxid(meo_id, upper_side = false)
-          return '' if meo_id.empty?
+      def mpoid_to_taxid(mpo_id, upper_side = false)
+        return '' if mpo_id.empty?
 
-          if upper_side
-            <<-SPARQL
-            VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
-            GRAPH <http://togogenome.org/graph/meo_descendants/>
-            {
-              ?meo_id rdfs:subClassOf <#{meo_id}> .
-            }
-            GRAPH <http://togogenome.org/graph/gold/>
-            {
-              ?gold_id mccv:MCCV_000020 ?taxonomy_id .
-              ?gold_id ?gold_meo ?meo_id .
-            }
-            SPARQL
-          else
-            <<-SPARQL
-            VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
-            GRAPH <http://togogenome.org/graph/gold/>
-            {
-              ?gold_id mccv:MCCV_000020 ?taxonomy_id .
-              ?gold_id ?gold_meo ?meo_id .
-            }
-            GRAPH <http://togogenome.org/graph/meo_descendants/>
-            {
-              ?meo_id rdfs:subClassOf <#{meo_id}> .
-            }
-            SPARQL
-          end
+        if upper_side
+          <<-SPARQL
+          GRAPH <http://togogenome.org/graph/mpo_descendants/>
+          {
+            ?mpo_id rdfs:subClassOf <#{mpo_id}> .
+          }
+          GRAPH <http://togogenome.org/graph/gold/>
+          {
+            ?taxonomy_id ?tax_mpo ?mpo_id FILTER (?tax_mpo IN (mpo:MPO_10002, mpo:MPO_10001, mpo:MPO_10003, mpo:MPO_10005, mpo:MPO_10009, mpo:MPO_10010, mpo:MPO_10011, mpo:MPO_10013, mpo:MPO_10014, mpo:MPO_10015, mpo:MPO_10016, mpo:MPO_10006, mpo:MPO_10007)) .
+          }
+          SPARQL
+        else
+          <<-SPARQL
+          GRAPH <http://togogenome.org/graph/gold/>
+          {
+            ?taxonomy_id ?tax_mpo ?mpo_id FILTER (?tax_mpo IN (mpo:MPO_10002, mpo:MPO_10001, mpo:MPO_10003, mpo:MPO_10005, mpo:MPO_10009, mpo:MPO_10010, mpo:MPO_10011, mpo:MPO_10013, mpo:MPO_10014, mpo:MPO_10015, mpo:MPO_10016, mpo:MPO_10006, mpo:MPO_10007)) .
+          }
+          GRAPH <http://togogenome.org/graph/mpo_descendants/>
+          {
+            ?mpo_id rdfs:subClassOf <#{mpo_id}> .
+          }
+          SPARQL
         end
+      end
 
-        def mpoid_to_taxid(mpo_id, upper_side = false)
-          return '' if mpo_id.empty?
-
-          if upper_side
-            <<-SPARQL
-            GRAPH <http://togogenome.org/graph/mpo_descendants/>
-            {
-              ?mpo_id rdfs:subClassOf <#{mpo_id}> .
-            }
-            GRAPH <http://togogenome.org/graph/gold/>
-            {
-              ?taxonomy_id ?tax_mpo ?mpo_id FILTER (?tax_mpo IN (mpo:MPO_10002, mpo:MPO_10001, mpo:MPO_10003, mpo:MPO_10005, mpo:MPO_10009, mpo:MPO_10010, mpo:MPO_10011, mpo:MPO_10013, mpo:MPO_10014, mpo:MPO_10015, mpo:MPO_10016, mpo:MPO_10006, mpo:MPO_10007)) .
-            }
-            SPARQL
-          else
-            <<-SPARQL
-            GRAPH <http://togogenome.org/graph/gold/>
-            {
-              ?taxonomy_id ?tax_mpo ?mpo_id FILTER (?tax_mpo IN (mpo:MPO_10002, mpo:MPO_10001, mpo:MPO_10003, mpo:MPO_10005, mpo:MPO_10009, mpo:MPO_10010, mpo:MPO_10011, mpo:MPO_10013, mpo:MPO_10014, mpo:MPO_10015, mpo:MPO_10016, mpo:MPO_10006, mpo:MPO_10007)) .
-            }
-            GRAPH <http://togogenome.org/graph/mpo_descendants/>
-            {
-              ?mpo_id rdfs:subClassOf <#{mpo_id}> .
-            }
-            SPARQL
-          end
-        end
-
-        def goid_to_upid(bp_id, mf_id, cc_id)
+      def goid_to_upid(bp_id, mf_id, cc_id)
         # FIXME: 正しいグラフ名は "http://togogenome.org/graph/goup/" で、コンバータも修正する
         <<-SPARQL
         GRAPH <http://togogenome.org/graph/group/>
@@ -434,4 +435,5 @@
         "<#{go_up}> up:classifiedWith ?uniprot_id ."
       end
     end
+  end
 end
