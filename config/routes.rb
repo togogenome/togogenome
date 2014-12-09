@@ -19,6 +19,9 @@ TogoGenome::Application.routes.draw do
     get :search, on: :collection
   end
 
+  get '/sequence', as: :sequence_index, to: 'sequence#index'
+  get '/sequence/search', as: :sequence_search, to: 'sequence#search'
+
   get '/converter', as: :converter, to: 'converter#index'
   get '/resolver', as: :resolver, to: 'resolver#index'
   get '/identifiers/convert'

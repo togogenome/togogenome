@@ -1,4 +1,4 @@
-module GenomesHelper
+module SequenceHelper
   # スニペット中のマッチした塩基配列を強調表示して返す。
   # ==== Parameters
   # * snippet - スニペット
