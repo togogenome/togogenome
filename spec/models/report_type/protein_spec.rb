@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-describe Protein do
+describe ReportType::Protein do
   describe 'self.search' do
     context "複数件取得できる検索を実行" do
       context "初期表示" do
         subject {
-          Protein.search()
+          ReportType::Protein.search()
         }
 
         it {
@@ -33,7 +33,7 @@ describe Protein do
             mpo_id: 'http://purl.jp/bio/01/mpo#MPO_02001'
           }
 
-          Protein.search(args)
+          ReportType::Protein.search(args)
         }
 
         it {
@@ -59,7 +59,7 @@ describe Protein do
             mpo_id: 'http://purl.jp/bio/01/mpo#MPO_02000'
           }
 
-          Protein.search(args)
+          ReportType::Protein.search(args)
         }
 
         it {
@@ -82,7 +82,7 @@ describe Protein do
             mpo_id: 'http://purl.jp/bio/01/mpo#MPO_02000'
           }
 
-          Protein.search(args)
+          ReportType::Protein.search(args)
         }
 
         it {
@@ -104,7 +104,7 @@ describe Protein do
             mpo_id: 'http://purl.jp/bio/01/mpo#MPO_02000'
           }
 
-          Protein.search(args)
+          ReportType::Protein.search(args)
         }
 
         it {
@@ -118,7 +118,7 @@ describe Protein do
         # CellularComponent: "cell junction"  (http://purl.obolibrary.org/obo/GO_0030054)
 
         subject {
-          Protein.search(cc_id: 'http://purl.obolibrary.org/obo/GO_0030054')
+          ReportType::Protein.search(cc_id: 'http://purl.obolibrary.org/obo/GO_0030054')
         }
 
         it { should be_empty }

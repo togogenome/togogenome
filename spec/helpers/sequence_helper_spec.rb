@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GenomesHelper do
+describe SequenceHelper do
   pending "add some examples to (or delete) #{__FILE__}"
   describe "match_snippet" do
     it '11番目から16番目(要素が0開始として、10から15)の値がタグに囲まれ、その前後5つが出力される' do
