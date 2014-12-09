@@ -368,11 +368,6 @@
     .tab-content#result_panes
       #all.tab-pane.active
         = render partial: 'proteins/results', locals: { results: [] }
-      #gene.tab-pane
-        = render partial: 'proteins/gene/results', locals: { results: [] }
-      #organism.tab-pane
-        = render partial: 'proteins/organism/results', locals: { results: [] }
-      #environment.tab-pane
-        = render partial: 'proteins/environment/results', locals: { results: [] }
-      #phenotype.tab-pane
-        pheno
+      - %w(gene organism environment phenotype).each do |name|
+        .tab-pane{id: name}
+          = render partial: "proteins/#{name}/results", locals: { results: [] }
