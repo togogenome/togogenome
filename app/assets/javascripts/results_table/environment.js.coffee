@@ -2,7 +2,7 @@ $ ->
   # 表示するデータを指定し初期化
   dataTables.environment = $("#environment_results").DataTable(
     ajax:
-      url: "/proteins/environment/search.json"
+      url: "/report_type/environments/search.json"
       data: (d) ->
         d.taxonomy = $("#_taxonomy_id").val()
         d.environment = $("#_environment_id").val()

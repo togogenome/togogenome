@@ -6,7 +6,7 @@ csv << [
 
 limit = 100
 (0..@hits_count).step(limit) do |offset|
-  Proteins::Environment.search(@args.merge(limit: limit, offset:offset)).each do |e|
+  ReportType::Environment.search(@args.merge(limit: limit, offset:offset)).each do |e|
     csv << [
       e.name,
       e.id,

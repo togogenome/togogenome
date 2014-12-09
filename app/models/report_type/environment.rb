@@ -1,5 +1,5 @@
-module Proteins
-  class Environment < ::Protein
+module ReportType
+  class Environment < Base
     class << self
       def count(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '')
         sparql  = environment_count_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
@@ -15,7 +15,7 @@ module Proteins
         return [] if results.empty?
 
         results.map do |result|
-          ::Environment.new(result[:meo_id], result[:meo_name])
+          Base::Environment.new(result[:meo_id], result[:meo_name])
         end
       end
     end
