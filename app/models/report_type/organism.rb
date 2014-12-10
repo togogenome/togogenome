@@ -1,24 +1,13 @@
 module ReportType
   class Organism < Base
     class << self
-      def count(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '')
-        sparql  = organism_count_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
-        results = query(sparql)
-
-        results.first[:hits_count]
-      end
-
-      def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
-        sparql  = organism_search_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit, offset)
-        results = query(sparql)
-
-        return [] if results.empty?
+      def addition_information(results)
+        taxids = results.map {|b| "<#{b[:taxonomy_id]}>" }.uniq.join(' ')
 
         targets = [
-          { name: 'envs',       sparql: find_environments_sparql( results.map {|b| "<#{b[:taxonomy_id]}>" }.uniq.join(' ') ) },
-          { name: 'phenotypes', sparql: find_phenotypes_sparql( results.map {|b| "<#{b[:taxonomy_id]}>" }.uniq.join(' ') ) }
+          { name: 'envs',       sparql: find_environments_sparql(taxids) },
+          { name: 'phenotypes', sparql: find_phenotypes_sparql(taxids) }
         ]
-
 
         envs, phenotypes = nil, nil
 

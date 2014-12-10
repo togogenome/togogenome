@@ -1,27 +1,34 @@
 module ReportType
   class Base
     include Queryable
-    include ProteinSparqlBuilder
+    include SparqlBuilder
 
     class << self
       def count(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '')
-        sparql  = protein_count_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+        sparql  = count_sparql(self.to_s.demodulize, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
         results = query(sparql)
 
         results.first[:hits_count]
       end
 
       def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
-        sparql  = protein_search_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit, offset)
+        sparql  = search_sparql(self.to_s.demodulize, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit, offset)
         results = query(sparql)
 
         return [] if results.empty?
 
+        addition_information(results)
+      end
+
+      def addition_information(results)
+        upids  = results.map {|b| "<#{b[:uniprot_id]}>" }.uniq.join(' ')
+        taxids = results.map {|b| "<#{b[:taxonomy_id]}>" }.uniq.join(' ')
+
         targets = [
-          { name: 'genes',      sparql: find_genes_sparql( results.map {|b| "<#{b[:uniprot_id]}>" }.uniq.join(' ') ) },
-          { name: 'gos',        sparql: find_gene_ontologies_sparql( results.map {|b| "<#{b[:uniprot_up]}>" }.uniq.join(' ') ) },
-          { name: 'envs',       sparql: find_environments_sparql( results.map {|b| "<#{b[:taxonomy_id]}>" }.uniq.join(' ') ) },
-          { name: 'phenotypes', sparql: find_phenotypes_sparql( results.map {|b| "<#{b[:taxonomy_id]}>" }.uniq.join(' ') ) }
+          { name: 'genes',      sparql: find_genes_sparql(upids) },
+          { name: 'gos',        sparql: find_gene_ontologies_sparql(upids) },
+          { name: 'envs',       sparql: find_environments_sparql(taxids) },
+          { name: 'phenotypes', sparql: find_phenotypes_sparql(taxids) }
         ]
 
         genes, gos, envs, phenotypes = nil, nil, nil, nil

@@ -355,10 +355,10 @@
   #genomes.row-fluid
     %ul#result_tabs.nav.nav-tabs
       %li.active
-        %a{href: '#all', data: {toggle: 'tab', open: {tab: 'all'}}} All
+        %a{href: '#all', data: {toggle: 'tab', key: 'protein'}} All
       - report_types.each do |report_type|
         %li
-          %a{href: "##{report_type}", data: {toggle: 'tab', open: {tab: report_type}}}= report_type.humanize
+          %a{href: "##{report_type}", data: {toggle: 'tab', key: report_type}}= report_type.humanize
 
     .tab-content#result_panes
       #all.tab-pane.active

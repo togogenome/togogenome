@@ -1,8 +1,7 @@
-json.sEcho @sEcho
 json.iTotalRecords @total_count
 json.iTotalDisplayRecords @hits_count
 json.aaData do |json|
-  json.array!(@proteins) do |p|
+  json.array!(@results) do |p|
     json.name              p.name
     json.gene_links        link_list(p.genes, 'gene')
     json.entry_identifier  link_to(p.id, p.uniprot, target: '_blank')
