@@ -1,8 +1,9 @@
 # 現在開いているタブ
-window.dataTables = {}
+window.drawInfo = {}
 
 $ ->
-  currentTab = "all"
+  currentKey = "protein"
+
   # DataTable のデフォルト値を設定
   $.extend $.fn.dataTable.defaults,
     processing: true
@@ -12,6 +13,19 @@ $ ->
     pageLength: 25
     dom: "<'span5'i><'span5'l>r<p><<'.result-download-container.span2'>>t<<'span5'i><'span5'><p>>"
     pagingType: "custom-bootstrap"
+    ajax:
+      data: (d) ->
+        d.taxonomy = $("#_taxonomy_id").val()
+        d.environment = $("#_environment_id").val()
+        d.biological_process = $("#_biological_process_id").val()
+        d.molecular_function = $("#_molecular_function_id").val()
+        d.cellular_component = $("#_cellular_component_id").val()
+        d.phenotype = $("#_phenotype_id").val()
+        return
+      error: ->
+        alert "failing query..."
+        return
+    paginationSlider: null
     drawCallback: (setting) ->
       api = @api()
       pane = @parent()
@@ -19,7 +33,7 @@ $ ->
       # Donwload CSV のリンク生成
       params = {}
       setting.ajax.data params
-      url = "/proteins/" + currentTab + "/search.csv?" + $.param(params)
+      url = drawInfo[currentKey].downloadCSV + "?" + $.param(params)
       pane.find(".result-download-container > a").attr "href", url
 
       # テーブル毎に paginationSlider を持つ
@@ -161,11 +175,11 @@ $ ->
     false
 
   window.query = ->
-    dataTables[currentTab].draw()
+    drawInfo[currentKey].dataTable.draw()
     return
 
   $("#result_tabs").on "click", (e) ->
-    currentTab = $(e.target).data("openTab")
+    currentKey = $(e.target).data("key")
 
     # タブ変更時に再度検索をする
     # 上側 Facets 部分の変更した結果で検索するため

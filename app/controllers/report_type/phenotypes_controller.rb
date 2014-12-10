@@ -1,2 +1,2 @@
-class ReportType::PhenotypesController < ApplicationController
+class ReportType::PhenotypesController < ReportType::BaseController
 end

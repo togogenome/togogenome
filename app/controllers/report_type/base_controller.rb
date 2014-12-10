@@ -4,9 +4,9 @@ class ReportType::BaseController < ApplicationController
     @args = {
       meo_id: environment,
       tax_id: taxonomy,
-      bp_id: biological_process,
-      mf_id: molecular_function,
-      cc_id: cellular_component,
+      bp_id:  biological_process,
+      mf_id:  molecular_function,
+      cc_id:  cellular_component,
       mpo_id: phenotype
     }
 
@@ -16,10 +16,7 @@ class ReportType::BaseController < ApplicationController
 
     respond_to do |format|
       format.json do
-        proteins = klass.search(@args.merge(limit: length, offset: start))
-
-        @sEcho       = params[:sEcho].to_i
-        @proteins    = proteins
+        @results     = klass.search(@args.merge(limit: length, offset: start))
         @total_count = klass.count
       end
 
