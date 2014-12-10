@@ -833,7 +833,15 @@ table.table {
 .table-hover tbody tr:hover > td, .table-hover tbody tr:hover > th {
   background-color: #daf1f5;
 }
-div#result_panes .dataTables_processing {
+
+.identifiers_processing {
+  left: 50%;
+  padding-top: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+div#result_panes .dataTables_processing,  .identifiers_processing{
 	box-shadow: 0 0 24px rgba(0,0,0,.2);
 	z-index: 100;
   position: fixed;
