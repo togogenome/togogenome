@@ -41,8 +41,20 @@ $ ->
 
       # スライダーの生成
       unless tmpPaginationSlider
+        html = """
+               <div class='pagination-slider'>
+                 <div class='pagination-slider-bar'></div>
+                 <div class='pagination-slider-current-bar'></div>
+                 <div class='pagination-slider-indicator'>
+                   <div class='inner'>0</div>
+                 </div>
+                 <div class='pagination-slider-dotted-line-left'></div>
+                 <div class='pagination-slider-dotted-line-right'></div>
+               </div>
+               """
+
         $ul = pane.find(".dataTables_paginate ul")
-        $ul.before "<div class='pagination-slider'>" + "<div class='pagination-slider-bar'></div>" + "<div class='pagination-slider-current-bar'></div>" + "<div class='pagination-slider-indicator'><div class='inner'>0</div></div>" + "<div class='pagination-slider-dotted-line-left'></div>" + "<div class='pagination-slider-dotted-line-right'></div>" + "</div>"
+        $ul.before html
         tmpPaginationSlider =
           ul: $ul
           container: pane.find(".pagination-slider")
