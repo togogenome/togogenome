@@ -1282,7 +1282,7 @@ $(function(){
 
         var url = sampleMode ? "/identifiers/teach" : "/identifiers/convert";
 
-        $('#loading').html("<div class='dataTables_processing'>Processing...</div>");
+        $('#loading').html("<div class='identifiers_processing'>Processing...</div>");
         $.get(url, { identifiers: identifiers, databases: route }).done(function() {
           $('#loading').html('');
         });
