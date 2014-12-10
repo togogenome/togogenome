@@ -18,14 +18,38 @@
       .alert.alert-error
         = @error
     - unless @stanzas.blank?
-      %table#results.table.table-striped.table-bordered.table-condensed
-        %thead
-          %td Gene
-          %td Organism
-          %td Environments
-          %td Phenotypes
-        %tr
-          %td= render 'count_list', query: params[:q], stanzas: @stanzas['genes']
-          %td= render 'count_list', query: params[:q], stanzas: @stanzas['organisms']
-          %td= render 'count_list', query: params[:q], stanzas: @stanzas['environments']
-          %td= render 'count_list', query: params[:q], stanzas: @stanzas['phenotypes']
+      %ul.nav.nav-tabs
+        %li.active
+          %a{href: '#all', data: {toggle: :tab, category: :all}} All
+        %li
+          %a{href: '#gene', data: {toggle: :tab, category: :gene_reports}} Gene
+        %li
+          %a{href: '#organism', data: {toggle: :tab, category: :organism_reports}} Organism
+        %li
+          %a{href: '#environment', data: {toggle: :tab, category: :environment_reports}} Environment
+
+      .tab-content
+        #all.tab-pane.active
+          .span3
+            = render 'count_list', query: params[:q], stanzas: @stanzas['genes']
+          .span3
+            = render 'count_list', query: params[:q], stanzas: @stanzas['organisms']
+          .span3
+            = render 'count_list', query: params[:q], stanzas: @stanzas['environments']
+
+        #gene.tab-pane
+          = render 'count_list', query: params[:q], stanzas: @stanzas['genes']
+        #organism.tab-pane
+          = render 'count_list', query: params[:q], stanzas: @stanzas['organisms']
+        #environment.tab-pane
+          = render 'count_list', query: params[:q], stanzas: @stanzas['environments']
+
+:coffeescript
+  $ ->
+    # セレクトボックスで選択され描画された場合、その選択したタブを開く
+    $("a[data-category='#{@category}']").tab('show')
+
+    # タブを選択すると、セレクトボックスもそれを追随して選択する
+    $('.nav-tabs a').on "click", (e) ->
+      category =  $(e.target).data('category')
+      $("select#category").val(category)
