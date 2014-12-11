@@ -44,12 +44,12 @@ class Genome
           PREFIX insdc:  <http://ddbj.nig.ac.jp/ontologies/sequence#>
           PREFIX faldo: <http://biohackathon.org/resource/faldo#>
           PREFIX obo: <http://purl.obolibrary.org/obo/>
-          SELECT DISTINCT ?locus_tag ?product ?feature_position_beg ?feature_position_end ?sequence_ontology ?sequence_ontology_name ?bioproject ?taxonomy ?refseq ?position ?name ?position_end ?snippet ?snippet_pos ?snippet_end ?strand
+          SELECT DISTINCT ?locus_tag ?product ?sequence_ontology ?sequence_ontology_name ?taxonomy ?position ?name ?position_end ?snippet ?snippet_pos ?snippet_end ?strand
           FROM <http://togogenome.org/graph/so/>
           FROM <http://togogenome.org/graph/refseq/>
           WHERE {
             {
-              SELECT DISTINCT ?feature_position_beg ?feature_position_end ?sequence_ontology ?sequence_ontology_name ?bioproject ?taxonomy ?refseq ?position ?name ?position_end ?snippet ?snippet_pos ?snippet_end ?strand ?f
+              SELECT DISTINCT ?sequence_ontology ?sequence_ontology_name ?taxonomy ?position ?name ?position_end ?snippet ?snippet_pos ?snippet_end ?strand ?f
               WHERE {
                 VALUES (?bioproject ?name ?position ?position_end ?refseq ?snippet ?snippet_end ?snippet_pos ?strand ?taxonomy) {
                   #{bind_values(sub_results)}
