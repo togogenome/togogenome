@@ -17,7 +17,7 @@
     - if @error
       .alert.alert-error
         = @error
-    - unless @stanzas.blank?
+    - if @stanzas
       %ul.nav.nav-tabs
         %li.active
           %a{href: '#all', data: {toggle: :tab, category: :all}} All

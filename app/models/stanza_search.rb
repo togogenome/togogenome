@@ -5,6 +5,8 @@ class StanzaSearch
 
   class << self
     def search(q)
+      return nil unless q
+
       # XXX nanostanza は検索してない
       Stanza.ids.map {|id|
         search_by_stanza_id(q, id)
