@@ -555,7 +555,7 @@
 
       $("div#csv-export")
         .addClass("result-download-container")
-        .append('<a>Download CSV</a>');
+        .append('<a><i class="icon-file"></i> Download CSV</a>');
 
       $("div#csv-export > a").on('click', function() {
         location.href = $("div#csv-export > a").attr("href");
