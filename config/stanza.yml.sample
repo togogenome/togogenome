@@ -101,8 +101,22 @@ defaults: &defaults
           id:   environment_environmental_ontology
           name: Environmental ontology (MEO)
 
+      phenotypes:
+        -
+          id: mpo_shape
+          name: Shape Information
+        -
+          id: my_inf
+          name: Organism List
+        -
+          id: mpo_genus
+          name: Genus List (Phenotype-based)
+        -
+          id: mpo_environment
+          name: Environment List (Phenotype-based)
+
     nanostanza:
-      url: http://localhost:8181/stanza
+      url: http://localhost:9292/stanza
       genes:
         -
           id: protein_3d_structure_nano
@@ -141,6 +155,8 @@ defaults: &defaults
         -
           id: environment_organism_distribution_on_temperature_nano
           span: 1
+
+      phenotypes: []
 
 development:
   <<: *defaults
