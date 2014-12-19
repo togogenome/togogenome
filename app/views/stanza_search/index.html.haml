@@ -20,29 +20,23 @@
     - if @stanzas
       %ul.nav.nav-tabs
         %li.active
-          %a{href: '#all', data: {toggle: :tab, category: :all}} All
-        %li
           %a{href: '#gene', data: {toggle: :tab, category: :gene_reports}} Gene
         %li
           %a{href: '#organism', data: {toggle: :tab, category: :organism_reports}} Organism
         %li
           %a{href: '#environment', data: {toggle: :tab, category: :environment_reports}} Environment
+        %li
+          %a{href: '#phenotype', data: {toggle: :tab, category: :phenotype_reports}} Phenotype
 
       .tab-content
-        #all.tab-pane.active
-          .span3
-            = render 'count_list', query: params[:q], stanzas: @stanzas['genes']
-          .span3
-            = render 'count_list', query: params[:q], stanzas: @stanzas['organisms']
-          .span3
-            = render 'count_list', query: params[:q], stanzas: @stanzas['environments']
-
-        #gene.tab-pane
+        #gene.tab-pane.active
           = render 'count_list', query: params[:q], stanzas: @stanzas['genes']
         #organism.tab-pane
           = render 'count_list', query: params[:q], stanzas: @stanzas['organisms']
         #environment.tab-pane
           = render 'count_list', query: params[:q], stanzas: @stanzas['environments']
+        #phenotype.tab-pane
+          = render 'count_list', query: params[:q], stanzas: @stanzas['phenotypes']
 
 :coffeescript
   $ ->
