@@ -39,7 +39,6 @@ module StanzaSearchHelper
     }
 
     [
-      ['All',          'all',                 {'data-search-target' => 'category'}],
       ['Genes',        'gene_reports',        {'data-search-target' => 'category'}],
       ['Organisms',    'organism_reports',    {'data-search-target' => 'category'}],
       ['Environments', 'environment_reports', {'data-search-target' => 'category'}],
