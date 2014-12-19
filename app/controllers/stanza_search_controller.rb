@@ -1,6 +1,5 @@
 class StanzaSearchController < ApplicationController
-  def index(q, category)
-    @category = category
+  def index(q)
     @stanzas  = StanzaSearch.search(q)
   rescue => ex
     @error = ex

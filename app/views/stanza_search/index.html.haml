@@ -41,7 +41,7 @@
 :coffeescript
   $ ->
     # セレクトボックスで選択され描画された場合、その選択したタブを開く
-    $("a[data-category='#{@category}']").tab('show')
+    $("a[data-category='#{params[:category]}']").tab('show')
 
     # タブを選択すると、セレクトボックスもそれを追随して選択する
     $('.nav-tabs a').on "click", (e) ->
