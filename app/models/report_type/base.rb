@@ -22,25 +22,18 @@ module ReportType
 
       def addition_information(results)
         upids  = results.map {|b| "<#{b[:uniprot_id]}>" }.uniq.join(' ')
+        uniport_ups = results.map {|b| "<#{b[:uniprot_up]}>" }.uniq.join(' ')
         taxids = results.map {|b| "<#{b[:taxonomy_id]}>" }.uniq.join(' ')
 
-        targets = [
-          { name: 'genes',      sparql: find_genes_sparql(upids) },
-          { name: 'gos',        sparql: find_gene_ontologies_sparql(upids) },
-          { name: 'envs',       sparql: find_environments_sparql(taxids) },
-          { name: 'phenotypes', sparql: find_phenotypes_sparql(taxids) }
+        sparqls = [
+          find_genes_sparql(upids),
+          find_gene_ontologies_sparql(uniport_ups),
+          find_environments_sparql(taxids),
+          find_phenotypes_sparql(taxids)
         ]
 
-        genes, gos, envs, phenotypes = nil, nil, nil, nil
-
-        Parallel.map(targets, in_threads: 4) {|target|
-          res = query(target[:sparql])
-          case target[:name]
-          when 'genes'      then genes = res
-          when 'gos'        then gos = res
-          when 'envs'       then envs = res
-          when 'phenotypes' then phenotypes = res
-          end
+        genes, gos, envs, phenotypes = Parallel.map(sparqls, in_threads: 4) {|sparql|
+          query(sparql)
         }
 
         results.map do |result|
