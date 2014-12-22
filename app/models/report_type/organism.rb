@@ -4,19 +4,13 @@ module ReportType
       def addition_information(results)
         taxids = results.map {|b| "<#{b[:taxonomy_id]}>" }.uniq.join(' ')
 
-        targets = [
-          { name: 'envs',       sparql: find_environments_sparql(taxids) },
-          { name: 'phenotypes', sparql: find_phenotypes_sparql(taxids) }
+        sparqls = [
+          find_environments_sparql(taxids),
+          find_phenotypes_sparql(taxids)
         ]
 
-        envs, phenotypes = nil, nil
-
-        Parallel.map(targets, in_threads: 4) {|target|
-          res = query(target[:sparql])
-          case target[:name]
-          when 'envs'       then envs = res
-          when 'phenotypes' then phenotypes = res
-          end
+        envs, phenotypes = Parallel.map(sparqls, in_threads: 4) {|sparql|
+          query(sparql)
         }
 
         results.map do |result|
