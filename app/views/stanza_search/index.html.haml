@@ -19,31 +19,19 @@
         = @error
     - if @stanzas
       %ul.nav.nav-tabs
-        %li.active
-          %a{href: '#gene', data: {toggle: :tab, category: :gene_reports}} Gene
-        %li
-          %a{href: '#organism', data: {toggle: :tab, category: :organism_reports}} Organism
-        %li
-          %a{href: '#environment', data: {toggle: :tab, category: :environment_reports}} Environment
-        %li
-          %a{href: '#phenotype', data: {toggle: :tab, category: :phenotype_reports}} Phenotype
+        - %w(gene organism environment phenotype).each do |type|
+          %li{class: "#{'active' if params[:category] == type}"}
+            %a{href: "##{type}", data: {toggle: :tab, category: type.to_sym}}= type.capitalize
 
       .tab-content
-        #gene.tab-pane.active
-          = render 'count_list', query: params[:q], stanzas: @stanzas['genes']
-        #organism.tab-pane
-          = render 'count_list', query: params[:q], stanzas: @stanzas['organisms']
-        #environment.tab-pane
-          = render 'count_list', query: params[:q], stanzas: @stanzas['environments']
-        #phenotype.tab-pane
-          = render 'count_list', query: params[:q], stanzas: @stanzas['phenotypes']
+        - %w(gene organism environment phenotype).each do |type|
+          .tab-pane{id: type, class: "#{'active' if params[:category] == type}"}
+            = render 'count_list', query: params[:q], stanzas: @stanzas[type.pluralize]
 
-:coffeescript
-  $ ->
-    # セレクトボックスで選択され描画された場合、その選択したタブを開く
-    $("a[data-category='#{params[:category]}']").tab('show')
-
-    # タブを選択すると、セレクトボックスもそれを追随して選択する
-    $('.nav-tabs a').on "click", (e) ->
-      category =  $(e.target).data('category')
-      $("select#category").val(category)
+:javascript
+  $(function() {
+    return '.nav-tabs a'.on("click", function(e) {
+      var category = $(e.target).data('category');
+      return $("select#category").val(category);
+    });
+  });

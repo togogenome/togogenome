@@ -39,10 +39,10 @@ module StanzaSearchHelper
     }
 
     [
-      ['Genes',        'gene_reports',        {'data-search-target' => 'category'}],
-      ['Organisms',    'organism_reports',    {'data-search-target' => 'category'}],
-      ['Environments', 'environment_reports', {'data-search-target' => 'category'}],
-      ['Phenotypes',   'phenotype_reports',   {'data-search-target' => 'category'}],
+      ['Genes',        'gene',        {'data-search-target' => 'category'}],
+      ['Organisms',    'organism',    {'data-search-target' => 'category'}],
+      ['Environments', 'environment', {'data-search-target' => 'category'}],
+      ['Phenotypes',   'phenotype',   {'data-search-target' => 'category'}],
       ['--------------', {disabled: 'disabled'}]
     ] + stanza_ary
   end
