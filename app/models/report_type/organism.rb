@@ -23,11 +23,7 @@ module ReportType
     end
 
     def initialize(up_tax, envs, phenotypes)
-      @tax        = Base::Taxonomy.new(up_tax[:taxonomy_id], up_tax[:taxonomy_name])
-      @envs       = envs.map {|env| Base::Environment.new(env[:meo_id], env[:meo_name]) }
-      @phenotypes = phenotypes.map {|phenotype| Base::Phenotype.new(phenotype[:mpo_id], phenotype[:mpo_name]) }
+      @uniprot_taxonomy, @envs, @phenotypes = up_tax, envs, phenotypes
     end
-
-    attr_reader :tax, :envs, :phenotypes
   end
 end

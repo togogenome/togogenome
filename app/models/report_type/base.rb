@@ -48,60 +48,55 @@ module ReportType
     end
 
     def initialize(up_tax, genes, gos, envs, phenotypes)
-      @id         = up_tax[:uniprot_id].split('/').last
-      @uri        = up_tax[:uniprot_id]
-      @uniprot    = up_tax[:uniprot_up]
-      @name       = up_tax[:recommended_name]
-      @tax        = Taxonomy.new(up_tax[:taxonomy_id], up_tax[:taxonomy_name])
-      @genes      = genes.map {|gene| Gene.new(gene[:togogenome]) }
-      @gos        = gos.map {|go| GeneOntology.new(go[:quick_go_uri], go[:go_name]) }
-      @envs       = envs.map {|env| Environment.new(env[:meo_id], env[:meo_name]) }
-      @phenotypes = phenotypes.map {|phenotype| Phenotype.new(phenotype[:mpo_id], phenotype[:mpo_name]) }
+      @uniprot_taxonomy, @genes, @gos, @envs, @phenotypes = up_tax, genes, gos, envs, phenotypes
     end
 
-    attr_reader :id, :uri, :uniprot, :name, :tax, :genes, :gos, :envs, :phenotypes
+    def id; @uniprot_taxonomy[:uniprot_id].split('/').last; end
 
-    class Taxonomy
-      def initialize(uri, name)
-        @uri, @name = uri, name
-        @id = uri.split('/').last
-      end
+    def uri; @uniprot_taxonomy[:uniprot_id]; end
 
-      attr_reader :id, :uri, :name
+    def uniprot; @uniprot_taxonomy[:uniprot_up]; end
+
+    def name; @uniprot_taxonomy[:recommended_name]; end
+
+    def tax
+      Struct.new(:uri, :name) {
+        def id
+          uri.split('/').last
+        end
+      }.new(@uniprot_taxonomy[:taxonomy_id], @uniprot_taxonomy[:taxonomy_name])
     end
 
-    class Gene
-      def initialize(togogenome_uri)
-        @togogenome_uri = togogenome_uri
-        @id = togogenome_uri.split('/').last
-      end
-
-      attr_reader :id, :togogenome_uri
+    def genes
+      @genes.map {|gene|
+        Struct.new(:togogenome_uri) {
+          def id
+            togogenome_uri.split('/').last
+          end
+        }.new(gene[:togogenome])
+       }
     end
 
-    class GeneOntology
-      def initialize(quick_go_uri, name)
-        @uri, @name = quick_go_uri, name
-        @id = uri.split('id=').last
-      end
-
-      attr_reader :id, :uri, :name
+    def gos
+      @gos.map {|go|
+        Struct.new(:uri, :name) {
+          def id
+            uri.split('id=').last
+          end
+        }.new(go[:quick_go_uri], go[:go_name])
+      }
     end
 
-    class Environment
-      def initialize(id, name)
-        @id, @name = id, name
-      end
-
-      attr_reader :id, :name
+    def envs
+      @envs.map {|env|
+        Struct.new(:id, :name).new(env[:meo_id], env[:meo_name])
+      }
     end
 
-    class Phenotype
-      def initialize(id, name)
-        @id, @name = id, name
-      end
-
-      attr_reader :id, :name
+    def phenotypes
+      @phenotypes.map {|phenotype|
+        Struct.new(:id, :name).new(phenotype[:mpo_id], phenotype[:mpo_name])
+      }
     end
   end
 end
