@@ -64,20 +64,6 @@ module ReportType
 
       private
 
-      def add_common_frame(select_query, mccv: false, meo: false, mpo: false, up: false)
-        prefixes = []
-        prefixes << 'PREFIX mccv: <http://purl.jp/bio/01/mccv#>' if mccv
-        prefixes << 'PREFIX meo: <http://purl.jp/bio/11/meo/>'   if meo
-        prefixes << 'PREFIX mpo: <http://purl.jp/bio/01/mpo#>'   if mpo
-        prefixes << 'PREFIX up: <http://purl.uniprot.org/core/>' if up
-
-        <<-SPARQL.strip_heredoc
-          DEFINE sql:select-option "order"
-          #{prefixes.join("\n")}
-            #{select_query}
-        SPARQL
-      end
-
       def build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
         if (bp_id.present? || mf_id.present? || cc_id.present?)
           has_go_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
@@ -93,7 +79,13 @@ module ReportType
       end
 
       def gene_count_base(condition)
-        add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
+        <<-SPARQL.strip_heredoc
+          DEFINE sql:select-option "order"
+          #{@@prefix[:mccv]}
+          #{@@prefix[:meo]}
+          #{@@prefix[:mpo]}
+          #{@@prefix[:up]}
+
           SELECT COUNT(DISTINCT ?uniprot_id) AS ?hits_count
           WHERE {
             #{condition}
@@ -103,7 +95,13 @@ module ReportType
 
       # gene_count_base と同じ処理が多いのでなんとかする
       def organism_count_base(condition)
-        add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
+        <<-SPARQL.strip_heredoc
+          DEFINE sql:select-option "order"
+          #{@@prefix[:mccv]}
+          #{@@prefix[:meo]}
+          #{@@prefix[:mpo]}
+          #{@@prefix[:up]}
+
           SELECT COUNT(DISTINCT ?taxonomy_id) AS ?hits_count
           WHERE {
             #{condition}
@@ -112,7 +110,13 @@ module ReportType
       end
 
       def environment_count_base(condition)
-        add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
+        <<-SPARQL.strip_heredoc
+          DEFINE sql:select-option "order"
+          #{@@prefix[:mccv]}
+          #{@@prefix[:meo]}
+          #{@@prefix[:mpo]}
+          #{@@prefix[:up]}
+
           SELECT COUNT(DISTINCT ?meo_id) AS ?hits_count
           WHERE {
             {
@@ -135,7 +139,13 @@ module ReportType
       end
 
       def gene_search_base(condition, limit, offset)
-        add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
+        <<-SPARQL.strip_heredoc
+          DEFINE sql:select-option "order"
+          #{@@prefix[:mccv]}
+          #{@@prefix[:meo]}
+          #{@@prefix[:mpo]}
+          #{@@prefix[:up]}
+
           SELECT DISTINCT ?uniprot_id ?uniprot_up ?recommended_name ?taxonomy_id ?taxonomy_name
           WHERE {
             #{condition}
@@ -145,7 +155,13 @@ module ReportType
 
       # gene_search_base と同じ処理が多いのでなんとかする
       def organism_search_base(condition, limit, offset)
-        add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
+        <<-SPARQL.strip_heredoc
+          DEFINE sql:select-option "order"
+          #{@@prefix[:mccv]}
+          #{@@prefix[:meo]}
+          #{@@prefix[:mpo]}
+          #{@@prefix[:up]}
+
           SELECT DISTINCT ?taxonomy_id ?taxonomy_name
           WHERE {
             #{condition}
@@ -154,7 +170,13 @@ module ReportType
       end
 
       def environment_search_base(condition, limit, offset)
-        add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
+        <<-SPARQL.strip_heredoc
+          DEFINE sql:select-option "order"
+          #{@@prefix[:mccv]}
+          #{@@prefix[:meo]}
+          #{@@prefix[:mpo]}
+          #{@@prefix[:up]}
+
           SELECT DISTINCT ?meo_id ?meo_name
           WHERE {
             {
