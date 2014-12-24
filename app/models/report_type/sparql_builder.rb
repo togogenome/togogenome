@@ -3,6 +3,20 @@ module ReportType
     extend ActiveSupport::Concern
 
     module ClassMethods
+      @@ontology = {
+        uniprot:         '<http://togogenome.org/graph/uniprot/>',
+        taxonomy:        '<http://togogenome.org/graph/taxonomy/>',
+        go:              '<http://togogenome.org/graph/go/>',
+        mpo:             '<http://togogenome.org/graph/mpo/>',
+        meo:             '<http://togogenome.org/graph/meo/>',
+        gold:            '<http://togogenome.org/graph/gold/>',
+        tgup:            '<http://togogenome.org/graph/tgup/>',
+        tgtax:           '<http://togogenome.org/graph/tgtax/>',
+        meo_descendants: '<http://togogenome.org/graph/meo_descendants/>',
+        mpo_descendants: '<http://togogenome.org/graph/mpo_descendants/>',
+        goup:            '<http://togogenome.org/graph/group/>'
+      }
+
       def count_sparql(report_type, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
         condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
 
@@ -24,9 +38,9 @@ module ReportType
       end
 
       def find_genes_sparql(upids)
-        common_frame(<<-SPARQL.strip_heredoc)
+        add_common_frame(<<-SPARQL.strip_heredoc)
           SELECT ?uniprot_id ?togogenome
-          FROM #{ontology(:tgup)}
+          FROM #{@@ontology[:tgup]}
           WHERE {
             VALUES ?uniprot_id { #{upids} }
             ?togogenome rdfs:seeAlso ?uniprot_id .
@@ -35,10 +49,10 @@ module ReportType
       end
 
       def find_gene_ontologies_sparql(uniprots)
-        common_frame(<<-SPARQL.strip_heredoc, up: true)
+        add_common_frame(<<-SPARQL.strip_heredoc, up: true)
           SELECT ?uniprot_up ?quick_go_uri ?go_name
-          FROM #{ontology(:uniprot)}
-          FROM #{ontology(:go)}
+          FROM #{@@ontology[:uniprot]}
+          FROM #{@@ontology[:go]}
           WHERE {
             VALUES ?uniprot_up { #{uniprots} }
             ?uniprot_up up:classifiedWith ?up_go_uri FILTER (STRSTARTS(STR(?up_go_uri), "http://purl.uniprot.org/go/")) .
@@ -52,11 +66,11 @@ module ReportType
       end
 
       def find_environments_sparql(taxonomies)
-        common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true)
+        add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true)
           SELECT DISTINCT ?meo_id ?taxonomy_id ?meo_name
-          FROM #{ontology(:gold)}
-          FROM #{ontology(:mpo)}
-          FROM #{ontology(:meo)}
+          FROM #{@@ontology[:gold]}
+          FROM #{@@ontology[:mpo]}
+          FROM #{@@ontology[:meo]}
           WHERE {
             VALUES ?taxonomy_id { #{taxonomies} }
             VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 }
@@ -70,10 +84,10 @@ module ReportType
       end
 
       def find_phenotypes_sparql(taxonomies)
-        common_frame(<<-SPARQL.strip_heredoc)
+        add_common_frame(<<-SPARQL.strip_heredoc)
           SELECT ?taxonomy_id ?mpo_id ?mpo_name
-          FROM #{ontology(:gold)}
-          FROM #{ontology(:mpo)}
+          FROM #{@@ontology[:gold]}
+          FROM #{@@ontology[:mpo]}
           WHERE {
             VALUES ?taxonomy_id { #{taxonomies} }
             FILTER (STRSTARTS(STR(?mpo_url), "http://purl.jp/bio/01/mpo#MPO_"))
@@ -87,7 +101,7 @@ module ReportType
 
       private
 
-      def common_frame(select_query, mccv: false, meo: false, mpo: false, up: false)
+      def add_common_frame(select_query, mccv: false, meo: false, mpo: false, up: false)
         prefixes = []
         prefixes << 'PREFIX mccv: <http://purl.jp/bio/01/mccv#>' if mccv
         prefixes << 'PREFIX meo: <http://purl.jp/bio/11/meo/>'   if meo
@@ -99,22 +113,6 @@ module ReportType
           #{prefixes.join("\n")}
             #{select_query}
         SPARQL
-      end
-
-      def ontology(key)
-        case key
-        when :uniprot         then '<http://togogenome.org/graph/uniprot/>'
-        when :taxonomy        then '<http://togogenome.org/graph/taxonomy/>'
-        when :go              then '<http://togogenome.org/graph/go/>'
-        when :mpo             then '<http://togogenome.org/graph/mpo/>'
-        when :meo             then '<http://togogenome.org/graph/meo/>'
-        when :gold            then '<http://togogenome.org/graph/gold/>'
-        when :tgup            then '<http://togogenome.org/graph/tgup/>'
-        when :tgtax           then '<http://togogenome.org/graph/tgtax/>'
-        when :meo_descendants then '<http://togogenome.org/graph/meo_descendants/>'
-        when :mpo_descendants then '<http://togogenome.org/graph/mpo_descendants/>'
-        when :goup            then '<http://togogenome.org/graph/group/>'
-        end
       end
 
       def build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
@@ -132,7 +130,7 @@ module ReportType
       end
 
       def protein_count_base(condition)
-        common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
+        add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
           SELECT COUNT(DISTINCT ?uniprot_id) AS ?hits_count
           WHERE {
             #{condition}
@@ -142,7 +140,7 @@ module ReportType
 
       # protein_count_base と同じ処理が多いのでなんとかする
       def organism_count_base(condition)
-        common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
+        add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
           SELECT COUNT(DISTINCT ?taxonomy_id) AS ?hits_count
           WHERE {
             #{condition}
@@ -151,7 +149,7 @@ module ReportType
       end
 
       def environment_count_base(condition)
-        common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
+        add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
           SELECT COUNT(DISTINCT ?meo_id) AS ?hits_count
           WHERE {
             {
@@ -162,19 +160,19 @@ module ReportType
             }
 
             VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 } .
-            GRAPH #{ontology(:gold)} {
+            GRAPH #{@@ontology[:gold]} {
               ?gold_iri ?p_meo ?meo_iri .
               ?gold_iri mccv:MCCV_000020 ?taxonomy_id .
               BIND (REPLACE(STR(?meo_iri),"http://purl.jp/bio/11/meo/", "" ) AS ?meo_id)
             }
 
-            GRAPH #{ontology(:meo)} { ?meo_iri rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
+            GRAPH #{@@ontology[:meo]} { ?meo_iri rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
           }
         SPARQL
       end
 
       def protein_search_base(condition, limit, offset)
-        common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
+        add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
           SELECT DISTINCT ?uniprot_id ?uniprot_up ?recommended_name ?taxonomy_id ?taxonomy_name
           WHERE {
             #{condition}
@@ -184,7 +182,7 @@ module ReportType
 
       # protein_search_base と同じ処理が多いのでなんとかする
       def organism_search_base(condition, limit, offset)
-        common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
+        add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
           SELECT DISTINCT ?taxonomy_id ?taxonomy_name
           WHERE {
             #{condition}
@@ -193,7 +191,7 @@ module ReportType
       end
 
       def environment_search_base(condition, limit, offset)
-        common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
+        add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
           SELECT DISTINCT ?meo_id ?meo_name
           WHERE {
             {
@@ -204,13 +202,13 @@ module ReportType
             }
 
             VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 } .
-            GRAPH #{ontology(:gold)} {
+            GRAPH #{@@ontology[:gold]} {
               ?gold_iri ?p_meo ?meo_iri .
               ?gold_iri mccv:MCCV_000020 ?taxonomy_id .
               BIND (REPLACE(STR(?meo_iri),"http://purl.jp/bio/11/meo/", "" ) AS ?meo_id)
             }
 
-            GRAPH #{ontology(:meo)} { ?meo_iri rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
+            GRAPH #{@@ontology[:meo]} { ?meo_iri rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
           } LIMIT #{limit} OFFSET #{offset}
         SPARQL
       end
@@ -267,16 +265,16 @@ module ReportType
       end
 
       def taxid_to_taxname
-        "GRAPH #{ontology(:taxonomy)} { ?taxonomy_id rdfs:label ?taxonomy_name }"
+        "GRAPH #{@@ontology[:taxonomy]} { ?taxonomy_id rdfs:label ?taxonomy_name }"
       end
 
       def up_to_upname
-        "GRAPH #{ontology(:uniprot)} { ?uniprot_up up:recommendedName/up:fullName ?recommended_name }"
+        "GRAPH #{@@ontology[:uniprot]} { ?uniprot_up up:recommendedName/up:fullName ?recommended_name }"
       end
 
       def taxid_to_togogenome_to_upid
         <<-SPARQL
-          GRAPH #{ontology(:tgup)} {
+          GRAPH #{@@ontology[:tgup]} {
             ?togogenome rdfs:seeAlso ?taxonomy_id .
             ?togogenome rdfs:seeAlso ?uniprot_id .
             ?uniprot_id rdfs:seeAlso ?uniprot_up .
@@ -286,7 +284,7 @@ module ReportType
 
       def upid_to_togogenome_to_taxid
         <<-SPARQL
-          GRAPH #{ontology(:tgup)} {
+          GRAPH #{@@ontology[:tgup]} {
             ?togogenome rdfs:seeAlso ?uniprot_id .
             ?togogenome rdfs:seeAlso ?taxonomy_id .
             ?uniprot_id rdfs:seeAlso ?uniprot_up .
@@ -297,7 +295,7 @@ module ReportType
       def tax_hierarchy(tax_id)
         return '' if tax_id.empty?
 
-        "GRAPH #{ontology(:tgtax)} { ?taxonomy_id rdfs:subClassOf <#{tax_id}> }"
+        "GRAPH #{@@ontology[:tgtax]} { ?taxonomy_id rdfs:subClassOf <#{tax_id}> }"
       end
 
       def meoid_to_taxid(meo_id, upper_side = false)
@@ -306,8 +304,8 @@ module ReportType
         if upper_side
           <<-SPARQL
             VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
-            GRAPH #{ontology(:meo_descendants)} { ?meo_id rdfs:subClassOf <#{meo_id}> }
-            GRAPH #{ontology(:gold)} {
+            GRAPH #{@@ontology[:meo_descendants]} { ?meo_id rdfs:subClassOf <#{meo_id}> }
+            GRAPH #{@@ontology[:gold]} {
               ?gold_id mccv:MCCV_000020 ?taxonomy_id .
               ?gold_id ?gold_meo ?meo_id .
             }
@@ -315,11 +313,11 @@ module ReportType
         else
           <<-SPARQL
             VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
-            GRAPH #{ontology(:gold)} {
+            GRAPH #{@@ontology[:gold]} {
               ?gold_id mccv:MCCV_000020 ?taxonomy_id .
               ?gold_id ?gold_meo ?meo_id .
             }
-            GRAPH #{ontology(:meo_descendants)} { ?meo_id rdfs:subClassOf <#{meo_id}> }
+            GRAPH #{@@ontology[:meo_descendants]} { ?meo_id rdfs:subClassOf <#{meo_id}> }
           SPARQL
         end
       end
@@ -329,20 +327,20 @@ module ReportType
 
         if upper_side
           <<-SPARQL
-            GRAPH #{ontology(:mpo_descendants)} { ?mpo_id rdfs:subClassOf <#{mpo_id}> }
-            GRAPH #{ontology(:gold)} { ?taxonomy_id ?tax_mpo ?mpo_id FILTER (?tax_mpo IN (mpo:MPO_10002, mpo:MPO_10001, mpo:MPO_10003, mpo:MPO_10005, mpo:MPO_10009, mpo:MPO_10010, mpo:MPO_10011, mpo:MPO_10013, mpo:MPO_10014, mpo:MPO_10015, mpo:MPO_10016, mpo:MPO_10006, mpo:MPO_10007)) }
+            GRAPH #{@@ontology[:mpo_descendants]} { ?mpo_id rdfs:subClassOf <#{mpo_id}> }
+            GRAPH #{@@ontology[:gold]} { ?taxonomy_id ?tax_mpo ?mpo_id FILTER (?tax_mpo IN (mpo:MPO_10002, mpo:MPO_10001, mpo:MPO_10003, mpo:MPO_10005, mpo:MPO_10009, mpo:MPO_10010, mpo:MPO_10011, mpo:MPO_10013, mpo:MPO_10014, mpo:MPO_10015, mpo:MPO_10016, mpo:MPO_10006, mpo:MPO_10007)) }
           SPARQL
         else
           <<-SPARQL
-            GRAPH #{ontology(:gold)} { ?taxonomy_id ?tax_mpo ?mpo_id FILTER (?tax_mpo IN (mpo:MPO_10002, mpo:MPO_10001, mpo:MPO_10003, mpo:MPO_10005, mpo:MPO_10009, mpo:MPO_10010, mpo:MPO_10011, mpo:MPO_10013, mpo:MPO_10014, mpo:MPO_10015, mpo:MPO_10016, mpo:MPO_10006, mpo:MPO_10007)) }
-            GRAPH #{ontology(:mpo_descendants)} { ?mpo_id rdfs:subClassOf <#{mpo_id}> }
+            GRAPH #{@@ontology[:gold]} { ?taxonomy_id ?tax_mpo ?mpo_id FILTER (?tax_mpo IN (mpo:MPO_10002, mpo:MPO_10001, mpo:MPO_10003, mpo:MPO_10005, mpo:MPO_10009, mpo:MPO_10010, mpo:MPO_10011, mpo:MPO_10013, mpo:MPO_10014, mpo:MPO_10015, mpo:MPO_10016, mpo:MPO_10006, mpo:MPO_10007)) }
+            GRAPH #{@@ontology[:mpo_descendants]} { ?mpo_id rdfs:subClassOf <#{mpo_id}> }
           SPARQL
         end
       end
 
       def goid_to_upid(bp_id, mf_id, cc_id)
         <<-SPARQL
-          GRAPH #{ontology(:goup)} {
+          GRAPH #{@@ontology[:goup]} {
             #{go_upid(bp_id)}
             #{go_upid(mf_id)}
             #{go_upid(cc_id)}
