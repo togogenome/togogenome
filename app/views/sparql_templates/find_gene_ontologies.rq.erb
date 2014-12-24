@@ -1,0 +1,15 @@
+DEFINE sql:select-option "order"
+<%= @@prefix[:up] %>
+
+SELECT ?uniprot_up ?quick_go_uri ?go_name
+FROM <%= @@ontology[:uniprot] %>
+FROM <%= @@ontology[:go] %>
+WHERE {
+  VALUES ?uniprot_up { <%= uniprots %> }
+  ?uniprot_up up:classifiedWith ?up_go_uri FILTER (STRSTARTS(STR(?up_go_uri), "http://purl.uniprot.org/go/")) .
+  ?up_go_uri a up:Concept .
+  BIND(IRI(REPLACE(STR(?up_go_uri),"http://purl.uniprot.org/go/","http://purl.obolibrary.org/obo/GO_", '')) AS ?obo_go_uri) .
+  BIND(IRI(REPLACE(STR(?up_go_uri),"http://purl.uniprot.org/go/","http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:", '')) AS ?quick_go_uri) .
+  ?obo_go_uri rdfs:label ?go_name .
+  FILTER(LANG(?go_name) = "" || LANGMATCHES(LANG(?go_name), "en")) .
+}
