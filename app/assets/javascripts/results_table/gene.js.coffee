@@ -3,7 +3,7 @@ $ ->
   drawInfo.gene =
     dataTable: $("#gene_results").DataTable(
       ajax:
-        url: "/report_type/genes/search.json"
+        url: "/report_type/genes.json"
       columns: [
         {data: "name", width: "220px"}
         {data: "gene_links"}
@@ -12,7 +12,7 @@ $ ->
         {data: "organism_link"}
       ]
     )
-    downloadCSV: '/report_type/genes/search.csv'
+    downloadCSV: '/report_type/genes.csv'
 
   $("#gene_results").parent().find(".result-download-container").append "<a>Download CSV</a>"
   return

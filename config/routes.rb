@@ -6,10 +6,10 @@ TogoGenome::Application.routes.draw do
   end
 
   namespace :report_type do
-    get '/genes/search'
-    get '/organisms/search'
-    get '/environments/search'
-    get '/phenotypes/search'
+    resources :genes, only: %w(index)
+    resources :organisms, only: %w(index)
+    resources :environments, only: %w(index)
+    resources :phenotypes, only: %w(index)
   end
 
   resources :genomes, only: %w(index) do
