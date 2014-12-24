@@ -2,7 +2,7 @@
 window.drawInfo = {}
 
 $ ->
-  currentKey = "protein"
+  currentKey = "gene"
 
   # DataTable のデフォルト値を設定
   $.extend $.fn.dataTable.defaults,
@@ -199,4 +199,5 @@ $ ->
     window.query()
     return
 
+  $('#result_tabs a:first').tab('show')
   return

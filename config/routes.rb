@@ -6,7 +6,6 @@ TogoGenome::Application.routes.draw do
   end
 
   namespace :report_type do
-    get '/proteins/search'
     get '/genes/search'
     get '/organisms/search'
     get '/environments/search'

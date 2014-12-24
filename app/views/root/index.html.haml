@@ -354,15 +354,11 @@
   - report_types = %w(gene organism environment phenotype)
   #genomes.row-fluid
     %ul#result_tabs.nav.nav-tabs
-      %li.active
-        %a{href: '#all', data: {toggle: 'tab', key: 'protein'}} All
       - report_types.each do |report_type|
         %li
           %a{href: "##{report_type}", data: {toggle: 'tab', key: report_type}}= report_type.humanize
 
     .tab-content#result_panes
-      #all.tab-pane.active
-        = render partial: 'report_type/proteins/results', locals: { results: [] }
       - report_types.each do |report_type|
         .tab-pane{id: report_type}
           = render partial: "report_type/#{report_type.pluralize}/results", locals: { results: [] }
