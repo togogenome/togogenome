@@ -1,3 +1,5 @@
+require 'erb'
+
 module ReportType
   module SparqlBuilder
     extend ActiveSupport::Concern
@@ -17,13 +19,20 @@ module ReportType
         goup:            '<http://togogenome.org/graph/group/>'
       }
 
+      @@prefix = {
+        up:   'PREFIX up: <http://purl.uniprot.org/core/>',
+        mccv: 'PREFIX mccv: <http://purl.jp/bio/01/mccv#>',
+        meo:  'PREFIX meo: <http://purl.jp/bio/11/meo/>',
+        mpo:  'PREFIX mpo: <http://purl.jp/bio/01/mpo#>'
+      }
+
       def count_sparql(report_type, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
         condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
 
         case report_type
-        when 'Protein', 'Gene' then protein_count_base(condition)
-        when 'Organism'        then organism_count_base(condition)
-        when 'Environment'     then environment_count_base(condition)
+        when 'Gene'       then gene_count_base(condition)
+        when 'Organism'   then organism_count_base(condition)
+        when 'Environment'then environment_count_base(condition)
         end
       end
 
@@ -31,72 +40,26 @@ module ReportType
         condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
 
         case report_type
-        when 'Protein', 'Gene' then protein_search_base(condition, limit, offset)
-        when 'Organism'        then organism_search_base(condition, limit, offset)
-        when 'Environment'     then environment_search_base(condition, limit, offset)
+        when 'Gene'        then gene_search_base(condition, limit, offset)
+        when 'Organism'    then organism_search_base(condition, limit, offset)
+        when 'Environment' then environment_search_base(condition, limit, offset)
         end
       end
 
       def find_genes_sparql(upids)
-        add_common_frame(<<-SPARQL.strip_heredoc)
-          SELECT ?uniprot_id ?togogenome
-          FROM #{@@ontology[:tgup]}
-          WHERE {
-            VALUES ?uniprot_id { #{upids} }
-            ?togogenome rdfs:seeAlso ?uniprot_id .
-          }
-        SPARQL
+        ERB.new(File.read('app/views/sparql_templates/find_genes.rq.erb')).result(binding)
       end
 
       def find_gene_ontologies_sparql(uniprots)
-        add_common_frame(<<-SPARQL.strip_heredoc, up: true)
-          SELECT ?uniprot_up ?quick_go_uri ?go_name
-          FROM #{@@ontology[:uniprot]}
-          FROM #{@@ontology[:go]}
-          WHERE {
-            VALUES ?uniprot_up { #{uniprots} }
-            ?uniprot_up up:classifiedWith ?up_go_uri FILTER (STRSTARTS(STR(?up_go_uri), "http://purl.uniprot.org/go/")) .
-            ?up_go_uri a up:Concept .
-            BIND(IRI(REPLACE(STR(?up_go_uri),"http://purl.uniprot.org/go/","http://purl.obolibrary.org/obo/GO_", '')) AS ?obo_go_uri) .
-            BIND(IRI(REPLACE(STR(?up_go_uri),"http://purl.uniprot.org/go/","http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:", '')) AS ?quick_go_uri) .
-            ?obo_go_uri rdfs:label ?go_name .
-            FILTER(LANG(?go_name) = "" || LANGMATCHES(LANG(?go_name), "en")) .
-          }
-        SPARQL
+        ERB.new(File.read('app/views/sparql_templates/find_gene_ontologies.rq.erb')).result(binding)
       end
 
       def find_environments_sparql(taxonomies)
-        add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true)
-          SELECT DISTINCT ?meo_id ?taxonomy_id ?meo_name
-          FROM #{@@ontology[:gold]}
-          FROM #{@@ontology[:mpo]}
-          FROM #{@@ontology[:meo]}
-          WHERE {
-            VALUES ?taxonomy_id { #{taxonomies} }
-            VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 }
-            ?gold_iri ?p_meo ?meo_iri .
-            ?gold_iri mccv:MCCV_000020 ?taxonomy_id .
-            BIND (REPLACE(STR(?meo_iri),"http://purl.jp/bio/11/meo/", "" ) AS ?meo_id)
-
-            ?meo_iri rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) .
-          }
-        SPARQL
+        ERB.new(File.read('app/views/sparql_templates/find_environments.rq.erb')).result(binding)
       end
 
       def find_phenotypes_sparql(taxonomies)
-        add_common_frame(<<-SPARQL.strip_heredoc)
-          SELECT ?taxonomy_id ?mpo_id ?mpo_name
-          FROM #{@@ontology[:gold]}
-          FROM #{@@ontology[:mpo]}
-          WHERE {
-            VALUES ?taxonomy_id { #{taxonomies} }
-            FILTER (STRSTARTS(STR(?mpo_url), "http://purl.jp/bio/01/mpo#MPO_"))
-            ?taxonomy_id ?p ?mpo_url .
-            BIND (REPLACE(STR(?mpo_url),"http://purl.jp/bio/01/mpo#", "" ) AS ?mpo_id)
-            ?mpo_url rdfs:label ?mpo_name .
-            FILTER(LANG(?mpo_name) = "" || LANGMATCHES(LANG(?mpo_name), "en")) .
-          }
-        SPARQL
+        ERB.new(File.read('app/views/sparql_templates/find_phenotypes.rq.erb')).result(binding)
       end
 
       private
@@ -129,7 +92,7 @@ module ReportType
         end
       end
 
-      def protein_count_base(condition)
+      def gene_count_base(condition)
         add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
           SELECT COUNT(DISTINCT ?uniprot_id) AS ?hits_count
           WHERE {
@@ -138,7 +101,7 @@ module ReportType
         SPARQL
       end
 
-      # protein_count_base と同じ処理が多いのでなんとかする
+      # gene_count_base と同じ処理が多いのでなんとかする
       def organism_count_base(condition)
         add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
           SELECT COUNT(DISTINCT ?taxonomy_id) AS ?hits_count
@@ -171,7 +134,7 @@ module ReportType
         SPARQL
       end
 
-      def protein_search_base(condition, limit, offset)
+      def gene_search_base(condition, limit, offset)
         add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
           SELECT DISTINCT ?uniprot_id ?uniprot_up ?recommended_name ?taxonomy_id ?taxonomy_name
           WHERE {
@@ -180,7 +143,7 @@ module ReportType
         SPARQL
       end
 
-      # protein_search_base と同じ処理が多いのでなんとかする
+      # gene_search_base と同じ処理が多いのでなんとかする
       def organism_search_base(condition, limit, offset)
         add_common_frame(<<-SPARQL.strip_heredoc, mccv: true, meo: true, mpo: true, up: true)
           SELECT DISTINCT ?taxonomy_id ?taxonomy_name

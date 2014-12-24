@@ -1,0 +1,17 @@
+DEFINE sql:select-option "order"
+<%= @@prefix[:mccv] %>
+<%= @@prefix[:meo] %>
+
+SELECT DISTINCT ?meo_id ?taxonomy_id ?meo_name
+FROM <%= @@ontology[:gold] %>
+FROM <%= @@ontology[:mpo] %>
+FROM <%= @@ontology[:meo] %>
+WHERE {
+  VALUES ?taxonomy_id { <%= taxonomies %> }
+  VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 }
+  ?gold_iri ?p_meo ?meo_iri .
+  ?gold_iri mccv:MCCV_000020 ?taxonomy_id .
+  BIND (REPLACE(STR(?meo_iri),"http://purl.jp/bio/11/meo/", "" ) AS ?meo_id)
+
+  ?meo_iri rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) .
+}
