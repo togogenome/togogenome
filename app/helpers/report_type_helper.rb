@@ -1,4 +1,4 @@
-module ProteinsHelper
+module ReportTypeHelper
   def link_list(lists, target)
     content_tag(:ul) do
       lists.each do |item|
