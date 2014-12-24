@@ -30,9 +30,9 @@ module ReportType
         condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
 
         case report_type
-        when 'Gene'       then gene_count_base(condition)
-        when 'Organism'   then organism_count_base(condition)
-        when 'Environment'then environment_count_base(condition)
+        when 'Gene'       then gene_count(condition)
+        when 'Organism'   then organism_count(condition)
+        when 'Environment'then environment_count(condition)
         end
       end
 
@@ -40,9 +40,9 @@ module ReportType
         condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
 
         case report_type
-        when 'Gene'        then gene_search_base(condition, limit, offset)
-        when 'Organism'    then organism_search_base(condition, limit, offset)
-        when 'Environment' then environment_search_base(condition, limit, offset)
+        when 'Gene'        then gene_search(condition, limit, offset)
+        when 'Organism'    then organism_search(condition, limit, offset)
+        when 'Environment' then environment_search(condition, limit, offset)
         end
       end
 
@@ -78,7 +78,7 @@ module ReportType
         end
       end
 
-      def gene_count_base(condition)
+      def gene_count(condition)
         <<-SPARQL.strip_heredoc
           DEFINE sql:select-option "order"
           #{@@prefix[:mccv]}
@@ -94,7 +94,7 @@ module ReportType
       end
 
       # gene_count_base と同じ処理が多いのでなんとかする
-      def organism_count_base(condition)
+      def organism_count(condition)
         <<-SPARQL.strip_heredoc
           DEFINE sql:select-option "order"
           #{@@prefix[:mccv]}
@@ -109,7 +109,7 @@ module ReportType
         SPARQL
       end
 
-      def environment_count_base(condition)
+      def environment_count(condition)
         <<-SPARQL.strip_heredoc
           DEFINE sql:select-option "order"
           #{@@prefix[:mccv]}
@@ -138,7 +138,7 @@ module ReportType
         SPARQL
       end
 
-      def gene_search_base(condition, limit, offset)
+      def gene_search(condition, limit, offset)
         <<-SPARQL.strip_heredoc
           DEFINE sql:select-option "order"
           #{@@prefix[:mccv]}
@@ -154,7 +154,7 @@ module ReportType
       end
 
       # gene_search_base と同じ処理が多いのでなんとかする
-      def organism_search_base(condition, limit, offset)
+      def organism_search(condition, limit, offset)
         <<-SPARQL.strip_heredoc
           DEFINE sql:select-option "order"
           #{@@prefix[:mccv]}
@@ -169,7 +169,7 @@ module ReportType
         SPARQL
       end
 
-      def environment_search_base(condition, limit, offset)
+      def environment_search(condition, limit, offset)
         <<-SPARQL.strip_heredoc
           DEFINE sql:select-option "order"
           #{@@prefix[:mccv]}
