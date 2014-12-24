@@ -1,5 +1,5 @@
 class ReportType::BaseController < ApplicationController
-  def search(environment, taxonomy, biological_process, molecular_function, cellular_component, phenotype, length, start)
+  def index(environment, taxonomy, biological_process, molecular_function, cellular_component, phenotype, length, start)
     # todo: order
     @args = {
       meo_id: environment,
