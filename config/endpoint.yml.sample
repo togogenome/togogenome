@@ -1,5 +1,5 @@
 defaults: &defaults
-  uri: 'http://togostanza.org/sparql'
+  uri: 'http://togogenome.org/sparql'
 
 development:
   <<: *defaults
