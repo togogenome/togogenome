@@ -5,9 +5,9 @@ $ ->
       ajax:
         url: "/report_type/genes.json"
       columns: [
-        {data: "name", width: "220px"}
         {data: "gene_links"}
         {data: "entry_identifier", width: "100px"}
+        {data: "name", width: "220px"}
         {data: "go_links"}
         {data: "organism_link"}
       ]
