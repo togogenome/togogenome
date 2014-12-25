@@ -66,15 +66,15 @@ module ReportType
 
       def build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
         if (bp_id.present? || mf_id.present? || cc_id.present?)
-          has_go_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+          ERB.new(File.read('app/views/sparql_templates/has_go_condition.rq.erb')).result(binding)
         elsif tax_id.present?
-          has_tax_condition(meo_id, tax_id, mpo_id)
+          ERB.new(File.read('app/views/sparql_templates/has_tax_condition.rq.erb')).result(binding)
         elsif meo_id.present?
-          has_meo_condition(meo_id, mpo_id)
+          ERB.new(File.read('app/views/sparql_templates/has_meo_condition.rq.erb')).result(binding)
         elsif mpo_id.present?
-          has_mpo_condition(mpo_id)
+          ERB.new(File.read('app/views/sparql_templates/has_mpo_condition.rq.erb')).result(binding)
         else
-          init_condition
+          ERB.new(File.read('app/views/sparql_templates/init_condition.rq.erb')).result(binding)
         end
       end
 
@@ -153,148 +153,6 @@ module ReportType
             GRAPH #{@@ontology[:meo]} { ?meo_iri rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
           } LIMIT #{limit} OFFSET #{offset}
         SPARQL
-      end
-
-      def has_go_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
-        <<-SPARQL
-          #{goid_to_upid(bp_id, mf_id, cc_id)}
-          #{upid_to_togogenome_to_taxid}
-          #{up_to_upname}
-          #{taxid_to_taxname}
-          #{tax_hierarchy(tax_id)}
-          #{meoid_to_taxid(meo_id)}
-          #{mpoid_to_taxid(mpo_id)}
-        SPARQL
-      end
-
-      def has_tax_condition(meo_id, tax_id, mpo_id)
-        <<-SPARQL
-          #{tax_hierarchy(tax_id)}
-          #{taxid_to_taxname}
-          #{taxid_to_togogenome_to_upid}
-          #{up_to_upname}
-          #{meoid_to_taxid(meo_id)}
-          #{mpoid_to_taxid(mpo_id)}
-        SPARQL
-      end
-
-      def has_meo_condition(meo_id, mpo_id)
-        <<-SPARQL
-          #{meoid_to_taxid(meo_id, true)}
-          #{mpoid_to_taxid(mpo_id)}
-          #{taxid_to_taxname}
-          #{taxid_to_togogenome_to_upid}
-          #{up_to_upname}
-        SPARQL
-      end
-
-      def has_mpo_condition(mpo_id)
-        <<-SPARQL
-          #{mpoid_to_taxid(mpo_id, true)}
-          #{taxid_to_taxname}
-          #{taxid_to_togogenome_to_upid}
-          #{up_to_upname}
-        SPARQL
-      end
-
-      def init_condition
-        <<-SPARQL
-          #{tax_hierarchy('http://identifiers.org/taxonomy/1')}
-          #{taxid_to_taxname}
-          #{taxid_to_togogenome_to_upid}
-          #{up_to_upname}
-        SPARQL
-      end
-
-      def taxid_to_taxname
-        "GRAPH #{@@ontology[:taxonomy]} { ?taxonomy_id rdfs:label ?taxonomy_name }"
-      end
-
-      def up_to_upname
-        "GRAPH #{@@ontology[:uniprot]} { ?uniprot_up up:recommendedName/up:fullName ?recommended_name }"
-      end
-
-      def taxid_to_togogenome_to_upid
-        <<-SPARQL
-          GRAPH #{@@ontology[:tgup]} {
-            ?togogenome rdfs:seeAlso ?taxonomy_id .
-            ?togogenome rdfs:seeAlso ?uniprot_id .
-            ?uniprot_id rdfs:seeAlso ?uniprot_up .
-          }
-        SPARQL
-      end
-
-      def upid_to_togogenome_to_taxid
-        <<-SPARQL
-          GRAPH #{@@ontology[:tgup]} {
-            ?togogenome rdfs:seeAlso ?uniprot_id .
-            ?togogenome rdfs:seeAlso ?taxonomy_id .
-            ?uniprot_id rdfs:seeAlso ?uniprot_up .
-          }
-        SPARQL
-      end
-
-      def tax_hierarchy(tax_id)
-        return '' if tax_id.empty?
-
-        "GRAPH #{@@ontology[:tgtax]} { ?taxonomy_id rdfs:subClassOf <#{tax_id}> }"
-      end
-
-      def meoid_to_taxid(meo_id, upper_side = false)
-        return '' if meo_id.empty?
-
-        if upper_side
-          <<-SPARQL
-            VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
-            GRAPH #{@@ontology[:meo_descendants]} { ?meo_id rdfs:subClassOf <#{meo_id}> }
-            GRAPH #{@@ontology[:gold]} {
-              ?gold_id mccv:MCCV_000020 ?taxonomy_id .
-              ?gold_id ?gold_meo ?meo_id .
-            }
-          SPARQL
-        else
-          <<-SPARQL
-            VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
-            GRAPH #{@@ontology[:gold]} {
-              ?gold_id mccv:MCCV_000020 ?taxonomy_id .
-              ?gold_id ?gold_meo ?meo_id .
-            }
-            GRAPH #{@@ontology[:meo_descendants]} { ?meo_id rdfs:subClassOf <#{meo_id}> }
-          SPARQL
-        end
-      end
-
-      def mpoid_to_taxid(mpo_id, upper_side = false)
-        return '' if mpo_id.empty?
-
-        if upper_side
-          <<-SPARQL
-            GRAPH #{@@ontology[:mpo_descendants]} { ?mpo_id rdfs:subClassOf <#{mpo_id}> }
-            GRAPH #{@@ontology[:gold]} { ?taxonomy_id ?tax_mpo ?mpo_id FILTER (?tax_mpo IN (mpo:MPO_10002, mpo:MPO_10001, mpo:MPO_10003, mpo:MPO_10005, mpo:MPO_10009, mpo:MPO_10010, mpo:MPO_10011, mpo:MPO_10013, mpo:MPO_10014, mpo:MPO_10015, mpo:MPO_10016, mpo:MPO_10006, mpo:MPO_10007)) }
-          SPARQL
-        else
-          <<-SPARQL
-            GRAPH #{@@ontology[:gold]} { ?taxonomy_id ?tax_mpo ?mpo_id FILTER (?tax_mpo IN (mpo:MPO_10002, mpo:MPO_10001, mpo:MPO_10003, mpo:MPO_10005, mpo:MPO_10009, mpo:MPO_10010, mpo:MPO_10011, mpo:MPO_10013, mpo:MPO_10014, mpo:MPO_10015, mpo:MPO_10016, mpo:MPO_10006, mpo:MPO_10007)) }
-            GRAPH #{@@ontology[:mpo_descendants]} { ?mpo_id rdfs:subClassOf <#{mpo_id}> }
-          SPARQL
-        end
-      end
-
-      def goid_to_upid(bp_id, mf_id, cc_id)
-        <<-SPARQL
-          GRAPH #{@@ontology[:goup]} {
-            #{go_upid(bp_id)}
-            #{go_upid(mf_id)}
-            #{go_upid(cc_id)}
-          }
-        SPARQL
-      end
-
-      def go_upid(go_id)
-        return '' if go_id.empty?
-
-        go_up = "http://purl.uniprot.org/go/#{go_id.split('/GO_').last}"
-        "<#{go_up}> up:classifiedWith ?uniprot_id ."
       end
     end
   end
