@@ -30,9 +30,9 @@ module ReportType
         condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
 
         case report_type
-        when 'Gene'       then gene_count(condition)
-        when 'Organism'   then organism_count(condition)
-        when 'Environment'then environment_count(condition)
+        when 'Gene'       then gene_sparql(condition)
+        when 'Organism'   then organism_sparql(condition)
+        when 'Environment'then environment_sparql(condition)
         end
       end
 
@@ -40,9 +40,9 @@ module ReportType
         condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
 
         case report_type
-        when 'Gene'        then gene_search(condition, limit, offset)
-        when 'Organism'    then organism_search(condition, limit, offset)
-        when 'Environment' then environment_search(condition, limit, offset)
+        when 'Gene'        then gene_sparql(condition, count: false, limit: limit, offset: offset)
+        when 'Organism'    then organism_sparql(condition, count: false, limit: limit, offset: offset)
+        when 'Environment' then environment_sparql(condition, count: false, limit: limit, offset: offset)
         end
       end
 
@@ -78,7 +78,13 @@ module ReportType
         end
       end
 
-      def gene_count(condition)
+      def gene_sparql(condition, count: true, limit: 1, offset: 0)
+        select_clause = if count
+                          "SELECT COUNT(DISTINCT ?uniprot_id) AS ?hits_count"
+                        else
+                          "SELECT DISTINCT ?uniprot_id ?uniprot_up ?recommended_name ?taxonomy_id ?taxonomy_name"
+                        end
+
         <<-SPARQL.strip_heredoc
           DEFINE sql:select-option "order"
           #{@@prefix[:mccv]}
@@ -86,75 +92,20 @@ module ReportType
           #{@@prefix[:mpo]}
           #{@@prefix[:up]}
 
-          SELECT COUNT(DISTINCT ?uniprot_id) AS ?hits_count
-          WHERE {
-            #{condition}
-          }
-        SPARQL
-      end
-
-      # gene_count_base と同じ処理が多いのでなんとかする
-      def organism_count(condition)
-        <<-SPARQL.strip_heredoc
-          DEFINE sql:select-option "order"
-          #{@@prefix[:mccv]}
-          #{@@prefix[:meo]}
-          #{@@prefix[:mpo]}
-          #{@@prefix[:up]}
-
-          SELECT COUNT(DISTINCT ?taxonomy_id) AS ?hits_count
-          WHERE {
-            #{condition}
-          }
-        SPARQL
-      end
-
-      def environment_count(condition)
-        <<-SPARQL.strip_heredoc
-          DEFINE sql:select-option "order"
-          #{@@prefix[:mccv]}
-          #{@@prefix[:meo]}
-          #{@@prefix[:mpo]}
-          #{@@prefix[:up]}
-
-          SELECT COUNT(DISTINCT ?meo_id) AS ?hits_count
-          WHERE {
-            {
-              SELECT DISTINCT ?taxonomy_id
-              WHERE {
-                #{condition}
-              }
-            }
-
-            VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 } .
-            GRAPH #{@@ontology[:gold]} {
-              ?gold_iri ?p_meo ?meo_iri .
-              ?gold_iri mccv:MCCV_000020 ?taxonomy_id .
-              BIND (REPLACE(STR(?meo_iri),"http://purl.jp/bio/11/meo/", "" ) AS ?meo_id)
-            }
-
-            GRAPH #{@@ontology[:meo]} { ?meo_iri rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
-          }
-        SPARQL
-      end
-
-      def gene_search(condition, limit, offset)
-        <<-SPARQL.strip_heredoc
-          DEFINE sql:select-option "order"
-          #{@@prefix[:mccv]}
-          #{@@prefix[:meo]}
-          #{@@prefix[:mpo]}
-          #{@@prefix[:up]}
-
-          SELECT DISTINCT ?uniprot_id ?uniprot_up ?recommended_name ?taxonomy_id ?taxonomy_name
+          #{select_clause}
           WHERE {
             #{condition}
           } LIMIT #{limit} OFFSET #{offset}
         SPARQL
       end
 
-      # gene_search_base と同じ処理が多いのでなんとかする
-      def organism_search(condition, limit, offset)
+      def organism_sparql(condition, count: true, limit: 1, offset: 0)
+        select_clause = if count
+                          "SELECT COUNT(DISTINCT ?taxonomy_id) AS ?hits_count"
+                        else
+                          "SELECT DISTINCT ?taxonomy_id ?taxonomy_name"
+                        end
+
         <<-SPARQL.strip_heredoc
           DEFINE sql:select-option "order"
           #{@@prefix[:mccv]}
@@ -162,14 +113,20 @@ module ReportType
           #{@@prefix[:mpo]}
           #{@@prefix[:up]}
 
-          SELECT DISTINCT ?taxonomy_id ?taxonomy_name
+          #{select_clause}
           WHERE {
             #{condition}
           } LIMIT #{limit} OFFSET #{offset}
         SPARQL
       end
 
-      def environment_search(condition, limit, offset)
+      def environment_sparql(condition, count: true, limit: 1, offset: 0)
+        select_clause = if count
+                          "SELECT COUNT(DISTINCT ?meo_id) AS ?hits_count"
+                        else
+                          "SELECT DISTINCT ?meo_id ?meo_name"
+                        end
+
         <<-SPARQL.strip_heredoc
           DEFINE sql:select-option "order"
           #{@@prefix[:mccv]}
@@ -177,7 +134,7 @@ module ReportType
           #{@@prefix[:mpo]}
           #{@@prefix[:up]}
 
-          SELECT DISTINCT ?meo_id ?meo_name
+          #{select_clause}
           WHERE {
             {
               SELECT DISTINCT ?taxonomy_id
