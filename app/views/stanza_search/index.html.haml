@@ -29,9 +29,7 @@
             = render 'count_list', query: params[:q], stanzas: @stanzas[type.pluralize]
 
 :javascript
-  $(function() {
-    return '.nav-tabs a'.on("click", function(e) {
-      var category = $(e.target).data('category');
-      return $("select#category").val(category);
-    });
+  $('.nav-tabs a').on("click", function(e) {
+    var category = $(e.target).data('category');
+    return $("select#category").val(category);
   });
