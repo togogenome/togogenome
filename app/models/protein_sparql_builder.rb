@@ -15,7 +15,7 @@
       def find_genes_sparql(upids)
         <<-SPARQL.strip_heredoc
         SELECT ?uniprot_id ?togogenome
-        FROM <http://togogenome.org/graph/tgup/>
+        FROM <http://togogenome.org/graph/tgup>
         WHERE {
           VALUES ?uniprot_id { #{upids} }
           ?togogenome rdfs:seeAlso ?uniprot_id .
@@ -27,8 +27,8 @@
         <<-SPARQL.strip_heredoc
         PREFIX up: <http://purl.uniprot.org/core/>
         SELECT ?uniprot_up ?quick_go_uri ?go_name
-        FROM <http://togogenome.org/graph/uniprot/>
-        FROM <http://togogenome.org/graph/go/>
+        FROM <http://togogenome.org/graph/uniprot>
+        FROM <http://togogenome.org/graph/go>
 
         WHERE {
           VALUES ?uniprot_up { #{uniprots} }
@@ -48,9 +48,9 @@
         PREFIX meo: <http://purl.jp/bio/11/meo/>
 
         SELECT DISTINCT ?meo_id ?taxonomy_id ?meo_name
-        FROM <http://togogenome.org/graph/gold/>
-        FROM <http://togogenome.org/graph/mpo/>
-        FROM <http://togogenome.org/graph/meo/>
+        FROM <http://togogenome.org/graph/gold>
+        FROM <http://togogenome.org/graph/mpo>
+        FROM <http://togogenome.org/graph/meo>
         WHERE {
           VALUES ?taxonomy_id { #{taxonomies} }
           VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 }
@@ -66,8 +66,8 @@
       def find_phenotypes_sparql(taxonomies)
         <<-SPARQL.strip_heredoc
         SELECT ?taxonomy_id ?mpo_id ?mpo_name
-        FROM <http://togogenome.org/graph/gold/>
-        FROM <http://togogenome.org/graph/mpo/>
+        FROM <http://togogenome.org/graph/gold>
+        FROM <http://togogenome.org/graph/mpo>
         WHERE {
           VALUES ?taxonomy_id { #{taxonomies} }
           FILTER (STRSTARTS(STR(?mpo_url), "http://purl.jp/bio/01/mpo#MPO_"))
@@ -182,7 +182,7 @@
 
         def taxid_to_taxname
           <<-SPARQL
-          GRAPH <http://togogenome.org/graph/taxonomy/> {
+          GRAPH <http://togogenome.org/graph/taxonomy> {
             ?taxonomy_id rdfs:label ?taxonomy_name .
           }
           SPARQL
@@ -190,7 +190,7 @@
 
         def up_to_upname
           <<-SPARQL
-          GRAPH <http://togogenome.org/graph/uniprot/> {
+          GRAPH <http://togogenome.org/graph/uniprot> {
             ?uniprot_up up:recommendedName/up:fullName ?recommended_name .
           }
           SPARQL
@@ -198,7 +198,7 @@
 
         def taxid_to_togogenome_to_upid
           <<-SPARQL
-          GRAPH <http://togogenome.org/graph/tgup/> {
+          GRAPH <http://togogenome.org/graph/tgup> {
             ?togogenome rdfs:seeAlso ?taxonomy_id .
             ?togogenome rdfs:seeAlso ?uniprot_id .
             ?uniprot_id rdfs:seeAlso ?uniprot_up .
@@ -208,7 +208,7 @@
 
         def upid_to_togogenome_to_taxid
           <<-SPARQL
-          GRAPH <http://togogenome.org/graph/tgup/> {
+          GRAPH <http://togogenome.org/graph/tgup> {
             ?togogenome rdfs:seeAlso ?uniprot_id .
             ?togogenome rdfs:seeAlso ?taxonomy_id .
             ?uniprot_id rdfs:seeAlso ?uniprot_up .
@@ -220,7 +220,7 @@
           return '' if tax_id.empty?
 
           <<-SPARQL
-          GRAPH <http://togogenome.org/graph/tgtax/>
+          GRAPH <http://togogenome.org/graph/tgtax>
           {
             ?taxonomy_id rdfs:subClassOf <#{tax_id}>
           }
@@ -233,11 +233,11 @@
           if upper_side
             <<-SPARQL
             VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
-            GRAPH <http://togogenome.org/graph/meo_descendants/>
+            GRAPH <http://togogenome.org/graph/meo_descendants>
             {
               ?meo_id rdfs:subClassOf <#{meo_id}> .
             }
-            GRAPH <http://togogenome.org/graph/gold/>
+            GRAPH <http://togogenome.org/graph/gold>
             {
               ?gold_id mccv:MCCV_000020 ?taxonomy_id .
               ?gold_id ?gold_meo ?meo_id .
@@ -246,12 +246,12 @@
           else
             <<-SPARQL
             VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
-            GRAPH <http://togogenome.org/graph/gold/>
+            GRAPH <http://togogenome.org/graph/gold>
             {
               ?gold_id mccv:MCCV_000020 ?taxonomy_id .
               ?gold_id ?gold_meo ?meo_id .
             }
-            GRAPH <http://togogenome.org/graph/meo_descendants/>
+            GRAPH <http://togogenome.org/graph/meo_descendants>
             {
               ?meo_id rdfs:subClassOf <#{meo_id}> .
             }
@@ -264,22 +264,22 @@
 
           if upper_side
             <<-SPARQL
-            GRAPH <http://togogenome.org/graph/mpo_descendants/>
+            GRAPH <http://togogenome.org/graph/mpo_descendants>
             {
               ?mpo_id rdfs:subClassOf <#{mpo_id}> .
             }
-            GRAPH <http://togogenome.org/graph/gold/>
+            GRAPH <http://togogenome.org/graph/gold>
             {
               ?taxonomy_id ?tax_mpo ?mpo_id FILTER (?tax_mpo IN (mpo:MPO_10002, mpo:MPO_10001, mpo:MPO_10003, mpo:MPO_10005, mpo:MPO_10009, mpo:MPO_10010, mpo:MPO_10011, mpo:MPO_10013, mpo:MPO_10014, mpo:MPO_10015, mpo:MPO_10016, mpo:MPO_10006, mpo:MPO_10007)) .
             }
             SPARQL
           else
             <<-SPARQL
-            GRAPH <http://togogenome.org/graph/gold/>
+            GRAPH <http://togogenome.org/graph/gold>
             {
               ?taxonomy_id ?tax_mpo ?mpo_id FILTER (?tax_mpo IN (mpo:MPO_10002, mpo:MPO_10001, mpo:MPO_10003, mpo:MPO_10005, mpo:MPO_10009, mpo:MPO_10010, mpo:MPO_10011, mpo:MPO_10013, mpo:MPO_10014, mpo:MPO_10015, mpo:MPO_10016, mpo:MPO_10006, mpo:MPO_10007)) .
             }
-            GRAPH <http://togogenome.org/graph/mpo_descendants/>
+            GRAPH <http://togogenome.org/graph/mpo_descendants>
             {
               ?mpo_id rdfs:subClassOf <#{mpo_id}> .
             }
@@ -288,9 +288,8 @@
         end
 
         def goid_to_upid(bp_id, mf_id, cc_id)
-        # FIXME: 正しいグラフ名は "http://togogenome.org/graph/goup/" で、コンバータも修正する
         <<-SPARQL
-        GRAPH <http://togogenome.org/graph/group/>
+        GRAPH <http://togogenome.org/graph/goup>
         {
           #{go_upid(bp_id)}
           #{go_upid(mf_id)}
