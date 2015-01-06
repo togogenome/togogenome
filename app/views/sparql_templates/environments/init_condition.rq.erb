@@ -1,0 +1,31 @@
+DEFINE sql:select-option "order"
+<%= @@prefix[:mccv] %>
+<%= @@prefix[:meo] %>
+<%= @@prefix[:mpo] %>
+<%= @@prefix[:up] %>
+
+<%= select_clause %>
+WHERE {
+  {
+    SELECT DISTINCT ?taxonomy_id
+    WHERE {
+      GRAPH <%= @@ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <http://identifiers.org/taxonomy/1> }
+      GRAPH <%= @@ontology[:taxonomy] %> { ?taxonomy_id rdfs:label ?taxonomy_name }
+      GRAPH <%= @@ontology[:tgup] %> {
+        ?togogenome rdfs:seeAlso ?taxonomy_id .
+        ?togogenome rdfs:seeAlso ?uniprot_id .
+        ?uniprot_id rdfs:seeAlso ?uniprot_up .
+      }
+      GRAPH <%= @@ontology[:uniprot] %> { ?uniprot_up up:recommendedName/up:fullName ?recommended_name }
+    }
+  }
+
+  VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 } .
+  GRAPH <%= @@ontology[:gold] %> {
+    ?gold_iri ?p_meo ?meo_iri .
+    ?gold_iri mccv:MCCV_000020 ?taxonomy_id .
+    BIND (REPLACE(STR(?meo_iri),"http://purl.jp/bio/11/meo/", "" ) AS ?meo_id)
+  }
+
+  GRAPH <%= @@ontology[:meo] %> { ?meo_iri rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
+} LIMIT <%= limit %> OFFSET <%= offset %>
