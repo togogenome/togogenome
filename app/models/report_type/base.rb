@@ -21,34 +21,8 @@ module ReportType
       end
 
       def addition_information(results)
-        upids  = results.map {|b| "<#{b[:uniprot_id]}>" }.uniq.join(' ')
-        uniport_ups = results.map {|b| "<#{b[:uniprot_up]}>" }.uniq.join(' ')
-        taxids = results.map {|b| "<#{b[:taxonomy_id]}>" }.uniq.join(' ')
-
-        sparqls = [
-          find_genes_sparql(upids),
-          find_gene_ontologies_sparql(uniport_ups),
-          find_environments_sparql(taxids),
-          find_phenotypes_sparql(taxids)
-        ]
-
-        genes, gos, envs, phenotypes = Parallel.map(sparqls, in_threads: 4) {|sparql|
-          query(sparql)
-        }
-
-        results.map do |result|
-          select_genes      = genes.select {|g| g[:uniprot_id] == result[:uniprot_id] }
-          select_gos        = gos.select {|g| g[:uniprot_up] == result[:uniprot_up] }
-          select_envs       = envs.select {|e| e[:taxonomy_id] == result[:taxonomy_id] }
-          select_phenotypes = phenotypes.select {|p| p[:taxonomy_id] == result[:taxonomy_id] }
-
-          new(result, select_genes, select_gos, select_envs, select_phenotypes)
-        end
+        raise "Called abstract method"
       end
-    end
-
-    def initialize(up_tax, genes, gos, envs, phenotypes)
-      @uniprot_taxonomy, @genes, @gos, @envs, @phenotypes = up_tax, genes, gos, envs, phenotypes
     end
 
     def id; @uniprot_taxonomy[:uniprot_id].split('/').last; end
