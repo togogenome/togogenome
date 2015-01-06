@@ -26,25 +26,14 @@ module ReportType
         mpo:  'PREFIX mpo: <http://purl.jp/bio/01/mpo#>'
       }
 
-      def count_sparql(report_type, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+      def build_sparql(report_type, select_clause_type, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit = 1, offset = 0)
         case report_type
         when 'Gene'
-          gene_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+          gene_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause_type, limit, offset)
         when 'Organism'
-          organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+          organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause_type, limit, offset)
         when 'Environment'
-          environment_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
-        end
-      end
-
-      def search_sparql(report_type, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit, offset)
-        case report_type
-        when 'Gene'
-          gene_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, count: false, limit: limit, offset: offset)
-        when 'Organism'
-          organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, count: false, limit: limit, offset: offset)
-        when 'Environment'
-          environment_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, count: false, limit: limit, offset: offset)
+          environment_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause_type, limit, offset)
         end
       end
 
@@ -66,8 +55,8 @@ module ReportType
 
       private
 
-      def gene_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, count: true, limit: 1, offset: 0)
-        select_clause = if count
+      def gene_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause_type, limit, offset)
+        select_clause = if select_clause_type == 'count'
                           "SELECT COUNT(DISTINCT ?uniprot_id) AS ?hits_count"
                         else
                           "SELECT DISTINCT ?uniprot_id ?uniprot_up ?recommended_name ?taxonomy_id ?taxonomy_name"
@@ -86,8 +75,8 @@ module ReportType
         end
       end
 
-      def organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, count: true, limit: 1, offset: 0)
-        select_clause = if count
+      def organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause_type, limit, offset)
+        select_clause = if select_clause_type == 'count'
                           "SELECT COUNT(DISTINCT ?taxonomy_id) AS ?hits_count"
                         else
                           "SELECT DISTINCT ?taxonomy_id ?taxonomy_name"
@@ -106,8 +95,8 @@ module ReportType
         end
       end
 
-      def environment_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, count: true, limit: 1, offset: 0)
-        select_clause = if count
+      def environment_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause_type, limit, offset)
+        select_clause = if select_clause_type == 'count'
                           "SELECT COUNT(DISTINCT ?meo_id) AS ?hits_count"
                         else
                           "SELECT DISTINCT ?meo_id ?meo_name"

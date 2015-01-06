@@ -5,14 +5,14 @@ module ReportType
 
     class << self
       def count(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '')
-        sparql  = count_sparql(self.to_s.demodulize, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+        sparql  = build_sparql(self.to_s.demodulize, 'count', meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
         results = query(sparql)
 
         results.first[:hits_count]
       end
 
       def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
-        sparql  = search_sparql(self.to_s.demodulize, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit, offset)
+        sparql  = build_sparql(self.to_s.demodulize, 'search', meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit, offset)
         results = query(sparql)
 
         return [] if results.empty?
