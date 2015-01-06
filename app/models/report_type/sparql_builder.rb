@@ -27,22 +27,24 @@ module ReportType
       }
 
       def count_sparql(report_type, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
-        condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
-
         case report_type
-        when 'Gene'       then gene_sparql(condition)
-        when 'Organism'   then organism_sparql(condition)
-        when 'Environment'then environment_sparql(condition)
+        when 'Gene'
+          gene_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+        when 'Organism'
+          organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
+        when 'Environment'
+          environment_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
         end
       end
 
       def search_sparql(report_type, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit, offset)
-        condition = build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
-
         case report_type
-        when 'Gene'        then gene_sparql(condition, count: false, limit: limit, offset: offset)
-        when 'Organism'    then organism_sparql(condition, count: false, limit: limit, offset: offset)
-        when 'Environment' then environment_sparql(condition, count: false, limit: limit, offset: offset)
+        when 'Gene'
+          gene_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, count: false, limit: limit, offset: offset)
+        when 'Organism'
+          organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, count: false, limit: limit, offset: offset)
+        when 'Environment'
+          environment_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, count: false, limit: limit, offset: offset)
         end
       end
 
@@ -64,95 +66,64 @@ module ReportType
 
       private
 
-      def build_condition(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id)
-        if (bp_id.present? || mf_id.present? || cc_id.present?)
-          ERB.new(File.read('app/views/sparql_templates/has_go_condition.rq.erb')).result(binding)
-        elsif tax_id.present?
-          ERB.new(File.read('app/views/sparql_templates/has_tax_condition.rq.erb')).result(binding)
-        elsif meo_id.present?
-          ERB.new(File.read('app/views/sparql_templates/has_meo_condition.rq.erb')).result(binding)
-        elsif mpo_id.present?
-          ERB.new(File.read('app/views/sparql_templates/has_mpo_condition.rq.erb')).result(binding)
-        else
-          ERB.new(File.read('app/views/sparql_templates/init_condition.rq.erb')).result(binding)
-        end
-      end
-
-      def gene_sparql(condition, count: true, limit: 1, offset: 0)
+      def gene_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, count: true, limit: 1, offset: 0)
         select_clause = if count
                           "SELECT COUNT(DISTINCT ?uniprot_id) AS ?hits_count"
                         else
                           "SELECT DISTINCT ?uniprot_id ?uniprot_up ?recommended_name ?taxonomy_id ?taxonomy_name"
                         end
 
-        <<-SPARQL.strip_heredoc
-          DEFINE sql:select-option "order"
-          #{@@prefix[:mccv]}
-          #{@@prefix[:meo]}
-          #{@@prefix[:mpo]}
-          #{@@prefix[:up]}
-
-          #{select_clause}
-          WHERE {
-            #{condition}
-          } LIMIT #{limit} OFFSET #{offset}
-        SPARQL
+        if (bp_id.present? || mf_id.present? || cc_id.present?)
+          ERB.new(File.read('app/views/sparql_templates/genes/has_go_condition.rq.erb')).result(binding)
+        elsif tax_id.present?
+          ERB.new(File.read('app/views/sparql_templates/genes/has_tax_condition.rq.erb')).result(binding)
+        elsif meo_id.present?
+          ERB.new(File.read('app/views/sparql_templates/genes/has_meo_condition.rq.erb')).result(binding)
+        elsif mpo_id.present?
+          ERB.new(File.read('app/views/sparql_templates/genes/has_mpo_condition.rq.erb')).result(binding)
+        else
+          ERB.new(File.read('app/views/sparql_templates/genes/init_condition.rq.erb')).result(binding)
+        end
       end
 
-      def organism_sparql(condition, count: true, limit: 1, offset: 0)
+      def organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, count: true, limit: 1, offset: 0)
         select_clause = if count
                           "SELECT COUNT(DISTINCT ?taxonomy_id) AS ?hits_count"
                         else
                           "SELECT DISTINCT ?taxonomy_id ?taxonomy_name"
                         end
 
-        <<-SPARQL.strip_heredoc
-          DEFINE sql:select-option "order"
-          #{@@prefix[:mccv]}
-          #{@@prefix[:meo]}
-          #{@@prefix[:mpo]}
-          #{@@prefix[:up]}
-
-          #{select_clause}
-          WHERE {
-            #{condition}
-          } LIMIT #{limit} OFFSET #{offset}
-        SPARQL
+        if (bp_id.present? || mf_id.present? || cc_id.present?)
+          ERB.new(File.read('app/views/sparql_templates/organisms/has_go_condition.rq.erb')).result(binding)
+        elsif tax_id.present?
+          ERB.new(File.read('app/views/sparql_templates/organisms/has_tax_condition.rq.erb')).result(binding)
+        elsif meo_id.present?
+          ERB.new(File.read('app/views/sparql_templates/organisms/has_meo_condition.rq.erb')).result(binding)
+        elsif mpo_id.present?
+          ERB.new(File.read('app/views/sparql_templates/organisms/has_mpo_condition.rq.erb')).result(binding)
+        else
+          ERB.new(File.read('app/views/sparql_templates/organisms/init_condition.rq.erb')).result(binding)
+        end
       end
 
-      def environment_sparql(condition, count: true, limit: 1, offset: 0)
+      def environment_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, count: true, limit: 1, offset: 0)
         select_clause = if count
                           "SELECT COUNT(DISTINCT ?meo_id) AS ?hits_count"
                         else
                           "SELECT DISTINCT ?meo_id ?meo_name"
                         end
 
-        <<-SPARQL.strip_heredoc
-          DEFINE sql:select-option "order"
-          #{@@prefix[:mccv]}
-          #{@@prefix[:meo]}
-          #{@@prefix[:mpo]}
-          #{@@prefix[:up]}
-
-          #{select_clause}
-          WHERE {
-            {
-              SELECT DISTINCT ?taxonomy_id
-              WHERE {
-                #{condition}
-              }
-            }
-
-            VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 } .
-            GRAPH #{@@ontology[:gold]} {
-              ?gold_iri ?p_meo ?meo_iri .
-              ?gold_iri mccv:MCCV_000020 ?taxonomy_id .
-              BIND (REPLACE(STR(?meo_iri),"http://purl.jp/bio/11/meo/", "" ) AS ?meo_id)
-            }
-
-            GRAPH #{@@ontology[:meo]} { ?meo_iri rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
-          } LIMIT #{limit} OFFSET #{offset}
-        SPARQL
+        if (bp_id.present? || mf_id.present? || cc_id.present?)
+          ERB.new(File.read('app/views/sparql_templates/environments/has_go_condition.rq.erb')).result(binding)
+        elsif tax_id.present?
+          ERB.new(File.read('app/views/sparql_templates/environments/has_tax_condition.rq.erb')).result(binding)
+        elsif meo_id.present?
+          ERB.new(File.read('app/views/sparql_templates/environments/has_meo_condition.rq.erb')).result(binding)
+        elsif mpo_id.present?
+          ERB.new(File.read('app/views/sparql_templates/environments/has_mpo_condition.rq.erb')).result(binding)
+        else
+          ERB.new(File.read('app/views/sparql_templates/environments/init_condition.rq.erb')).result(binding)
+        end
       end
     end
   end
