@@ -1,7 +1,15 @@
 module ReportTypeHelper
-  def link_list(lists, target)
+  def list(items)
     content_tag(:ul) do
-      lists.each do |item|
+      items.uniq.each do |item|
+        concat content_tag(:li, item)
+      end
+    end
+  end
+
+  def link_list(items, target)
+    content_tag(:ul) do
+      items.uniq.each do |item|
         concat content_tag(:li, link_to_item(item, target))
       end
     end
@@ -10,8 +18,8 @@ module ReportTypeHelper
   private
   def link_to_item(item, target)
     case target
-    when 'gene'
-      link_to(item.id, gene_path(item.id), target: '_blank')
+    when 'protein'
+      link_to(item.id, item.uniprot_link, target: '_blank')
     when 'gene_ontology'
       link_to(item.name, item.uri, target: '_blank')
     when 'environment'
