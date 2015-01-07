@@ -26,11 +26,15 @@ module ReportType
     end
 
     def gene_and_taxonomy
-      Struct.new(:gene_uri, :taxonomy_uri, :taxonomy_name) {
+      Struct.new(:gene_uri, :taxonomy, :taxonomy_name) {
+        def taxonomy_id
+          taxonomy.split('/').last
+        end
+
         def gene_id
           gene_uri.split('/').last
         end
-      }.new(@gene_and_taxonomy[:togogenome], @gene_and_taxonomy[:taxonomy], @gene_and_taxonomy[:taxonomy_name])
+      }.new(@gene_and_taxonomy[:togogenome], @gene_and_taxonomy[:taxonomy_id], @gene_and_taxonomy[:taxonomy_name])
     end
 
     def proteins
