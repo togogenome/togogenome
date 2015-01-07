@@ -2,7 +2,6 @@ DEFINE sql:select-option "order"
 <%= @@prefix[:mccv] %>
 <%= @@prefix[:meo] %>
 <%= @@prefix[:mpo] %>
-<%= @@prefix[:up] %>
 
 <%= select_clause %>
 WHERE {
@@ -10,12 +9,6 @@ WHERE {
     GRAPH <%= @@ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <<%= tax_id %>> }
   <% end %>
   GRAPH <%= @@ontology[:taxonomy] %> { ?taxonomy_id rdfs:label ?taxonomy_name }
-  GRAPH <%= @@ontology[:tgup] %> {
-    ?togogenome rdfs:seeAlso ?taxonomy_id .
-    ?togogenome rdfs:seeAlso ?uniprot_id .
-    ?uniprot_id rdfs:seeAlso ?uniprot_up .
-  }
-  GRAPH <%= @@ontology[:uniprot] %> { ?uniprot_up up:recommendedName/up:fullName ?recommended_name }
   <% unless meo_id.empty? %>
     VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
     GRAPH <%= @@ontology[:gold] %> {
