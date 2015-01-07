@@ -25,4 +25,4 @@ WHERE {
     ?uniprot_id rdfs:seeAlso ?uniprot_up .
   }
   GRAPH <%= @@ontology[:uniprot] %> { ?uniprot_up up:recommendedName/up:fullName ?recommended_name }
-} LIMIT <%= limit %> OFFSET <%= offset %>
+} <%= order_clause %> LIMIT <%= limit %> OFFSET <%= offset %>

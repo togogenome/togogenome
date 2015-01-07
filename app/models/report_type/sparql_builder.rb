@@ -81,6 +81,7 @@ module ReportType
                         else
                           "SELECT DISTINCT ?taxonomy_id ?taxonomy_name"
                         end
+        order_clause = (select_clause_type == 'search') ? 'ORDER BY ?taxonomy_name' : ''
 
         if (bp_id.present? || mf_id.present? || cc_id.present?)
           ERB.new(File.read('app/views/sparql_templates/organisms/has_go_condition.rq.erb')).result(binding)
