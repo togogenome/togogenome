@@ -8,6 +8,7 @@ module ReportTypeHelper
   end
 
   def link_list(items, target)
+    return nil unless items
     content_tag(:ul) do
       items.uniq.each do |item|
         concat content_tag(:li, link_to_item(item, target))
