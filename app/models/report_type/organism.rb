@@ -25,5 +25,25 @@ module ReportType
     def initialize(up_tax, envs, phenotypes)
       @uniprot_taxonomy, @envs, @phenotypes = up_tax, envs, phenotypes
     end
+
+    def tax
+      Struct.new(:uri, :name) {
+        def id
+          uri.split('/').last
+        end
+      }.new(@uniprot_taxonomy[:taxonomy_id], @uniprot_taxonomy[:taxonomy_name])
+    end
+
+    def envs
+      @envs.map {|env|
+        Struct.new(:id, :name).new(env[:meo_id], env[:meo_name])
+      }
+    end
+
+    def phenotypes
+      @phenotypes.map {|phenotype|
+        Struct.new(:id, :name).new(phenotype[:mpo_id], phenotype[:mpo_name])
+      }
+    end
   end
 end

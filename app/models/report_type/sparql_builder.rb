@@ -37,11 +37,11 @@ module ReportType
         end
       end
 
-      def find_genes_sparql(upids)
-        ERB.new(File.read('app/views/sparql_templates/find_genes.rq.erb')).result(binding)
+      def find_proteins_sparql(genes)
+        ERB.new(File.read('app/views/sparql_templates/find_proteins.rq.erb')).result(binding)
       end
 
-      def find_gene_ontologies_sparql(uniprots)
+      def find_gene_ontologies_sparql(genes)
         ERB.new(File.read('app/views/sparql_templates/find_gene_ontologies.rq.erb')).result(binding)
       end
 
@@ -57,9 +57,9 @@ module ReportType
 
       def gene_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause_type, limit, offset)
         select_clause = if select_clause_type == 'count'
-                          "SELECT COUNT(DISTINCT ?uniprot_id) AS ?hits_count"
+                          "SELECT COUNT(DISTINCT ?togogenome) AS ?hits_count"
                         else
-                          "SELECT DISTINCT ?uniprot_id ?uniprot_up ?recommended_name ?taxonomy_id ?taxonomy_name"
+                          "SELECT DISTINCT ?togogenome ?taxonomy_id ?taxonomy_name"
                         end
 
         if (bp_id.present? || mf_id.present? || cc_id.present?)
