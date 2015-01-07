@@ -5,9 +5,15 @@ $ ->
       ajax:
         url: "/report_type/organisms.json"
       columns: [
-        {data: "organism_link"}
-        {data: "environment_links"}
-        {data: "phenotype_links"}
+        {data: "organism_link"},
+        {data: "environment_links"},
+        {data: "development_links"},
+        {data: "growth_links"},
+        {data: "metabolism_links"},
+        {data: "morphology_links"},
+        {data: "motility_links"},
+        {data: "serotype_links"},
+        {data: "staining_links"},
       ]
     )
     downloadCSV: '/report_type/organisms.csv'

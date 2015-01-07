@@ -16,7 +16,6 @@ module ReportType
         results.map do |result|
           select_envs       = envs.select {|e| e[:taxonomy_id] == result[:taxonomy_id] }
           select_phenotypes = phenotypes.select {|p| p[:taxonomy_id] == result[:taxonomy_id] }
-
           new(result, select_envs, select_phenotypes)
         end
       end
@@ -41,8 +40,8 @@ module ReportType
     end
 
     def phenotypes
-      @phenotypes.map {|phenotype|
-        Struct.new(:id, :name).new(phenotype[:mpo_id], phenotype[:mpo_name])
+      @phenotypes.group_by {|p| p[:top_mpo_name]}.each_with_object({}) {|(top_name, phenotypes), hash|
+        hash[top_name] = phenotypes.map {|phenotype| Struct.new(:id, :name).new(phenotype[:mpo_id], phenotype[:mpo_name]) }
       }
     end
   end
