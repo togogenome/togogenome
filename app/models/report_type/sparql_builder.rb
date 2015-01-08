@@ -16,14 +16,18 @@ module ReportType
         tgtax:           '<http://togogenome.org/graph/tgtax/>',
         meo_descendants: '<http://togogenome.org/graph/meo_descendants/>',
         mpo_descendants: '<http://togogenome.org/graph/mpo_descendants/>',
-        goup:            '<http://togogenome.org/graph/group/>'
+        goup:            '<http://togogenome.org/graph/group/>',
+        refseq:          '<http://togogenome.org/graph/refseq/>',
+        stats:           '<http://togogenome.org/graph/stats/>'
       }
 
       @@prefix = {
-        up:   'PREFIX up: <http://purl.uniprot.org/core/>',
-        mccv: 'PREFIX mccv: <http://purl.jp/bio/01/mccv#>',
-        meo:  'PREFIX meo: <http://purl.jp/bio/11/meo/>',
-        mpo:  'PREFIX mpo: <http://purl.jp/bio/01/mpo#>'
+        up:     'PREFIX up: <http://purl.uniprot.org/core/>',
+        mccv:   'PREFIX mccv: <http://purl.jp/bio/01/mccv#>',
+        meo:    'PREFIX meo: <http://purl.jp/bio/11/meo/>',
+        mpo:    'PREFIX mpo: <http://purl.jp/bio/01/mpo#>',
+        insdc:  'PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/sequence#>',
+        tgstat: 'PREFIX tgstat:<http://togogenome.org/stats/>'
       }
 
       def build_sparql(report_type, select_clause_type, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, limit = 1, offset = 0)
@@ -51,6 +55,14 @@ module ReportType
 
       def find_phenotypes_sparql(taxonomies)
         ERB.new(File.read('app/views/sparql_templates/find_phenotypes.rq.erb')).result(binding)
+      end
+
+      def find_refseqs_sparql(taxonomies)
+        ERB.new(File.read('app/views/sparql_templates/find_refseqs.rq.erb')).result(binding)
+      end
+
+      def find_genome_stats_sparql(taxonomies)
+        ERB.new(File.read('app/views/sparql_templates/find_genome_stats.rq.erb')).result(binding)
       end
 
       private

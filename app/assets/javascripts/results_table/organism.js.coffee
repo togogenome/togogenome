@@ -14,6 +14,10 @@ $ ->
         {data: "motility_links"},
         {data: "serotype_links"},
         {data: "staining_links"},
+        {data: "gene_num"},
+        {data: "rrna_num"},
+        {data: "trna_num"},
+        {data: "ncrna_num"},
       ]
     )
     downloadCSV: '/report_type/organisms.csv'
