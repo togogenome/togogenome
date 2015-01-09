@@ -1,14 +1,30 @@
 module ReportType
   class Organism < Base
     class << self
-      def addition_information(results)
+      def count(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '')
+        select_clause =  "SELECT COUNT(DISTINCT ?taxonomy_id) AS ?hits_count"
+        sparql = build_organism_sparql(@@prefix, @@ontology, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause)
+
+        results = query(sparql)
+
+        results.first[:hits_count]
+      end
+
+      def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
+        select_clause, order_clause = "SELECT DISTINCT ?taxonomy_id ?taxonomy_name", 'ORDER BY ?taxonomy_name'
+        sparql = build_organism_sparql(@@prefix, @@ontology, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause, limit, offset)
+
+        results = query(sparql)
+
+        return [] if results.empty?
+
         taxids = results.map {|b| "<#{b[:taxonomy_id]}>" }.uniq.join(' ')
 
         sparqls = [
-          find_environments_sparql(taxids),
-          find_phenotypes_sparql(taxids),
-          #find_refseqs_sparql(taxids),
-          find_genome_stats_sparql(taxids)
+          find_environments_sparql(@@prefix, @@ontology, taxids),
+          find_phenotypes_sparql(@@prefix, @@ontology, taxids),
+          #find_refseqs_sparql(@@prefix, @@ontology, taxids),
+          find_genome_stats_sparql(@@prefix, @@ontology, taxids)
         ]
 
         envs, phenotypes, stats = Parallel.map(sparqls, in_threads: 4) {|sparql|
@@ -29,7 +45,6 @@ module ReportType
         #
         #   {taxonomy_id: taxonomy_id, gc_percent: gc_percent}
         # }
-
 
         results.map do |result|
           select_envs       = envs.select {|e| e[:taxonomy_id] == result[:taxonomy_id] }

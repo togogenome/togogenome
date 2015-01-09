@@ -1,12 +1,28 @@
 module ReportType
   class Gene < Base
     class << self
-      def addition_information(results)
+      def count(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '')
+        select_clause =  "SELECT COUNT(DISTINCT ?togogenome) AS ?hits_count"
+        sparql = build_gene_sparql(@@prefix, @@ontology, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause)
+
+        results = query(sparql)
+
+        results.first[:hits_count]
+      end
+
+      def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
+        select_clause = "SELECT DISTINCT ?togogenome ?taxonomy_id ?taxonomy_name"
+        sparql = build_gene_sparql(@@prefix, @@ontology, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, limit, offset)
+
+        results = query(sparql)
+
+        return [] if results.empty?
+
         genes = results.map {|b| "<#{b[:togogenome]}>" }.uniq.join(' ')
 
         sparqls = [
-          find_proteins_sparql(genes),
-          find_gene_ontologies_sparql(genes)
+          find_proteins_sparql(@@prefix, @@ontology, genes),
+          find_gene_ontologies_sparql(@@prefix, @@ontology, genes)
         ]
 
         proteins, gos = Parallel.map(sparqls, in_threads: 4) {|sparql|

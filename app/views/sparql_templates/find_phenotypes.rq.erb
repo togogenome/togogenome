@@ -1,8 +1,8 @@
 DEFINE sql:select-option "order"
 
 SELECT ?taxonomy_id ?mpo_id ?mpo_name ?top_mpo_name
-FROM <%= @@ontology[:gold] %>
-FROM <%= @@ontology[:mpo] %>
+FROM <%= ontology[:gold] %>
+FROM <%= ontology[:mpo] %>
 WHERE {
   VALUES ?taxonomy_id { <%= taxonomies %>}
   FILTER (STRSTARTS(STR(?mpo_url), "http://purl.jp/bio/01/mpo#MPO_"))

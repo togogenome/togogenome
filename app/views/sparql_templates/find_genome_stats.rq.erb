@@ -1,9 +1,9 @@
 DEFINE sql:select-option "order"
 
-<%= @@prefix[:tgstat] %>
+<%= prefix[:tgstat] %>
 
 SELECT DISTINCT ?taxonomy_id ?project_num ?gene_num ?rrna_num ?trna_num ?ncrna_num
-FROM <%= @@ontology[:stats] %>
+FROM <%= ontology[:stats] %>
 WHERE {
   VALUES ?taxonomy_id { <%= taxonomies %>}
   ?taxonomy_id tgstat:bioproject ?project_num ;

@@ -1,11 +1,11 @@
 DEFINE sql:select-option "order"
-<%= @@prefix[:mccv] %>
-<%= @@prefix[:meo] %>
+<%= prefix[:mccv] %>
+<%= prefix[:meo] %>
 
 SELECT DISTINCT ?meo_id ?taxonomy_id ?meo_name
-FROM <%= @@ontology[:gold] %>
-FROM <%= @@ontology[:mpo] %>
-FROM <%= @@ontology[:meo] %>
+FROM <%= ontology[:gold] %>
+FROM <%= ontology[:mpo] %>
+FROM <%= ontology[:meo] %>
 WHERE {
   VALUES ?taxonomy_id { <%= taxonomies %> }
   VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 }

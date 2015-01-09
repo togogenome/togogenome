@@ -1,18 +1,18 @@
 DEFINE sql:select-option "order"
 
-<%= @@prefix[:mccv] %>
-<%= @@prefix[:meo] %>
-<%= @@prefix[:mpo] %>
+<%= prefix[:mccv] %>
+<%= prefix[:meo] %>
+<%= prefix[:mpo] %>
 
 <%= select_clause %>
 WHERE {
   VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 } .
-  GRAPH <%= @@ontology[:mpo_descendants] %> { ?mpo_id rdfs:subClassOf <<%= mpo_id %>> }
-  GRAPH <%= @@ontology[:gold] %> {
+  GRAPH <%= ontology[:mpo_descendants] %> { ?mpo_id rdfs:subClassOf <<%= mpo_id %>> }
+  GRAPH <%= ontology[:gold] %> {
     ?taxonomy_id ?tax_mpo ?mpo_id FILTER (?tax_mpo IN (mpo:MPO_10002, mpo:MPO_10001, mpo:MPO_10003, mpo:MPO_10005, mpo:MPO_10009, mpo:MPO_10010, mpo:MPO_10011, mpo:MPO_10013, mpo:MPO_10014, mpo:MPO_10015, mpo:MPO_10016, mpo:MPO_10006, mpo:MPO_10007))
     ?gold_iri ?p_meo ?meo_id .
     ?gold_iri mccv:MCCV_000020 ?taxonomy_id .
   }
 
-  GRAPH <%= @@ontology[:meo] %> { ?meo_id rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
+  GRAPH <%= ontology[:meo] %> { ?meo_id rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
 } LIMIT <%= limit %> OFFSET <%= offset %>

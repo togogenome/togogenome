@@ -1,18 +1,18 @@
 DEFINE sql:select-option "order"
-<%= @@prefix[:up] %>
+<%= prefix[:up] %>
 
 SELECT DISTINCT ?gene ?quick_go_uri ?go_name
-FROM <%= @@ontology[:tgup] %>
-FROM <%= @@ontology[:uniprot] %>
-FROM <%= @@ontology[:go] %>
+FROM <%= ontology[:tgup] %>
+FROM <%= ontology[:uniprot] %>
+FROM <%= ontology[:go] %>
 WHERE {
   VALUES ?gene { <%= genes %> }
-  GRAPH <%= @@ontology[:tgup] %> {
+  GRAPH <%= ontology[:tgup] %> {
   	?gene rdfs:seeAlso ?uniprot_id .
     ?uniprot_id rdf:type <http://identifiers.org/uniprot/> .
     ?uniprot_id rdfs:seeAlso ?uniprot_up .
   }
-  GRAPH <%= @@ontology[:uniprot] %> {
+  GRAPH <%= ontology[:uniprot] %> {
     ?uniprot_up rdf:type <http://purl.uniprot.org/core/Protein> .
     ?uniprot_up up:recommendedName/up:fullName ?recommended_name .
     ?uniprot_up up:classifiedWith ?up_go_uri FILTER (STRSTARTS(STR(?up_go_uri), "http://purl.uniprot.org/go/")) .
@@ -21,6 +21,6 @@ WHERE {
 
   BIND(IRI(REPLACE(STR(?up_go_uri),"http://purl.uniprot.org/go/","http://purl.obolibrary.org/obo/GO_", '')) AS ?obo_go_uri) .
   BIND(IRI(REPLACE(STR(?up_go_uri),"http://purl.uniprot.org/go/","http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:", '')) AS ?quick_go_uri) .
-  GRAPH <%= @@ontology[:go] %> { ?obo_go_uri rdfs:label ?go_name . }
+  GRAPH <%= ontology[:go] %> { ?obo_go_uri rdfs:label ?go_name . }
   FILTER(LANG(?go_name) = "" || LANGMATCHES(LANG(?go_name), "en")) .
 }

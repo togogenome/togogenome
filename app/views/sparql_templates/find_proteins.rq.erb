@@ -1,10 +1,10 @@
 DEFINE sql:select-option "order"
-<%= @@prefix[:up] %>
+<%= prefix[:up] %>
 
 SELECT DISTINCT ?gene ?uniprot_id  ?uniprot_up ?recommended_name
-FROM <%= @@ontology[:tgup] %>
-FROM <%= @@ontology[:uniprot] %>
-FROM <%= @@ontology[:go] %>
+FROM <%= ontology[:tgup] %>
+FROM <%= ontology[:uniprot] %>
+FROM <%= ontology[:go] %>
 WHERE {
   VALUES ?gene { <%= genes %> }
   ?gene rdfs:seeAlso ?uniprot_id .

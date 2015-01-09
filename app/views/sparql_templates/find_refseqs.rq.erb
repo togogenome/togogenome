@@ -1,9 +1,9 @@
 DEFINE sql:select-option "order"
 
-<%= @@prefix[:insdc] %>
+<%= prefix[:insdc] %>
 SELECT ?taxonomy_id ?refseq
 WHERE {
-  GRAPH <%= @@ontology[:refseq] %> {
+  GRAPH <%= ontology[:refseq] %> {
     VALUES ?taxonomy_id { <%= taxonomies %>}
     ?seq rdfs:seeAlso ?taxonomy_id .
     ?seq insdc:sequence_version ?refseq .

@@ -1,12 +1,28 @@
 module ReportType
   class Environment < Base
     class << self
-      def addition_information(results)
+      def count(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '')
+        select_clause =  "SELECT COUNT(DISTINCT ?meo_id) AS ?hits_count"
+        sparql = build_environment_sparql(@@prefix, @@ontology, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause)
+
+        results = query(sparql)
+
+        results.first[:hits_count]
+      end
+
+      def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
+        select_clause = "SELECT DISTINCT ?meo_id ?meo_name"
+        sparql = build_environment_sparql(@@prefix, @@ontology, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, limit, offset)
+
+        results = query(sparql)
+
+        return [] if results.empty?
+
         meos = results.map {|r| "<#{r[:meo_id]}>" }.uniq.join(' ')
 
         sparqls = [
-          find_environment_root_sparql(meos),
-          find_environment_inhabitants_stats_sparql(meos)
+          find_environment_root_sparql(@@prefix, @@ontology, meos),
+          find_environment_inhabitants_stats_sparql(@@prefix, @@ontology, meos)
         ]
 
         meo_roots, meo_inhabitants_stats = Parallel.map(sparqls, in_threads: 4) {|sparql|
