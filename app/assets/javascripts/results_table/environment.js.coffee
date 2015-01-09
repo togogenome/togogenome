@@ -6,6 +6,7 @@ $ ->
         url: "/report_type/environments.json"
       columns: [
         {data: "environment_link"}
+        {data: "category"}
       ]
     )
     downloadCSV: '/report_type/environments.csv'
