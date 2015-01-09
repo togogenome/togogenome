@@ -1,0 +1,16 @@
+DEFINE sql:select-option "order"
+
+<%= @@prefix[:meo] %>
+
+SELECT ?meo_id COUNT(DISTINCT ?gold) AS ?count
+FROM <http://togogenome.org/graph/gold/>
+FROM <http://togogenome.org/graph/meo/>
+WHERE {
+  VALUES ?meo_mapping { meo:MEO_0000437 meo:MEO_0000440 }
+  # MEO_0000437: sampledFromEnv
+  # MEO_0000440: sampledFromOrgan
+  VALUES ?meo_uri { <%= meos %>}
+  BIND(?meo_uri AS ?meo_id)
+  ?descendant rdfs:subClassOf* ?meo_id .
+  ?gold ?meo_mapping ?descendant .
+}
