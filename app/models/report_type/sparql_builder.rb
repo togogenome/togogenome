@@ -69,6 +69,10 @@ module ReportType
         ERB.new(File.read('app/views/sparql_templates/find_environment_root.rq.erb')).result(binding)
       end
 
+      def find_environment_inhabitants_stats_sparql(meos)
+        ERB.new(File.read('app/views/sparql_templates/find_environment_inhabitants_stats.rq.erb')).result(binding)
+      end
+
       private
 
       def gene_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause_type, limit, offset)

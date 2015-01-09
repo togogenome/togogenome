@@ -7,6 +7,7 @@ $ ->
       columns: [
         {data: "environment_link"}
         {data: "category"}
+        {data: "inhabitants"}
       ]
     )
     downloadCSV: '/report_type/environments.csv'
