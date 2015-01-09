@@ -8,14 +8,13 @@ DEFINE sql:select-option "order"
 WHERE {
   VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 } .
 
-  GRAPH <%= @@ontology[:meo_descendants] %> { ?meo_iri rdfs:subClassOf <<%= meo_id %>> }
+  GRAPH <%= @@ontology[:meo_descendants] %> { ?meo_id rdfs:subClassOf <<%= meo_id %>> }
   GRAPH <%= @@ontology[:gold] %> {
-    ?gold_iri ?p_meo ?meo_iri .
+    ?gold_iri ?p_meo ?meo_id .
     ?gold_iri mccv:MCCV_000020 ?taxonomy_id .
-    BIND (REPLACE(STR(?meo_iri),"http://purl.jp/bio/11/meo/", "" ) AS ?meo_id)
   }
 
-  GRAPH <%= @@ontology[:meo] %> { ?meo_iri rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
+  GRAPH <%= @@ontology[:meo] %> { ?meo_id rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
 
   <% unless mpo_id.empty? %>
     GRAPH <%= @@ontology[:mpo_descendants] %> { ?mpo_id rdfs:subClassOf <<%= mpo_id %>> }
