@@ -19,7 +19,7 @@ TogoGenome::Application.routes.draw do
   get '/text/search', as: :text_search, to: 'stanza_search#show'
 
   # 複数形にしたい所だけど、利用者にはこちらの方が分かりやすいらしい
-  resources :gene,        only: %w(show), constraints: { id: /[\w\-\:\.\/]+/ }
+  resources :gene,        only: %w(show), constraints: { id: /[\w\-\:\.\/\#\%]+/ }
   resources :organism,    only: %w(show), constraints: { id: /[\w\-\:\.]+/ }
   resources :environment, only: %w(show), constraints: { id: /[\w\-\:\.]+/ }
   resources :phenotype,   only: %w(show), constraints: { id: /MPO_\d+/ }

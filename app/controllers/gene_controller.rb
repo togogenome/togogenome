@@ -1,6 +1,7 @@
 class GeneController < ApplicationController
   def show(id)
-    # "1148:slr1311" で1つのid
-    @taxonomic_id, @locus_tag = id.split(':')
+    # "150340:NC_013456.1#feature:718674-719099:1:gene.715"
+    #  => "150340", "NC_013456.1#feature:718674-719099:1:gene.715"
+    @taxonomic_id, @locus_tag = id.split(':', 2)
   end
 end
