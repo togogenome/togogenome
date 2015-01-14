@@ -33,9 +33,6 @@
             %th Position begin
             %th Position end
             %th Sequence
-            %th feature_position_beg(検証用)
-            %th feature_position_end(検証用)
-            %th strand(検証用)
         %tbody
           - @genomes.each do |genome|
             %tr
@@ -46,6 +43,3 @@
               %td.numeric= number_with_delimiter(genome[:position])
               %td.numeric= number_with_delimiter(genome[:position_end])
               %td= match_snippet(genome[:snippet], genome[:snippet_pos], genome[:position], genome[:position_end])
-              %td= genome[:feature_position_beg]
-              %td= genome[:feature_position_end]
-              %td= genome[:strand]
