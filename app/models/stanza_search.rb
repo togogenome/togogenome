@@ -4,9 +4,11 @@ class StanzaSearch
   PAGINATE = {per_page: 10}
 
   class << self
-    def search_by_category(q, category='all')
+    def search(q)
+      return nil unless q
+
       # XXX nanostanza は検索してない
-      search_stanza_ids(category).map {|id|
+      Stanza.ids.map {|id|
         search_by_stanza_id(q, id)
       }.group_by {|e|
         e[:report_type]
@@ -42,21 +44,6 @@ class StanzaSearch
       # 「件数取得」と「検索結果取得」で2回同じ検索が行われるのでキャッシュしておく
       Rails.cache.fetch Digest::MD5.hexdigest(url), expires_in: 1.day, compress: true do
         open(url).read
-      end
-    end
-
-    def search_stanza_ids(key)
-      case key
-      when 'all'
-        Stanza.ids
-      when 'gene_reports'
-        Stanza.gene_ids
-      when 'organism_reports'
-        Stanza.organism_ids
-      when 'environment_reports'
-        Stanza.env_ids
-      else
-        []
       end
     end
   end

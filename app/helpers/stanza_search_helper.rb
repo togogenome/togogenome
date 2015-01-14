@@ -18,6 +18,9 @@ module StanzaSearchHelper
       when 'environments'
         env_id = stanza[:stanza_query]['env_id']
         ["Environment #{env_id}", environment_path(env_id)]
+      when 'phenotypes'
+        mpo_id = stanza[:stanza_query]['mpo_id']
+        ["Phenotype #{mpo_id}", phenotype_path(mpo_id)]
       end
 
     link_to(label, path, target: '_blank')
@@ -36,10 +39,10 @@ module StanzaSearchHelper
     }
 
     [
-      ['All',          'all',                 {'data-search-target' => 'category'}],
-      ['Genes',        'gene_reports',        {'data-search-target' => 'category'}],
-      ['Organisms',    'organism_reports',    {'data-search-target' => 'category'}],
-      ['Environments', 'environment_reports', {'data-search-target' => 'category'}],
+      ['Genes',        'gene',        {'data-search-target' => 'category'}],
+      ['Organisms',    'organism',    {'data-search-target' => 'category'}],
+      ['Environments', 'environment', {'data-search-target' => 'category'}],
+      ['Phenotypes',   'phenotype',   {'data-search-target' => 'category'}],
       ['--------------', {disabled: 'disabled'}]
     ] + stanza_ary
   end

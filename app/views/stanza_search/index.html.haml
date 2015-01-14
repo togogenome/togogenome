@@ -17,15 +17,19 @@
     - if @error
       .alert.alert-error
         = @error
-    - unless @stanzas.blank?
-      %table#results.table.table-striped.table-bordered.table-condensed
-        %thead
-          %td Gene
-          %td Organism
-          %td Environments
-          %td Phenotypes
-        %tr
-          %td= render 'count_list', query: params[:q], stanzas: @stanzas['genes']
-          %td= render 'count_list', query: params[:q], stanzas: @stanzas['organisms']
-          %td= render 'count_list', query: params[:q], stanzas: @stanzas['environments']
-          %td= render 'count_list', query: params[:q], stanzas: @stanzas['phenotypes']
+    - if @stanzas
+      %ul.nav.nav-tabs
+        - %w(gene organism environment phenotype).each do |type|
+          %li{class: params[:category] == type ? 'active' : nil}
+            %a{href: "##{type}", data: {toggle: :tab, category: type.to_sym}}= type.capitalize
+
+      .tab-content
+        - %w(gene organism environment phenotype).each do |type|
+          .tab-pane{id: type, class: params[:category] == type ? 'active' : nil}
+            = render 'count_list', query: params[:q], stanzas: @stanzas[type.pluralize]
+
+:javascript
+  $('.nav-tabs a').on("click", function(e) {
+    var category = $(e.target).data('category');
+    return $("select#category").val(category);
+  });
