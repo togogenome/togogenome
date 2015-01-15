@@ -3,7 +3,7 @@ module ReportType
     class << self
       def count(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '')
         select_clause =  "SELECT COUNT(DISTINCT ?taxonomy_id) AS ?hits_count"
-        sparql = build_organism_sparql(@@prefix, @@ontology, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause)
+        sparql = build_organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause)
 
         results = query(sparql)
 
@@ -12,7 +12,7 @@ module ReportType
 
       def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
         select_clause, order_clause = "SELECT DISTINCT ?taxonomy_id ?taxonomy_name", 'ORDER BY ?taxonomy_name'
-        sparql = build_organism_sparql(@@prefix, @@ontology, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause, limit, offset)
+        sparql = build_organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause, limit, offset)
 
         results = query(sparql)
 
@@ -21,10 +21,10 @@ module ReportType
         taxids = results.map {|b| "<#{b[:taxonomy_id]}>" }.uniq.join(' ')
 
         sparqls = [
-          find_environments_sparql(@@prefix, @@ontology, taxids),
-          find_phenotypes_sparql(@@prefix, @@ontology, taxids),
-          #find_refseqs_sparql(@@prefix, @@ontology, taxids),
-          find_genome_stats_sparql(@@prefix, @@ontology, taxids)
+          find_environments_sparql(PREFIX, ONTOLOGY, taxids),
+          find_phenotypes_sparql(PREFIX, ONTOLOGY, taxids),
+          #find_refseqs_sparql(PREFIX, ONTOLOGY, taxids),
+          find_genome_stats_sparql(PREFIX, ONTOLOGY, taxids)
         ]
 
         envs, phenotypes, stats = Parallel.map(sparqls, in_threads: 4) {|sparql|
