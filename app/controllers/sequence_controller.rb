@@ -3,12 +3,10 @@ class SequenceController < ApplicationController
   end
 
   def search(fragment)
-    begin
-      @sequences = Sequence.search(fragment.delete("\s\n"))
-    rescue StandardError => ex
-      @error = ex
-    ensure
-      render 'index'
-    end
+    @sequences = Sequence.search(fragment.delete("\s\n"))
+  rescue => ex
+    @error = ex
+  ensure
+    render 'index'
   end
 end
