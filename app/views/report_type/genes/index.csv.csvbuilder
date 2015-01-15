@@ -1,0 +1,32 @@
+csv << [
+  'Gene ID',
+  'Gene URL',
+  'UniProts ID',
+  'UniProts URL',
+  'Descriptions',
+  'Gene ontologies',
+  'Gene ontologies ID',
+  'Gene ontologies URL',
+  'Organism',
+  'Organism ID',
+  'Organism URL',
+]
+
+limit = 100
+(0..@hits_count).step(limit) do |offset|
+  ReportType::Gene.search(@args.merge(limit: limit, offset: offset)).each do |r|
+    csv << [
+      r.gene_and_taxonomy.gene_id,
+      r.gene_and_taxonomy.gene_uri,
+      r.proteins.map(&:id).join("\n"),
+      r.proteins.map(&:uniprot_link).join("\n"),
+      r.proteins.map(&:name).uniq.join("\n"),
+      r.gos.map(&:name).join("\n"),
+      r.gos.map(&:id).join("\n"),
+      r.gos.map(&:uri).join("\n"),
+      r.gene_and_taxonomy.taxonomy_name,
+      r.gene_and_taxonomy.taxonomy_id,
+      "http://togogenome.org/organism/#{r.gene_and_taxonomy.taxonomy_id}",
+    ]
+  end
+end

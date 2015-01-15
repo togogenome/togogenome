@@ -1,0 +1,10 @@
+= content_for :javascript do
+  = javascript_include_tag 'results_table/gene'
+
+%table#gene_results.table.table-striped.table-bordered.table-hover.table-condensed
+  %thead
+    %td Gene
+    %td UniProt
+    %td Description
+    %td Gene ontology
+    %td Organism

@@ -1,0 +1,18 @@
+DEFINE sql:select-option "order"
+
+SELECT ?taxonomy_id ?mpo_id ?mpo_name ?top_mpo_name
+FROM <%= ontology[:gold] %>
+FROM <%= ontology[:mpo] %>
+WHERE {
+  VALUES ?taxonomy_id { <%= taxonomies %>}
+  FILTER (STRSTARTS(STR(?mpo_url), "http://purl.jp/bio/01/mpo#MPO_"))
+  ?taxonomy_id ?p ?mpo_url .
+  BIND (REPLACE(STR(?mpo_url),"http://purl.jp/bio/01/mpo#", "" ) AS ?mpo_id)
+  ?mpo_url rdfs:label ?mpo_name .
+  FILTER(LANG(?mpo_name) = "" || LANGMATCHES(LANG(?mpo_name), "en")) .
+
+  ?top_mpo_url  rdfs:subClassOf  <http://purl.jp/bio/01/mpo#MPO_00000> .
+  ?mpo_url rdfs:subClassOf ?top_mpo_url  OPTION (TRANSITIVE, T_DIRECTION 1, T_MIN(0), T_STEP("step_no") AS ?step) .
+  ?top_mpo_url rdfs:label ?top_mpo_name .
+  FILTER(LANGMATCHES(LANG(?top_mpo_name), "en")) .
+}

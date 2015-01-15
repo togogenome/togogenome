@@ -1,0 +1,6 @@
+%ul#search-methods-selector
+  - page_tabs.each do |tab|
+    - is_current = current == tab[:id]
+
+    %li{class: is_current ? 'current' : nil}= link_to_unless is_current, tab[:name], tab[:path]
+  %li.search-methods-visibility-button Hide

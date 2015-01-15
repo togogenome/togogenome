@@ -1,0 +1,7 @@
+DEFINE sql:select-option "order"
+
+<%= select_clause %>
+WHERE {
+  GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <http://identifiers.org/taxonomy/1> }
+  GRAPH <%= ontology[:taxonomy] %> { ?taxonomy_id rdfs:label ?taxonomy_name }
+} <%= order_clause %> LIMIT <%= limit %> OFFSET <%= offset %>

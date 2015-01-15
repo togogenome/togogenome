@@ -5,10 +5,19 @@ TogoGenome::Application.routes.draw do
     get :search, on: :member
   end
 
-  get '/proteins/search', as: :search_proteins
+  namespace :report_type do
+    resources :genes, only: %w(index)
+    resources :organisms, only: %w(index)
+    resources :environments, only: %w(index)
+    resources :phenotypes, only: %w(index)
+  end
+
   resources :genomes, only: %w(index) do
     get :search, on: :collection
   end
+
+  get '/sequence', as: :sequence_index, to: 'sequence#index'
+  get '/sequence/search', as: :sequence_search, to: 'sequence#search'
 
   get '/converter', as: :converter, to: 'converter#index'
   get '/resolver', as: :resolver, to: 'resolver#index'

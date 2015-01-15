@@ -1,12 +1,6 @@
 .main-container
   #search-methods-container
-    %ul#search-methods-selector
-      %li= link_to 'Facet', root_path
-      %li= link_to 'Sequence', genomes_path
-      %li= link_to 'ID converter', converter_path
-      %li.current ID resolver
-      //%li= link_to 'Text', text_index_path
-      %li.search-methods-visibility-button Hide
+    = render 'shared/header', current: :resolver
 
     #methods.no-result-column
       .method-container#mappings-container(data-mapping-mode='resolver')

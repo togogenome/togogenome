@@ -1,0 +1,20 @@
+csv << [
+  'Environment',
+  'Environment ID',
+  'Environment URL',
+  'Root Environment',
+  'Inhabitants'
+]
+
+limit = 100
+(0..@hits_count).step(limit) do |offset|
+  ReportType::Environment.search(@args.merge(limit: limit, offset: offset)).each do |r|
+    csv << [
+      r.environment.name,
+      r.environment.id,
+      "http://togogenome.org/environment/#{r.environment.id}",
+      r.environment.root,
+      r.environment.inhabitants
+    ]
+  end
+end

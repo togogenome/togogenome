@@ -1,0 +1,8 @@
+DEFINE sql:select-option "order"
+
+SELECT ?uniprot_id ?togogenome
+FROM <%= ontology[:tgup] %>
+WHERE {
+  VALUES ?uniprot_id { <%= upids %> }
+  ?togogenome rdfs:seeAlso ?uniprot_id .
+}
