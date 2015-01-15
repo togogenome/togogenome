@@ -6,7 +6,7 @@ module ReportType
 
     module ClassMethods
       def build_gene_sparql(prefix, ontology, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, limit = 1, offset = 0)
-        if (bp_id.present? || mf_id.present? || cc_id.present?)
+        if [bp_id, mf_id, cc_id].any?(&:present?)
           genes_has_go_condition(prefix, ontology, mpo_id, meo_id, tax_id, bp_id, mf_id, cc_id, select_clause, limit, offset)
         elsif tax_id.present?
           genes_has_tax_condition(prefix, ontology, mpo_id, meo_id, tax_id, select_clause, limit, offset)
@@ -20,7 +20,7 @@ module ReportType
       end
 
       def build_organism_sparql(prefix, ontology, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause = '', limit = 1, offset = 0)
-        if (bp_id.present? || mf_id.present? || cc_id.present?)
+        if [bp_id, mf_id, cc_id].any?(&:present?)
           organisms_has_go_condition(prefix, ontology, mpo_id, meo_id, tax_id, bp_id, mf_id, cc_id, select_clause, order_clause, limit, offset)
         elsif tax_id.present?
           organisms_has_tax_condition(prefix, ontology, mpo_id, meo_id, tax_id, select_clause, order_clause, limit, offset)
@@ -34,7 +34,7 @@ module ReportType
       end
 
       def build_environment_sparql(prefix, ontology, meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, limit = 1, offset = 0)
-        if (bp_id.present? || mf_id.present? || cc_id.present?)
+        if [bp_id, mf_id, cc_id].any?(&:present?)
           environments_has_go_condition(prefix, ontology, mpo_id, meo_id, tax_id, bp_id, mf_id, cc_id, select_clause, limit, offset)
         elsif tax_id.present?
           environments_has_tax_condition(prefix, ontology, mpo_id, meo_id, tax_id, select_clause, limit, offset)
