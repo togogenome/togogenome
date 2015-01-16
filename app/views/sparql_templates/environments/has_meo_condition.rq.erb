@@ -7,7 +7,7 @@ DEFINE sql:select-option "order"
 <%= select_clause %>
 WHERE {
   VALUES ?p_meo { meo:MEO_0000437 meo:MEO_0000440 } .
-
+  GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <http://identifiers.org/taxonomy/1> }
   GRAPH <%= ontology[:meo_descendants] %> { ?meo_id rdfs:subClassOf <<%= meo_id %>> }
   GRAPH <%= ontology[:gold] %> {
     ?gold_iri ?p_meo ?meo_id .

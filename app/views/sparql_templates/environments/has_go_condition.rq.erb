@@ -22,8 +22,10 @@ WHERE {
     ?togogenome rdfs:seeAlso ?taxonomy_id .
     ?uniprot_id rdfs:seeAlso ?uniprot_up .
   }
-  <% unless tax_id.empty? %>
+  <% if tax_id.present? %>
     GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <<%= tax_id %>> }
+  <% else %>
+    GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <http://identifiers.org/taxonomy/1> }
   <% end %>
   VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
   GRAPH <%= ontology[:gold] %> {

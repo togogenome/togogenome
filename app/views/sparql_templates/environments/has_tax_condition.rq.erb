@@ -5,9 +5,7 @@ DEFINE sql:select-option "order"
 
 <%= select_clause %>
 WHERE {
-  <% unless tax_id.empty? %>
-    GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <<%= tax_id %>> }
-  <% end %>
+  GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <<%= tax_id %>> }
 
   VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
   GRAPH <%= ontology[:gold] %> {
