@@ -22,17 +22,17 @@ module ReportType
         end
       end
 
-      def build_organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause = '', limit = 1, offset = 0)
+      def build_organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, limit = 1, offset = 0)
         if [bp_id, mf_id, cc_id].any?(&:present?)
-          organisms_has_go_condition(PREFIX, ONTOLOGY, mpo_id, meo_id, tax_id, bp_id, mf_id, cc_id, select_clause, order_clause, limit, offset)
+          organisms_has_go_condition(PREFIX, ONTOLOGY, mpo_id, meo_id, tax_id, bp_id, mf_id, cc_id, select_clause, limit, offset)
         elsif tax_id.present?
-          organisms_has_tax_condition(PREFIX, ONTOLOGY, mpo_id, meo_id, tax_id, select_clause, order_clause, limit, offset)
+          organisms_has_tax_condition(PREFIX, ONTOLOGY, mpo_id, meo_id, tax_id, select_clause, limit, offset)
         elsif meo_id.present?
-          organisms_has_meo_condition(PREFIX, ONTOLOGY, mpo_id, meo_id, select_clause, order_clause, limit, offset)
+          organisms_has_meo_condition(PREFIX, ONTOLOGY, mpo_id, meo_id, select_clause, limit, offset)
         elsif mpo_id.present?
-          organisms_has_mpo_condition(PREFIX, ONTOLOGY, mpo_id, select_clause, order_clause, limit, offset)
+          organisms_has_mpo_condition(PREFIX, ONTOLOGY, mpo_id, select_clause, limit, offset)
         else
-          organisms_init_condition(PREFIX, ONTOLOGY, select_clause, order_clause, limit, offset)
+          organisms_init_condition(PREFIX, ONTOLOGY, select_clause, limit, offset)
         end
       end
 
@@ -57,11 +57,11 @@ module ReportType
       def_erb_method("genes_has_tax_condition(prefix, ontology, mpo_id, meo_id, tax_id, select_clause, limit, offset)", 'app/views/sparql_templates/genes/has_tax_condition.rq.erb')
       def_erb_method("genes_has_go_condition(prefix, ontology, mpo_id, meo_id, tax_id, bp_id, mf_id, cc_id, select_clause, limit, offset)", 'app/views/sparql_templates/genes/has_go_condition.rq.erb')
 
-      def_erb_method("organisms_init_condition(prefix, ontology, select_clause, order_clause, limit, offset)", 'app/views/sparql_templates/organisms/init_condition.rq.erb')
-      def_erb_method("organisms_has_mpo_condition(prefix, ontology, mpo_id, select_clause, order_clause, limit, offset)", 'app/views/sparql_templates/organisms/has_mpo_condition.rq.erb')
-      def_erb_method("organisms_has_meo_condition(prefix, ontology, mpo_id, meo_id, select_clause, order_clause, limit, offset)", 'app/views/sparql_templates/organisms/has_meo_condition.rq.erb')
-      def_erb_method("organisms_has_tax_condition(prefix, ontology, mpo_id, meo_id, tax_id, select_clause, order_clause, limit, offset)", 'app/views/sparql_templates/organisms/has_tax_condition.rq.erb')
-      def_erb_method("organisms_has_go_condition(prefix, ontology, mpo_id, meo_id, tax_id, bp_id, mf_id, cc_id, select_clause, order_clause, limit, offset)", 'app/views/sparql_templates/organisms/has_go_condition.rq.erb')
+      def_erb_method("organisms_init_condition(prefix, ontology, select_clause, limit, offset)", 'app/views/sparql_templates/organisms/init_condition.rq.erb')
+      def_erb_method("organisms_has_mpo_condition(prefix, ontology, mpo_id, select_clause, limit, offset)", 'app/views/sparql_templates/organisms/has_mpo_condition.rq.erb')
+      def_erb_method("organisms_has_meo_condition(prefix, ontology, mpo_id, meo_id, select_clause, limit, offset)", 'app/views/sparql_templates/organisms/has_meo_condition.rq.erb')
+      def_erb_method("organisms_has_tax_condition(prefix, ontology, mpo_id, meo_id, tax_id, select_clause, limit, offset)", 'app/views/sparql_templates/organisms/has_tax_condition.rq.erb')
+      def_erb_method("organisms_has_go_condition(prefix, ontology, mpo_id, meo_id, tax_id, bp_id, mf_id, cc_id, select_clause, limit, offset)", 'app/views/sparql_templates/organisms/has_go_condition.rq.erb')
 
       def_erb_method("environments_init_condition(prefix, ontology, select_clause, limit, offset)", 'app/views/sparql_templates/environments/init_condition.rq.erb')
       def_erb_method("environments_has_mpo_condition(prefix, ontology, mpo_id, select_clause, limit, offset)", 'app/views/sparql_templates/environments/has_mpo_condition.rq.erb')
