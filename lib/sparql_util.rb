@@ -1,18 +1,18 @@
 module SPARQLUtil
   ONTOLOGY = {
-    uniprot:         '<http://togogenome.org/graph/uniprot/>',
-    taxonomy:        '<http://togogenome.org/graph/taxonomy/>',
-    go:              '<http://togogenome.org/graph/go/>',
-    mpo:             '<http://togogenome.org/graph/mpo/>',
-    meo:             '<http://togogenome.org/graph/meo/>',
-    gold:            '<http://togogenome.org/graph/gold/>',
-    tgup:            '<http://togogenome.org/graph/tgup/>',
-    tgtax:           '<http://togogenome.org/graph/tgtax/>',
-    meo_descendants: '<http://togogenome.org/graph/meo_descendants/>',
-    mpo_descendants: '<http://togogenome.org/graph/mpo_descendants/>',
-    goup:            '<http://togogenome.org/graph/group/>',
-    refseq:          '<http://togogenome.org/graph/refseq/>',
-    stats:           '<http://togogenome.org/graph/stats/>'
+    uniprot:         '<http://togogenome.org/graph/uniprot>',
+    taxonomy:        '<http://togogenome.org/graph/taxonomy>',
+    go:              '<http://togogenome.org/graph/go>',
+    mpo:             '<http://togogenome.org/graph/mpo>',
+    meo:             '<http://togogenome.org/graph/meo>',
+    gold:            '<http://togogenome.org/graph/gold>',
+    tgup:            '<http://togogenome.org/graph/tgup>',
+    tgtax:           '<http://togogenome.org/graph/tgtax>',
+    meo_descendants: '<http://togogenome.org/graph/meo_descendants>',
+    mpo_descendants: '<http://togogenome.org/graph/mpo_descendants>',
+    goup:            '<http://togogenome.org/graph/goup>',
+    refseq:          '<http://togogenome.org/graph/refseq>',
+    stats:           '<http://togogenome.org/graph/stats>'
   }
 
   PREFIX = {

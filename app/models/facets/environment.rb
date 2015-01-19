@@ -2,7 +2,7 @@ module Facets
   class Environment < Base
     class << self
       def graph_uri
-        'http://togogenome.org/graph/meo/'
+        'http://togogenome.org/graph/meo'
       end
 
       def root_uri

@@ -2,7 +2,7 @@ module Facets
   class Phenotype < Base
     class << self
       def graph_uri
-        'http://togogenome.org/graph/mpo/'
+        'http://togogenome.org/graph/mpo'
       end
 
       def root_uri
