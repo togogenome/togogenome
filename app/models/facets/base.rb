@@ -53,7 +53,7 @@ module Facets
       def search(word)
         sparql = <<-SPARQL.strip_heredoc
           SELECT ?target ?name ?parent ?parent_name ?step
-          FROM <#{self.graph_uri}>
+          FROM #{self.graph_uri}
           WHERE {
             {
               SELECT ?target ?name

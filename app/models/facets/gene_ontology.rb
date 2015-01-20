@@ -9,7 +9,7 @@ module Facets
         sparql = <<-SPARQL.strip_heredoc
           DEFINE sql:select-option "order"
           SELECT ?target ?name ?link ?path ?step ?link_name
-          FROM <#{graph_uri}>
+          FROM #{graph_uri}
           WHERE {
             {
               SELECT DISTINCT ?target ?name ?link ?path ?step
