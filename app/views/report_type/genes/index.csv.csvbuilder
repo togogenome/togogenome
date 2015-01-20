@@ -17,7 +17,7 @@ limit = 100
   ReportType::Gene.search(@args.merge(limit: limit, offset: offset)).each do |r|
     csv << [
       r.gene_and_taxonomy.gene_id,
-      r.gene_and_taxonomy.gene_uri,
+      r.gene_and_taxonomy.togogenome,
       r.proteins.map(&:id).join("\n"),
       r.proteins.map(&:uniprot_link).join("\n"),
       r.proteins.map(&:name).uniq.join("\n"),

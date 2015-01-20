@@ -42,13 +42,18 @@ module ReportType
     end
 
     def gene_and_taxonomy
-      Struct.new(:gene_uri, :taxonomy, :taxonomy_name) {
+      Struct.new(:togogenome, :taxonomy, :taxonomy_name) {
+        def gene_uri
+          "/gene/#{gene_id}"
+        end
+
         def taxonomy_id
           taxonomy.split('/').last
         end
 
         def gene_id
-          gene_uri.split('/').last
+          refseq_id, locus_tag = togogenome.split('/').last.split(':')
+          "#{refseq_id}:#{locus_tag}"
         end
       }.new(@gene_and_taxonomy[:togogenome], @gene_and_taxonomy[:taxonomy_id], @gene_and_taxonomy[:taxonomy_name])
     end
