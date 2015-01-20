@@ -12,7 +12,9 @@ module SPARQLUtil
     mpo_descendants: '<http://togogenome.org/graph/mpo_descendants>',
     goup:            '<http://togogenome.org/graph/goup>',
     refseq:          '<http://togogenome.org/graph/refseq>',
-    stats:           '<http://togogenome.org/graph/stats>'
+    stats:           '<http://togogenome.org/graph/stats>',
+    edgestore:       '<http://togogenome.org/graph/edgestore>',
+    so:              '<http://togogenome.org/graph/so>'
   }
 
   PREFIX = {
@@ -20,7 +22,9 @@ module SPARQLUtil
     mccv:   'PREFIX mccv: <http://purl.jp/bio/01/mccv#>',
     meo:    'PREFIX meo: <http://purl.jp/bio/11/meo/>',
     mpo:    'PREFIX mpo: <http://purl.jp/bio/01/mpo#>',
-    insdc:  'PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/sequence#>',
-    tgstat: 'PREFIX tgstat:<http://togogenome.org/stats/>'
+    insdc:  'PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>',
+    tgstat: 'PREFIX tgstat:<http://togogenome.org/stats/>',
+    faldo:  'PREFIX faldo: <http://biohackathon.org/resource/faldo#>',
+    obo:    'PREFIX obo: <http://purl.obolibrary.org/obo/>'
   }
 end

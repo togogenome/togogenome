@@ -1,3 +1,5 @@
+require 'sparql_util'
+
 module Facets
   class Base
     include ActiveAttr::Model
@@ -12,7 +14,7 @@ module Facets
     def children
       sparql = <<-SPARQL.strip_heredoc
         SELECT ?target ?name (COUNT(?name) AS ?hits)
-        FROM <#{self.class.graph_uri}>
+        FROM #{self.class.graph_uri}
         WHERE {
           ?target rdfs:subClassOf <#{self.id}> ;
                   rdfs:label ?name .

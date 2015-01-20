@@ -1,3 +1,5 @@
+require 'sparql_util'
+
 class Identifier
   include Queryable
 
@@ -33,7 +35,7 @@ class Identifier
       sparql = <<-SPARQL.strip_heredoc
         DEFINE sql:select-option "order"
         SELECT DISTINCT #{select_target(db_names)}
-        FROM <http://togogenome.org/graph/edgestore>
+        FROM #{SPARQLUtil::ONTOLOGY[:edgestore]}
         WHERE {
           ?node0 rdf:type <http://identifiers.org/#{input_database}> .
           #{mapping(convert_databases)}
@@ -52,7 +54,7 @@ class Identifier
 
       <<-SPARQL.strip_heredoc
         SELECT DISTINCT #{select_target(db_names)}
-        FROM <http://togogenome.org/graph/edgestore>
+        FROM #{SPARQLUtil::ONTOLOGY[:edgestore]}
         WHERE {
           VALUES ?node0 { #{values} }
           #{mapping(convert_databases)}

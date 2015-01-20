@@ -2,7 +2,7 @@ module Facets
   class Environment < Base
     class << self
       def graph_uri
-        'http://togogenome.org/graph/meo'
+        SPARQLUtil::ONTOLOGY[:meo]
       end
 
       def root_uri

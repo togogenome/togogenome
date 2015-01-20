@@ -1,3 +1,5 @@
+require 'sparql_util'
+
 class Sequence
   include Queryable
 
@@ -41,12 +43,12 @@ class Sequence
       gggenome_response['results'].each_slice(100).map do |sub_results|
         <<-SPARQL.strip_heredoc
           DEFINE sql:select-option "order"
-          PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
-          PREFIX faldo: <http://biohackathon.org/resource/faldo#>
-          PREFIX obo: <http://purl.obolibrary.org/obo/>
+          #{SPARQLUtil::PREFIX[:insdc]}
+          #{SPARQLUtil::PREFIX[:faldo]}
+          #{SPARQLUtil::PREFIX[:obo]}
           SELECT DISTINCT ?locus_tag ?product ?sequence_ontology ?sequence_ontology_name ?taxonomy ?position ?name ?position_end ?snippet ?snippet_pos ?snippet_end
-          FROM <http://togogenome.org/graph/so>
-          FROM <http://togogenome.org/graph/refseq>
+          FROM #{SPARQLUtil::ONTOLOGY[:so]}
+          FROM #{SPARQLUtil::ONTOLOGY[:refseq]}
           WHERE {
             {
               SELECT DISTINCT ?sequence_ontology ?sequence_ontology_name ?taxonomy ?position ?name ?position_end ?snippet ?snippet_pos ?snippet_end ?feature

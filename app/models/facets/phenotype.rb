@@ -2,7 +2,7 @@ module Facets
   class Phenotype < Base
     class << self
       def graph_uri
-        'http://togogenome.org/graph/mpo'
+        SPARQLUtil::ONTOLOGY[:mpo]
       end
 
       def root_uri
