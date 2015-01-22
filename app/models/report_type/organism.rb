@@ -11,8 +11,8 @@ module ReportType
       end
 
       def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
-        select_clause, order_clause = "SELECT DISTINCT ?taxonomy_id ?taxonomy_name", 'ORDER BY ?taxonomy_name'
-        sparql = build_organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause, limit, offset)
+        select_clause = "SELECT DISTINCT ?taxonomy_id ?taxonomy_name"
+        sparql = build_organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, limit, offset)
 
         results = query(sparql)
 
@@ -23,28 +23,12 @@ module ReportType
         sparqls = [
           find_environments_sparql(PREFIX, ONTOLOGY, taxids),
           find_phenotypes_sparql(PREFIX, ONTOLOGY, taxids),
-          #find_refseqs_sparql(PREFIX, ONTOLOGY, taxids),
           find_genome_stats_sparql(PREFIX, ONTOLOGY, taxids)
         ]
 
         envs, phenotypes, stats = Parallel.map(sparqls, in_threads: 4) {|sparql|
           query(sparql)
         }
-
-        # https://github.com/togostanza/togostanza/blob/master/organism_gc_nano_stanza/stanza.rb
-        #
-        # gc_percent_arr = refseqs.group_by {|r| r[:taxonomy_id] }.map {|taxonomy_id, refs|
-        #   seqs = Parallel.map(refs, in_threads: 4) {|ref|
-        #     seq = open("http://togows.org/entry/nucleotide/#{ref[:refseq]}/seq").read
-        #     [seq.count('a') + seq.count('t'), seq.count('g') + seq.count('c')]
-        #   }
-        #
-        #   at = seqs.map(&:first).inject {|sum, n| sum + n }
-        #   gc = seqs.map(&:last).inject {|sum, n| sum + n }
-        #   gc_percent = (gc.to_f / (at + gc).to_f * 100.0).to_i
-        #
-        #   {taxonomy_id: taxonomy_id, gc_percent: gc_percent}
-        # }
 
         results.map do |result|
           select_envs       = envs.select {|e| e[:taxonomy_id] == result[:taxonomy_id] }

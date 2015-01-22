@@ -4,7 +4,7 @@ module Facets
   class Taxonomy < Base
     class << self
       def graph_uri
-        'http://togogenome.org/graph/taxonomy/'
+        SPARQLUtil::ONTOLOGY[:taxonomy]
       end
 
       def root_uri

@@ -1,7 +1,7 @@
 DEFINE sql:select-option "order"
 
 SELECT DISTINCT ?meo_id ?name
-FROM <http://togogenome.org/graph/meo/>
+FROM <%= ontology[:meo] %>
 WHERE {
   VALUES ?meo_uri { <%= meos %>}
   BIND(?meo_uri AS ?meo_id)

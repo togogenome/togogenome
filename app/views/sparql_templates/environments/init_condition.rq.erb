@@ -1,8 +1,12 @@
 DEFINE sql:select-option "order"
 
+<%= prefix[:mccv] %>
+<%= prefix[:meo] %>
+
 <%= select_clause %>
-FROM <%= ontology[:meo] %>
 WHERE {
-  ?meo_id rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en"))
-  ?meo_id rdf:type <http://www.w3.org/2002/07/owl#Class> .
+  GRAPH <%= ontology[:meo] %> {
+    ?meo_id rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en"))
+    ?meo_id rdf:type <http://www.w3.org/2002/07/owl#Class> .
+  }
 } LIMIT <%= limit %> OFFSET <%= offset %>

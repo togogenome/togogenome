@@ -1,11 +1,15 @@
 module Facets
   class GeneOntology < Base
     class << self
+      def graph_uri
+        SPARQLUtil::ONTOLOGY[:go]
+      end
+
       def search(word)
         sparql = <<-SPARQL.strip_heredoc
           DEFINE sql:select-option "order"
           SELECT ?target ?name ?link ?path ?step ?link_name
-          FROM <http://togogenome.org/graph/go/>
+          FROM #{graph_uri}
           WHERE {
             {
               SELECT DISTINCT ?target ?name ?link ?path ?step

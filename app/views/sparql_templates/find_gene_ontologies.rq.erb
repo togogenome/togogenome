@@ -9,7 +9,7 @@ WHERE {
   VALUES ?gene { <%= genes %> }
   GRAPH <%= ontology[:tgup] %> {
   	?gene rdfs:seeAlso ?uniprot_id .
-    ?uniprot_id rdf:type <http://identifiers.org/uniprot/> .
+    ?uniprot_id rdf:type <http://identifiers.org/uniprot> .
     ?uniprot_id rdfs:seeAlso ?uniprot_up .
   }
   GRAPH <%= ontology[:uniprot] %> {
