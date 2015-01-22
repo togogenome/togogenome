@@ -23,7 +23,7 @@ module SPARQLUtil
     meo:    'PREFIX meo: <http://purl.jp/bio/11/meo/>',
     mpo:    'PREFIX mpo: <http://purl.jp/bio/01/mpo#>',
     insdc:  'PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>',
-    tgstat: 'PREFIX tgstat:<http://togogenome.org/stats/>',
+    stats:  'PREFIX stats:<http://togogenome.org/stats/>',
     faldo:  'PREFIX faldo: <http://biohackathon.org/resource/faldo#>',
     obo:    'PREFIX obo: <http://purl.obolibrary.org/obo/>'
   }

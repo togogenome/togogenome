@@ -9,6 +9,11 @@
           },
           columns: [
             {data: "organism_link"},
+            {data: "genome_size"},
+            {data: "gene_num"},
+            {data: "rrna_num"},
+            {data: "trna_num"},
+            {data: "ncrna_num"},
             {data: "environment_links"},
             {data: "development_links"},
             {data: "growth_links"},
@@ -16,11 +21,7 @@
             {data: "morphology_links"},
             {data: "motility_links"},
             {data: "serotype_links"},
-            {data: "staining_links"},
-            {data: "gene_num"},
-            {data: "rrna_num"},
-            {data: "trna_num"},
-            {data: "ncrna_num"},
+            {data: "staining_links"}
           ]
         }),
         downloadCSV: '/report_type/organisms.csv'
@@ -33,10 +34,16 @@
   %thead
     %tr
       %th{rowspan: 2} Organism
+      %th{rowspan: 2} Size of genome
+      %th{colspan: 4} Number of genes
       %th{rowspan: 2} Environments
       %th{colspan: 7} Phenotypes
-      %th{colspan: 4} Number of genes
+
     %tr
+      %td Gene
+      %td tRNA
+      %td rRNA
+      %td ncRNA
       %td Development
       %td Growth
       %td Metabolism
@@ -44,7 +51,4 @@
       %td Motility
       %td Serotype
       %td Staining
-      %td Gene
-      %td tRNA
-      %td rRNA
-      %td ncRNA
+

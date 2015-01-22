@@ -1,14 +1,14 @@
 DEFINE sql:select-option "order"
 
-<%= prefix[:tgstat] %>
+<%= prefix[:stats] %>
 
-SELECT DISTINCT ?taxonomy_id ?project_num ?gene_num ?rrna_num ?trna_num ?ncrna_num
+SELECT DISTINCT ?taxonomy_id ?genome_num ?gene_num ?rrna_num ?trna_num ?ncrna_num
 FROM <%= ontology[:stats] %>
 WHERE {
   VALUES ?taxonomy_id { <%= taxonomies %>}
-  ?taxonomy_id tgstat:bioproject ?project_num ;
-               tgstat:gene ?gene_num ;
-               tgstat:rrna ?rrna_num ;
-               tgstat:trna ?trna_num ;
-               tgstat:ncrna ?ncrna_num .
+  ?taxonomy_id stats:sequence_length ?genome_num ;
+               stats:gene ?gene_num ;
+               stats:rrna ?rrna_num ;
+               stats:trna ?trna_num ;
+               stats:ncrna ?ncrna_num .
 }

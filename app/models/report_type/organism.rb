@@ -66,24 +66,8 @@ module ReportType
 
     def stat
       return nil unless @stat
-
-      Struct.new(:gene_num, :rrna_num, :trna_num, :ncrna_num, :project_num) {
-        def gene_num_per_project_num
-          (gene_num.to_f / project_num.to_f).round
-        end
-
-        def rrna_num_per_project_num
-          (rrna_num.to_f / project_num.to_f).round
-        end
-
-        def trna_num_per_project_num
-          (trna_num.to_f / project_num.to_f).round
-        end
-
-        def ncrna_num_per_project_num
-          (ncrna_num.to_f / project_num.to_f).round
-        end
-      }.new(@stat[:gene_num], @stat[:rrna_num], @stat[:trna_num], @stat[:ncrna_num], @stat[:project_num])
+      Struct.new(:genome_size, :gene_num, :rrna_num, :trna_num, :ncrna_num)
+      .new(@stat[:genome_size], @stat[:gene_num], @stat[:rrna_num], @stat[:trna_num], @stat[:ncrna_num])
     end
   end
 end
