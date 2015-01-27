@@ -1,0 +1,11 @@
+DEFINE sql:select-option "order"
+
+<%= prefix[:mpo] %>
+
+<%= select_clause %>
+WHERE {
+  GRAPH <%= ontology[:mpo] %> {
+    ?mpo_id rdfs:label ?mpo_name FILTER(LANG(?mpo_name) = "" || LANGMATCHES(LANG(?mpo_name), "en"))
+    ?mpo_id rdf:type <http://www.w3.org/2002/07/owl#Class> .
+  }
+} LIMIT <%= limit %> OFFSET <%= offset %>
