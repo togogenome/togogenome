@@ -11,8 +11,8 @@ module ReportType
       end
 
       def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
-        select_clause = "SELECT DISTINCT ?taxonomy_id ?taxonomy_name"
-        sparql = build_organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, limit, offset)
+        select_clause, order_clause = "SELECT DISTINCT ?taxonomy_id ?taxonomy_name", 'ORDER BY ?taxonomy_name'
+        sparql = build_organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause, limit, offset)
 
         results = query(sparql)
 
