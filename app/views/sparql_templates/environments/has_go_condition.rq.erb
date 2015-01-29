@@ -23,7 +23,7 @@ WHERE {
     ?uniprot_id rdfs:seeAlso ?uniprot_up .
   }
   <% if tax_id.present? %>
-    GRAPH <%= ontology[:taxonomy] %> { ?taxonomy_id rdfs:subClassOf* <<%= tax_id %>> }
+    GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <<%= tax_id %>> }
   <% end %>
   VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
   GRAPH <%= ontology[:gold] %> {

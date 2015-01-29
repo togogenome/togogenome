@@ -5,6 +5,7 @@ DEFINE sql:select-option "order"
 
 <%= select_clause %>
 WHERE {
+  GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <http://identifiers.org/taxonomy/1> }
   VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
   GRAPH <%= ontology[:meo_descendants] %> { ?meo_id rdfs:subClassOf <<%= meo_id %>> }
   GRAPH <%= ontology[:gold] %> {
@@ -17,4 +18,4 @@ WHERE {
     GRAPH <%= ontology[:mpo_descendants] %> { ?mpo_id rdfs:subClassOf <<%= mpo_id %>> }
   <% end %>
   GRAPH <%= ontology[:taxonomy] %> { ?taxonomy_id rdfs:label ?taxonomy_name }
-} LIMIT <%= limit %> OFFSET <%= offset %>
+} <%= order_clause %> LIMIT <%= limit %> OFFSET <%= offset %>
