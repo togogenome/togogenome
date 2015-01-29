@@ -26,7 +26,7 @@ WHERE {
   <% if tax_id.present? %>
     GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <<%= tax_id %>> }
   <% else %>
-    GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <http://identifiers.org/taxonomy/1> }
+    GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <http://identifiers.org/taxonomy/131567> }
   <% end %>
   <% unless meo_id.empty? %>
     VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
