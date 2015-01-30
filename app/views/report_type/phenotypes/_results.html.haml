@@ -1,1 +1,8 @@
-TODO: Phenotipe Table
+= content_for :javascript do
+  = javascript_include_tag 'results_table/phenotype'
+
+%table#phenotype_results.table.table-striped.table-bordered.table-hover.table-condensed
+  %thead
+    %td Phenotype
+    %td Category
+    %td Inhabitants
