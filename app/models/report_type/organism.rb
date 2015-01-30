@@ -11,7 +11,7 @@ module ReportType
       end
 
       def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
-        select_clause, order_clause = "SELECT DISTINCT ?taxonomy_id ?taxonomy_name", 'ORDER BY ?taxonomy_name'
+        select_clause, order_clause = "SELECT DISTINCT ?taxonomy_id ?taxonomy_name ?category_name ?sub_category_name", 'ORDER BY ?category_name ?sub_category_name'
         sparql = build_organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause, limit, offset)
 
         results = query(sparql)
@@ -45,11 +45,16 @@ module ReportType
     end
 
     def tax
-      Struct.new(:uri, :name) {
+      Struct.new(:category, :sub_category, :uri, :name) {
         def id
           uri.split('/').last
         end
-      }.new(@uniprot_taxonomy[:taxonomy_id], @uniprot_taxonomy[:taxonomy_name])
+
+        def taxonomy
+          "#{category}/#{sub_category}"
+        end
+      }.new(@uniprot_taxonomy[:category_name], @uniprot_taxonomy[:sub_category_name],
+        @uniprot_taxonomy[:taxonomy_id], @uniprot_taxonomy[:taxonomy_name])
     end
 
     def envs

@@ -6,7 +6,16 @@ DEFINE sql:select-option "order"
 <%= select_clause %>
 WHERE {
   GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <<%= tax_id %>> }
-  GRAPH <%= ontology[:taxonomy] %> { ?taxonomy_id rdfs:label ?taxonomy_name }
+  GRAPH <%= ontology[:taxonomy] %> {
+    ?taxonomy_id rdfs:label ?taxonomy_name .
+
+    ?taxonomy_id  rdfs:subClassOf* ?sub_category  .
+    ?category rdfs:subClassOf <http://identifiers.org/taxonomy/131567> .
+    ?sub_category rdfs:subClassOf ?category .
+
+    ?category rdfs:label ?category_name .
+    ?sub_category rdfs:label ?sub_category_name .
+  }
   <% unless meo_id.empty? %>
     VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
     GRAPH <%= ontology[:gold] %> {
