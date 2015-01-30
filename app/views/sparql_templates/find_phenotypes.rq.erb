@@ -12,7 +12,7 @@ WHERE {
   FILTER(LANG(?mpo_name) = "" || LANGMATCHES(LANG(?mpo_name), "en")) .
 
   ?top_mpo_url  rdfs:subClassOf  <http://purl.jp/bio/01/mpo#MPO_00000> .
-  ?mpo_url rdfs:subClassOf ?top_mpo_url  OPTION (TRANSITIVE, T_DIRECTION 1, T_MIN(0), T_STEP("step_no") AS ?step) .
+  ?mpo_url rdfs:subClassOf* ?top_mpo_url .
   ?top_mpo_url rdfs:label ?top_mpo_name .
   FILTER(LANGMATCHES(LANG(?top_mpo_name), "en")) .
 }

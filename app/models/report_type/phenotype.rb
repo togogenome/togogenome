@@ -48,7 +48,11 @@ module ReportType
 
       Struct.new(:uri, :name, :root){
         def id
-          uri.split('/').last
+          uri.split('#').last
+        end
+
+        def inhabitants
+          'todo'
         end
       }.new(@phenotype[:mpo_id], @phenotype[:mpo_name], root_name)
     end
