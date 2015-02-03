@@ -6,22 +6,6 @@ DEFINE sql:select-option "order"
 
 <%= select_clause %>
 WHERE {
-  GRAPH <%= ontology[:goup] %> {
-    <% unless bp_id.empty? %>
-      <http://purl.uniprot.org/go/<%= bp_id.split('/GO_').last %>> up:classifiedWith ?uniprot_id .
-    <% end %>
-    <% unless mf_id.empty? %>
-      <http://purl.uniprot.org/go/<%= mf_id.split('/GO_').last %>> up:classifiedWith ?uniprot_id .
-    <% end %>
-    <% unless cc_id.empty? %>
-      <http://purl.uniprot.org/go/<%= cc_id.split('/GO_').last %>> up:classifiedWith ?uniprot_id .
-    <% end %>
-  }
-  GRAPH <%= ontology[:tgup] %> {
-    ?togogenome rdfs:seeAlso ?uniprot_id .
-    ?togogenome rdfs:seeAlso ?taxonomy_id .
-    ?uniprot_id rdfs:seeAlso ?uniprot_up .
-  }
   <% if tax_id.present? %>
     GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <<%= tax_id %>> }
   <% else %>
@@ -41,4 +25,19 @@ WHERE {
   <% end %>
 
   GRAPH <%= ontology[:meo] %> { ?meo_id rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
+  GRAPH <%= ontology[:tgup] %> {
+    ?togogenome rdfs:seeAlso ?taxonomy_id .
+    ?togogenome rdfs:seeAlso ?uniprot_id .
+  }
+  GRAPH <%= ontology[:goup] %> {
+    <% unless bp_id.empty? %>
+      <http://purl.uniprot.org/go/<%= bp_id.split('/GO_').last %>> up:classifiedWith ?uniprot_id .
+    <% end %>
+    <% unless mf_id.empty? %>
+      <http://purl.uniprot.org/go/<%= mf_id.split('/GO_').last %>> up:classifiedWith ?uniprot_id .
+    <% end %>
+    <% unless cc_id.empty? %>
+      <http://purl.uniprot.org/go/<%= cc_id.split('/GO_').last %>> up:classifiedWith ?uniprot_id .
+    <% end %>
+  }
 } LIMIT <%= limit %> OFFSET <%= offset %>

@@ -20,7 +20,6 @@ WHERE {
   GRAPH <%= ontology[:tgup] %> {
     ?togogenome rdfs:seeAlso ?uniprot_id .
     ?togogenome rdfs:seeAlso ?taxonomy_id .
-    ?uniprot_id rdfs:seeAlso ?uniprot_up .
   }
   GRAPH <%= ontology[:taxonomy] %> { ?taxonomy_id rdfs:label ?taxonomy_name }
   <% if tax_id.present? %>
