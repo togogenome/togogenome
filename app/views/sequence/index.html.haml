@@ -30,10 +30,22 @@
         %tbody
           - @sequences.each do |sequence|
             %tr
-              %td= sequence[:name]
-              %td= link_to sequence[:locus_tag], gene_path("#{sequence[:taxonomy]}:#{sequence[:locus_tag]}"), target: '_blank' if sequence[:locus_tag]
-              %td= sequence[:product] if sequence[:product]
-              %td= link_to sequence[:sequence_ontology_name], sequence[:sequence_ontology], target: '_blank' if sequence[:sequence_ontology_name]
-              %td.numeric= number_with_delimiter(sequence[:position])
-              %td.numeric= number_with_delimiter(sequence[:position_end])
-              %td= match_snippet(sequence[:snippet], sequence[:snippet_pos], sequence[:position], sequence[:position_end])
+              %td= sequence['name']
+              %td
+                - if sequence['locus_tags'].present?
+                  %ul
+                    - sequence['locus_tags'].each do |locus_tag|
+                      %li= link_to locus_tag, gene_path("#{sequence['taxonomy']}:#{locus_tag}"), target: '_blank'
+              %td
+                - if sequence['products'].present?
+                  %ul
+                    - sequence['products'].each do |product|
+                      %li= product
+              %td
+                - if sequence['sequence_ontologies'].present?
+                  %ul
+                    - sequence['sequence_ontologies'].each do |so|
+                      %li= link_to so['name'], so['uri'], target: '_blank'
+              %td.numeric= number_with_delimiter(sequence['position'])
+              %td.numeric= number_with_delimiter(sequence['position_end'])
+              %td= match_snippet(sequence['snippet'], sequence['snippet_pos'], sequence['position'], sequence['position_end'])
