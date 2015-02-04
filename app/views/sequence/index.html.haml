@@ -30,22 +30,22 @@
         %tbody
           - @sequences.each do |sequence|
             %tr
-              %td= sequence['name']
+              %td= sequence[:name]
               %td
-                - if sequence['locus_tags'].present?
+                - if sequence[:locus_tags].present?
                   %ul
-                    - sequence['locus_tags'].each do |locus_tag|
-                      %li= link_to locus_tag, gene_path("#{sequence['taxonomy']}:#{locus_tag}"), target: '_blank'
+                    - sequence[:locus_tags].each do |locus_tag|
+                      %li= link_to locus_tag, gene_path("#{sequence[:taxonomy]}:#{locus_tag}"), target: '_blank'
               %td
-                - if sequence['products'].present?
+                - if sequence[:products].present?
                   %ul
-                    - sequence['products'].each do |product|
+                    - sequence[:products].each do |product|
                       %li= product
               %td
-                - if sequence['sequence_ontologies'].present?
+                - if sequence[:sequence_ontologies].present?
                   %ul
-                    - sequence['sequence_ontologies'].each do |so|
-                      %li= link_to so['name'], so['uri'], target: '_blank'
-              %td.numeric= number_with_delimiter(sequence['position'])
-              %td.numeric= number_with_delimiter(sequence['position_end'])
-              %td= match_snippet(sequence['snippet'], sequence['snippet_pos'], sequence['position'], sequence['position_end'])
+                    - sequence[:sequence_ontologies].each do |so|
+                      %li= link_to so[:name], so[:uri], target: '_blank'
+              %td.numeric= number_with_delimiter(sequence[:position])
+              %td.numeric= number_with_delimiter(sequence[:position_end])
+              %td= match_snippet(sequence[:snippet], sequence[:snippet_pos], sequence[:position], sequence[:position_end])

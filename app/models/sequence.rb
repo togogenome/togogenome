@@ -7,7 +7,7 @@ class Sequence
     def search(sequence)
       gggenome_response = search_gggenome(sequence)
 
-      raise StandardError, "[GGGenome Error] #{gggenome_response['error']}" unless gggenome_response['error'] == 'none'
+      raise StandardError, "[GGGenome Error] #{gggenome_response[:error]}" unless gggenome_response[:error] == 'none'
 
       append_togogenome_attributes(gggenome_response)
     end
@@ -18,14 +18,12 @@ class Sequence
         result = query(sparql)
       }
 
-      gggenome_response['results'].map do |genome|
-        so = sparql_results.select {|r| r[:name] == genome['name'] }
+      gggenome_response[:results].map do |genome|
+        so = sparql_results.select {|r| r[:name] == genome[:name] }
         genome.merge(
-          {
-            'sequence_ontologies' => so.map {|r| {'uri' => r[:sequence_ontology], 'name' => r[:sequence_ontology_name]}},
-            'locus_tags'          => so.map {|r| r[:locus_tag]}.compact.uniq,
-            'products'            => so.map {|r| r[:product]}.compact.uniq
-          }
+          sequence_ontologies: so.map {|r| {uri: r[:sequence_ontology], name: r[:sequence_ontology_name]}},
+          locus_tags: so.map {|r| r[:locus_tag]}.compact.uniq,
+          products: so.map {|r| r[:product]}.compact.uniq
         )
       end
     end
@@ -35,7 +33,7 @@ class Sequence
     def search_gggenome(sequence, url = 'http://gggenome.dbcls.jp/prok', format = 'json')
       client = HTTPClient.new
       ret = client.get_content("#{url}/#{sequence}.#{format}")
-      JSON.parse(ret)
+      JSON.parse(ret, {symbolize_names: true})
     end
 
     def build_sparqls(gggenome_response)
@@ -43,7 +41,7 @@ class Sequence
       # 1. gggenome での検索結果が多い時、それらをまとめて1つのSPARQL にすると、
       #    SPARQLのサーバで 'error code 414: uri too large' にひっかかってしまうため Query を分割している
       # 2. Endpoint 側(hhttp://ep.dbcls.jp/sparql7os) SPARQLに対してタイムアウトが発生し、エラーが帰って来た
-      gggenome_response['results'].each_slice(300).map do |sub_results|
+      gggenome_response[:results].each_slice(300).map do |sub_results|
         <<-SPARQL.strip_heredoc
           DEFINE sql:select-option "order"
           #{SPARQLUtil::PREFIX[:insdc]}
@@ -83,7 +81,8 @@ class Sequence
 
     def bind_values(genomes)
       genomes.map {|genome|
-        "( #{genome.select {|k, _v| %w(name position position_end refseq strand).include?(k) }.map {|key, val| %w(position position_end).include?(key) ? "#{val}" : "\"#{val}\"" }.join(' ')} )"
+        name, position, position_end, refseq, strand = genome.values_at(:name, :position, :position_end, :refseq, :strand)
+        "( \"#{name}\" #{position} #{position_end} \"#{refseq}\" \"#{strand}\" )"
       }.join("\n")
     end
   end
