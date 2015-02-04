@@ -1,0 +1,12 @@
+%table.table.table-striped.table-bordered.table-hover.table-condensed
+  %thead
+    %tr
+      %th Taxonomy
+      %th Organism
+      %th Sequence count
+  %tbody
+    - organisms.each do |organism|
+      %tr
+        %td= "#{organism[:category_name]} / #{organism[:sub_category_name]}"
+        %td= link_to organism[:taxonomy_name], organism_path(organism[:taxonomy_id]), target: '_blank'
+        %td= organism[:sequence_count]
