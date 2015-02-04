@@ -37,10 +37,9 @@ class Sequence
     end
 
     def build_sparqls(gggenome_response)
-      # slice(100) の理由
-      # 1. gggenome での検索結果が多い時、それらをまとめて1つのSPARQL にすると、
-      #    SPARQLのサーバで 'error code 414: uri too large' にひっかかってしまうため Query を分割している
-      # 2. Endpoint 側(hhttp://ep.dbcls.jp/sparql7os) SPARQLに対してタイムアウトが発生し、エラーが帰って来た
+      # slice の理由
+      # gggenome での検索結果が多い時、それらをまとめて1つのSPARQL にすると、
+      # SPARQLのサーバで 'error code 414: uri too large' にひっかかってしまうため Query を分割している
       gggenome_response[:results].each_slice(300).map do |sub_results|
         <<-SPARQL.strip_heredoc
           DEFINE sql:select-option "order"
