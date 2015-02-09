@@ -4,25 +4,15 @@ class Sequence
   include Queryable
 
   class << self
-    def search_gggenome(sequence, url = 'http://gggenome.dbcls.jp/prok', format = 'json')
-      client = HTTPClient.new
-      ret = client.get_content("#{url}/#{sequence}.#{format}")
-      gggenome = JSON.parse(ret, {symbolize_names: true})
+    def search_sequence_ontologies(sequence)
+      genomes = GggenomeSearch.search(sequence)
 
-      raise StandardError, "[GGGenome Error] #{gggenome[:error]}" unless gggenome[:error] == 'none'
+      sparqls = build_sequence_ontologies_sparqls(genomes)
+      sparql_results = sparqls.flat_map {|sparql| query(sparql) }
 
-      gggenome[:results]
-    end
-
-    def append_sequence_ontologies(gggenome)
-      sparqls = build_sequence_ontologies_sparqls(gggenome)
-      sparql_results = sparqls.flat_map {|sparql|
-        result = query(sparql)
-      }
-
-      gggenome.map do |genome|
-        so = sparql_results.select {|r| r[:name] == genome[:name] }
-        genome.merge(
+      genomes.map do |genome|
+        so = sparql_results.select {|r| r[:name] == genome.name }
+        genome.to_h.merge(
           sequence_ontologies: so.map {|r| {uri: r[:sequence_ontology], name: r[:sequence_ontology_name]}},
           locus_tags: so.map {|r| r[:locus_tag]}.compact.uniq,
           products: so.map {|r| r[:product]}.compact.uniq
@@ -30,14 +20,14 @@ class Sequence
       end
     end
 
-    def append_organisms(gggenome)
-      sparqls = build_organisms_sparqls(gggenome)
-      sparql_results = sparqls.flat_map {|sparql|
-        result = query(sparql)
-      }
+    def search_organisms(sequence)
+      genomes = GggenomeSearch.search(sequence)
+
+      sparqls = build_organisms_sparqls(genomes)
+      sparql_results = sparqls.flat_map {|sparql| query(sparql) }
 
       sparql_results.map do |results|
-        sequence_count = gggenome.select {|g| g[:taxonomy].to_s == results[:taxonomy_id] }.count
+        sequence_count = genomes.select {|g| g.taxonomy.to_s == results[:taxonomy_id] }.count
         results.merge(sequence_count: sequence_count)
       end
     end
@@ -115,14 +105,13 @@ class Sequence
 
     def bind_sequence_ontologies_values(genomes)
       genomes.map {|genome|
-        name, position, position_end, refseq, strand = genome.values_at(:name, :position, :position_end, :refseq, :strand)
-        "( \"#{name}\" #{position} #{position_end} \"#{refseq}\" \"#{strand}\" )"
+        "( \"#{genome.name}\" #{genome.position} #{genome.position_end} \"#{genome.refseq}\" \"#{genome.strand}\" )"
       }.join("\n")
     end
 
     def bind_organisms_values(genomes)
      genomes.map {|genome|
-        "tax:#{genome[:taxonomy]}"
+        "tax:#{genome.taxonomy}"
       }.join(" ")
     end
   end

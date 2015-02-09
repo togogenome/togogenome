@@ -3,9 +3,9 @@ class SequenceController < ApplicationController
   end
 
   def search(fragment)
-    gggenome_response = Sequence.search_gggenome(fragment.delete("\s\n"))
-    @sequences = Sequence.append_sequence_ontologies(gggenome_response)
-    @organisms = Sequence.append_organisms(gggenome_response)
+    sequence = fragment.delete("\s\n")
+    @sequences = Sequence.search_sequence_ontologies(sequence)
+    @organisms = Sequence.search_organisms(sequence)
   rescue => ex
     @error = ex
   ensure
