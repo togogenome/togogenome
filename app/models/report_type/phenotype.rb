@@ -44,17 +44,13 @@ module ReportType
     end
 
     def phenotype
-      root_name = @phenotype_roots.empty? ? nil : @phenotype_roots.first[:name]
-
-      Struct.new(:uri, :name, :root){
-        def id
-          uri.split('#').last
-        end
-
-        def inhabitants
-          'todo'
-        end
-      }.new(@phenotype[:mpo_id], @phenotype[:mpo_name], root_name)
+      OpenStruct.new(
+        uri:  @phenotype[:mpo_id],
+        name: @phenotype[:mpo_name],
+        root: @phenotype_roots.first.try(:[], :name),
+        id:   @phenotype[:mpo_id].split('#').last,
+        inhabitants: 'TODO'
+      )
     end
   end
 end
