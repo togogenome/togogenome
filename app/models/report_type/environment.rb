@@ -36,13 +36,13 @@ module ReportType
     end
 
     def environment
-      count     = @meo_inhabitants_stats.empty? ? nil : @meo_inhabitants_stats.first[:count]
-
-      Struct.new(:uri, :name, :category, :inhabitants){
-        def id
-          uri.split('/').last
-        end
-      }.new(@environment[:meo_id], @environment[:meo_name], @environment[:category_name], count)
+      OpenStruct.new(
+        uri:         @environment[:meo_id],
+        name:        @environment[:meo_name],
+        root:        @environment[:category_name],
+        inhabitants: @meo_inhabitants_stats.first.try(:[], :count),
+        id:          @environment[:meo_id].split('/').last
+      )
     end
   end
 end

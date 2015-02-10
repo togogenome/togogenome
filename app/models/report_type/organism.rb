@@ -45,34 +45,33 @@ module ReportType
     end
 
     def tax
-      Struct.new(:category, :sub_category, :uri, :name) {
-        def id
-          uri.split('/').last
-        end
+      category, sub_category, uri, name = @uniprot_taxonomy.values_at(:category_name, :sub_category_name, :taxonomy_id, :taxonomy_name)
 
-        def taxonomy
-          "#{category}/#{sub_category}"
-        end
-      }.new(@uniprot_taxonomy[:category_name], @uniprot_taxonomy[:sub_category_name],
-        @uniprot_taxonomy[:taxonomy_id], @uniprot_taxonomy[:taxonomy_name])
+      OpenStruct.new(
+        category:     category,
+        sub_category: sub_category,
+        uri:          uri,
+        name:         name,
+        id:           uri.split('/').last,
+        taxonomy:     "#{category} / #{sub_category}"
+      )
     end
 
     def envs
       @envs.map {|env|
-        Struct.new(:id, :name).new(env[:meo_id], env[:meo_name])
+        OpenStruct.new(id: env[:meo_id], name: env[:meo_name])
       }
     end
 
     def phenotypes
       @phenotypes.group_by {|p| p[:top_mpo_name]}.each_with_object({}) {|(top_name, phenotypes), hash|
-        hash[top_name] = phenotypes.map {|phenotype| Struct.new(:id, :name).new(phenotype[:mpo_id], phenotype[:mpo_name]) }
+        hash[top_name] = phenotypes.map {|phenotype| OpenStruct.new(id: phenotype[:mpo_id], name: phenotype[:mpo_name]) }
       }
     end
 
     def stat
       return nil unless @stat
-      Struct.new(:genome_size, :gene_num, :rrna_num, :trna_num, :ncrna_num)
-      .new(@stat[:genome_size], @stat[:gene_num], @stat[:rrna_num], @stat[:trna_num], @stat[:ncrna_num])
+      OpenStruct.new(@stat)
     end
   end
 end
