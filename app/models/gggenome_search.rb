@@ -12,7 +12,7 @@ class GggenomeSearch
 
       raise StandardError, "[GGGenome Error] #{gggenome[:error]}" unless gggenome[:error] == 'none'
 
-      gggenome[:results].map {|r| OpenStruct.new(r)}
+      gggenome[:results].map {|r| OpenStruct.new(r) }
     end
   end
 end

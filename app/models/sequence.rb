@@ -8,14 +8,14 @@ class Sequence
       genomes = GggenomeSearch.search(sequence)
 
       sparqls = build_sequence_ontologies_sparqls(genomes)
-      sparql_results = sparqls.flat_map {|sparql| query(sparql) }
+      results = sparqls.flat_map {|sparql| query(sparql) }
 
       genomes.map do |genome|
-        so = sparql_results.select {|r| r[:name] == genome.name }
+        so = results.select {|r| r[:name] == genome.name }
         genome.to_h.merge(
-          sequence_ontologies: so.map {|r| {uri: r[:sequence_ontology], name: r[:sequence_ontology_name]}},
-          locus_tags: so.map {|r| r[:locus_tag]}.compact.uniq,
-          products: so.map {|r| r[:product]}.compact.uniq
+          sequence_ontologies: so.map {|r| {uri: r[:sequence_ontology], name: r[:sequence_ontology_name]} },
+          locus_tags: so.map {|r| r[:locus_tag] }.compact.uniq,
+          products: so.map {|r| r[:product] }.compact.uniq
         )
       end
     end
@@ -24,11 +24,11 @@ class Sequence
       genomes = GggenomeSearch.search(sequence)
 
       sparqls = build_organisms_sparqls(genomes)
-      sparql_results = sparqls.flat_map {|sparql| query(sparql) }
+      results = sparqls.flat_map {|sparql| query(sparql) }
 
-      sparql_results.map do |results|
-        sequence_count = genomes.select {|g| g.taxonomy.to_s == results[:taxonomy_id] }.count
-        results.merge(sequence_count: sequence_count)
+      results.map do |result|
+        sequence_count = genomes.select {|g| g.taxonomy.to_s == result[:taxonomy_id] }.count
+        result.merge(sequence_count: sequence_count)
       end
     end
 
@@ -110,9 +110,7 @@ class Sequence
     end
 
     def bind_organisms_values(genomes)
-     genomes.map {|genome|
-        "tax:#{genome.taxonomy}"
-      }.join(" ")
+     genomes.map {|genome| "tax:#{genome.taxonomy}" }.join(" ")
     end
   end
 end
