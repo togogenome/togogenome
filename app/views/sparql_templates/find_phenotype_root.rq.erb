@@ -2,7 +2,7 @@ DEFINE sql:select-option "order"
 
 SELECT DISTINCT ?mpo_id ?name
 WHERE {
-  VALUES ?mpo_uri { <%= mpos %>}
+  VALUES ?mpo_uri { <%= mpos %> }
   BIND(?mpo_uri AS ?mpo_id)
   GRAPH <%= ontology[:mpo] %> {
     ?mpo_id a ?type ; #dummy

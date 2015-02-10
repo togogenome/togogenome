@@ -22,25 +22,23 @@ module ReportType
 
         sparqls = [
           find_phenotype_root_sparql(PREFIX, ONTOLOGY, mpos),
-          #find_phenotype_inhabitants_stats_sparql(PREFIX, ONTOLOGY, mpos)
+          find_phenotype_inhabitants_sparql(PREFIX, ONTOLOGY, mpos)
         ]
 
-        #mpo_roots, mpo_inhabitants_stats = Parallel.map(sparqls, in_threads: 4) {|sparql|
-        #  query(sparql)
-        #}
-        mpo_roots = query(sparqls.first)
+        mpo_roots, mpo_inhabitants = Parallel.map(sparqls, in_threads: 4) {|sparql|
+          query(sparql)
+        }
 
         results.map do |result|
           select_mpo_roots = mpo_roots.select {|r| r[:mpo_id] == result[:mpo_id] }
-          #select_mpo_inhabitants_stats = mpo_inhabitants_stats.select {|r| r[:mpo_id] == result[:mpo_id] }
-          #new(result, select_mpo_roots, select_mpo_inhabitants_stats)
-          new(result, select_mpo_roots)
+          select_mpo_inhabitants = mpo_inhabitants.select {|r| r[:mpo_id] == result[:mpo_id] }
+          new(result, select_mpo_roots, select_mpo_inhabitants)
         end
       end
     end
 
-    def initialize(mpo, mpo_roots)
-      @phenotype, @phenotype_roots = mpo, mpo_roots
+    def initialize(mpo, mpo_roots, inhabitants)
+      @phenotype, @phenotype_roots, @inhabitants = mpo, mpo_roots, inhabitants
     end
 
     def phenotype
@@ -49,7 +47,7 @@ module ReportType
         name: @phenotype[:mpo_name],
         root: @phenotype_roots.first.try(:[], :name),
         id:   @phenotype[:mpo_id].split('#').last,
-        inhabitants: 'TODO'
+        inhabitants: @inhabitants.first.try(:[], :inhabitants)
       )
     end
   end
