@@ -16,7 +16,7 @@
     - if @error
       .alert.alert-error
         = @error
-    - else
+    - elsif params[:fragment]
       %ul.nav.nav-tabs
         %li.active
           %a{href: "#sequence", data: {toggle: :tab}} Sequence
