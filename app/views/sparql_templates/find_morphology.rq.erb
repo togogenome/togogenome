@@ -1,0 +1,17 @@
+DEFINE sql:select-option "order"
+<%= prefix[:mpo] %>
+
+SELECT DISTINCT ?taxonomy_id ?mpo_name ?mpo_url
+WHERE {
+  VALUES ?taxonomy_id { <%= taxonomies %> }
+  GRAPH <%= ontology[:gold] %> {
+    ?taxonomy_id ?p ?mpo_url .
+  }
+  GRAPH <%= ontology[:mpo_descendants] %> {
+    ?mpo_url rdfs:subClassOf mpo:MPO_01001 . # MPO_01001 以下
+  }
+  GRAPH <%= ontology[:mpo] %> {
+    ?mpo_url rdfs:label ?mpo_name .
+    FILTER(LANG(?mpo_name) = "" || LANGMATCHES(LANG(?mpo_name), "en")) .
+  }
+}
