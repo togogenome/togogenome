@@ -10,12 +10,5 @@ json.aaData do |json|
     json.trna_num          r.stat.try(:trna_num)
     json.ncrna_num         r.stat.try(:ncrna_num)
     json.environment_links link_list(r.envs, 'environment')
-    json.development_links link_list(r.phenotypes['Development'], 'phenotype')
-    json.growth_links      link_list(r.phenotypes['Growth'], 'phenotype')
-    json.metabolism_links  link_list(r.phenotypes['Metabolism'], 'phenotype')
-    json.morphology_links  link_list(r.phenotypes['Morphology'], 'phenotype')
-    json.motility_links    link_list(r.phenotypes['Motility'], 'phenotype')
-    json.serotype_links    link_list(r.phenotypes['Serotype'], 'phenotype')
-    json.staining_links    link_list(r.phenotypes['Staining'], 'phenotype')
   end
 end

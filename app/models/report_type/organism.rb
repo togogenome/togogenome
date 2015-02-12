@@ -22,26 +22,28 @@ module ReportType
 
         sparqls = [
           find_environments_sparql(PREFIX, ONTOLOGY, taxids),
-          find_phenotypes_sparql(PREFIX, ONTOLOGY, taxids),
-          find_genome_stats_sparql(PREFIX, ONTOLOGY, taxids)
+          find_genome_stats_sparql(PREFIX, ONTOLOGY, taxids),
+          #find_temperature_sparql(PREFIX, ONTOLOGY, taxids),
+          #find_morphology_sparql(PREFIX, ONTOLOGY, taxids),
+          #find_mortility_sparql(PREFIX, ONTOLOGY, taxids),
+          #find_energy_source_sparql(PREFIX, ONTOLOGY, taxids)
         ]
 
-        envs, phenotypes, stats = Parallel.map(sparqls, in_threads: 4) {|sparql|
+        envs, stats = Parallel.map(sparqls, in_threads: 4) {|sparql|
           query(sparql)
         }
 
         results.map do |result|
           select_envs       = envs.select {|e| e[:taxonomy_id] == result[:taxonomy_id] }
-          select_phenotypes = phenotypes.select {|p| p[:taxonomy_id] == result[:taxonomy_id] }
           select_stat       = stats.select {|s| s[:taxonomy_id] == result[:taxonomy_id] }.first
 
-          new(result, select_envs, select_phenotypes, select_stat)
+          new(result, select_envs, select_stat)
         end
       end
     end
 
-    def initialize(up_tax, envs, phenotypes, stat)
-      @uniprot_taxonomy, @envs, @phenotypes, @stat = up_tax, envs, phenotypes, stat
+    def initialize(up_tax, envs, stat)
+      @uniprot_taxonomy, @envs, @stat = up_tax, envs, stat
     end
 
     def tax
@@ -63,11 +65,6 @@ module ReportType
       }
     end
 
-    def phenotypes
-      @phenotypes.group_by {|p| p[:top_mpo_name]}.each_with_object({}) {|(top_name, phenotypes), hash|
-        hash[top_name] = phenotypes.map {|phenotype| OpenStruct.new(id: phenotype[:mpo_id], name: phenotype[:mpo_name]) }
-      }
-    end
 
     def stat
       return nil unless @stat

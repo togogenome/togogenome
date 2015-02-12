@@ -16,13 +16,6 @@
             {data: "trna_num"},
             {data: "ncrna_num"},
             {data: "environment_links"},
-            {data: "development_links"},
-            {data: "growth_links"},
-            {data: "metabolism_links"},
-            {data: "morphology_links"},
-            {data: "motility_links"},
-            {data: "serotype_links"},
-            {data: "staining_links"}
           ]
         }),
         downloadCSV: '/report_type/organisms.csv'
@@ -39,18 +32,14 @@
       %th{rowspan: 2} Genome size
       %th{colspan: 4} Number of genes
       %th{rowspan: 2} Environments
-      %th{colspan: 7} Phenotypes
+      %th{colspan: 4} Phenotypes
 
     %tr
       %td Gene
       %td tRNA
       %td rRNA
       %td ncRNA
-      %td Development
-      %td Growth
-      %td Metabolism
+      %td Temperature
       %td Morphology
       %td Motility
-      %td Serotype
-      %td Staining
-
+      %td Energy Source

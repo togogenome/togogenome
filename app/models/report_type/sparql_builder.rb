@@ -92,7 +92,6 @@ module ReportType
       def_erb_method("find_proteins_sparql(prefix, ontology, genes)", 'app/views/sparql_templates/find_proteins.rq.erb')
       def_erb_method("find_gene_ontologies_sparql(prefix, ontology, genes)", 'app/views/sparql_templates/find_gene_ontologies.rq.erb')
       def_erb_method("find_environments_sparql(prefix, ontology, taxonomies)", 'app/views/sparql_templates/find_environments.rq.erb')
-      def_erb_method("find_phenotypes_sparql(prefix, ontology, taxonomies)", 'app/views/sparql_templates/find_phenotypes.rq.erb')
       def_erb_method("find_genome_stats_sparql(prefix, ontology, taxonomies)", 'app/views/sparql_templates/find_genome_stats.rq.erb')
       def_erb_method("find_environment_inhabitants_stats_sparql(prefix, ontology, meos)", 'app/views/sparql_templates/find_environment_inhabitants_stats.rq.erb')
 
