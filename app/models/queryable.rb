@@ -3,8 +3,7 @@ module Queryable
 
   module ClassMethods
     def query(sparql)
-      puts "sparql=========================="
-      puts sparql
+      Rails.logger.info "===== SPARQL (EP: #{Endpoint.uri}) =====\n" + sparql
 
       result = Rails.cache.fetch Digest::MD5.hexdigest(sparql), expires_in: 1.month do
         client = HTTPClient.new
