@@ -1,0 +1,30 @@
+DEFINE sql:select-option "order"
+<%= prefix[:mccv] %>
+<%= prefix[:meo] %>
+<%= prefix[:mpo] %>
+
+<%= select_clause %>
+WHERE {
+  GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <<%= tax_id %>> }
+
+  <% unless meo_id.empty? %>
+    VALUES ?gold_meo { meo:MEO_0000437 meo:MEO_0000440 }
+    GRAPH <%= ontology[:gold] %> {
+      ?gold_id mccv:MCCV_000020 ?taxonomy_id .
+      ?gold_id ?gold_meo ?meo_id .
+    }
+    GRAPH <%= ontology[:meo_descendants] %> { ?meo_id rdfs:subClassOf <<%= meo_id %>> }
+  <% end %>
+  GRAPH <%= ontology[:gold] %> { ?taxonomy_id ?tax_mpo ?mpo_id FILTER (?tax_mpo IN (mpo:MPO_10002, mpo:MPO_10001, mpo:MPO_10003, mpo:MPO_10005, mpo:MPO_10009, mpo:MPO_10010, mpo:MPO_10011, mpo:MPO_10013, mpo:MPO_10014, mpo:MPO_10015, mpo:MPO_10016, mpo:MPO_10006, mpo:MPO_10007)) }
+  <% unless mpo_id.empty? %>
+    GRAPH <%= ontology[:mpo_descendants] %> { ?mpo_id rdfs:subClassOf <<%= mpo_id %>> }
+  <% end %>
+
+  GRAPH <%= ontology[:mpo] %> {
+    ?mpo_id rdfs:label ?mpo_name FILTER(LANG(?mpo_name) = "" || LANGMATCHES(LANG(?mpo_name), "en"))
+    ?mpo_id rdf:type <http://www.w3.org/2002/07/owl#Class> ;
+            rdfs:subClassOf* ?category .
+    ?category rdfs:subClassOf  <http://purl.jp/bio/01/mpo#MPO_00000> ;
+              rdfs:label ?category_name .
+  }
+} <%= order_clause %> LIMIT <%= limit %> OFFSET <%= offset %>

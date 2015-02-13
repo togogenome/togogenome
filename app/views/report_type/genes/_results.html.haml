@@ -1,5 +1,25 @@
 = content_for :javascript do
-  = javascript_include_tag 'results_table/gene'
+  :javascript
+    $(function() {
+      var result_table = $("#gene_results");
+      drawInfo.gene = {
+        dataTable: result_table.DataTable({
+          ajax: {
+            url: '/report_type/genes.json'
+          },
+          columns: [
+            {data: "gene_link"},
+            {data: "protein_links", width: "100px"},
+            {data: "protein_names", width: "220px"},
+            {data: "go_links"},
+            {data: "organism_link"}
+          ]
+        }),
+        downloadCSV: '/report_type/genes.csv'
+      };
+
+      result_table.parent().find(".result-download-container").append("<a>Download CSV</a>");
+    });
 
 %table#gene_results.table.table-striped.table-bordered.table-hover.table-condensed
   %thead

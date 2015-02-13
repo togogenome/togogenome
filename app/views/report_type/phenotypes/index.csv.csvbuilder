@@ -1,0 +1,20 @@
+csv << [
+  'Phenotype',
+  'Phenotype ID',
+  'Phenotype URL',
+  'Category',
+  'Inhabitants'
+]
+
+limit = 100
+(0..@hits_count).step(limit) do |offset|
+  ReportType::Phenotype.search(@args.merge(limit: limit, offset: offset)).each do |r|
+    csv << [
+      r.phenotype.name,
+      r.phenotype.id,
+      "http://togogenome.org/phenotype/#{r.phenotype.id}",
+      r.phenotype.category,
+      r.phenotype.inhabitants
+    ]
+  end
+end
