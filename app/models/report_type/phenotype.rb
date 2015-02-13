@@ -36,10 +36,10 @@ module ReportType
 
     def phenotype
       OpenStruct.new(
-        uri:  @phenotype[:mpo_id],
-        name: @phenotype[:mpo_name],
-        root: @phenotype[:category_name],
-        id:   @phenotype[:mpo_id].split('#').last,
+        uri:         @phenotype[:mpo_id],
+        name:        @phenotype[:mpo_name],
+        category:    @phenotype[:category_name],
+        id:          @phenotype[:mpo_id].split('#').last,
         inhabitants: @inhabitants.first.try(:[], :inhabitants)
       )
     end
