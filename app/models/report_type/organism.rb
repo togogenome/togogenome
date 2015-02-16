@@ -25,11 +25,10 @@ module ReportType
           find_genome_stats_sparql(PREFIX, ONTOLOGY, taxids),
           #find_temperature_sparql(PREFIX, ONTOLOGY, taxids),
           find_morphology_sparql(PREFIX, ONTOLOGY, taxids),
-          find_mortility_sparql(PREFIX, ONTOLOGY, taxids),
           #find_energy_source_sparql(PREFIX, ONTOLOGY, taxids)
         ]
 
-        envs, stats, morphologies, mortilities = Parallel.map(sparqls, in_threads: 4) {|sparql|
+        envs, stats, morphologies = Parallel.map(sparqls, in_threads: 4) {|sparql|
           query(sparql)
         }
 
@@ -38,14 +37,13 @@ module ReportType
           select_stat       = stats.select {|s| s[:taxonomy_id] == result[:taxonomy_id] }.first
 
           select_morphology = morphologies.find {|m| m[:taxonomy_id] == result[:taxonomy_id] }
-          select_mortility  = mortilities.find {|m| m[:taxonomy_id] == result[:taxonomy_id] }
-          new(result, select_envs, select_stat, select_morphology, select_mortility)
+          new(result, select_envs, select_stat, select_morphology)
         end
       end
     end
 
-    def initialize(up_tax, envs, stat, morphology, mortility)
-      @uniprot_taxonomy, @envs, @stat, @morphology, @mortility = up_tax, envs, stat, morphology, mortility
+    def initialize(up_tax, envs, stat, morphology)
+      @uniprot_taxonomy, @envs, @stat, @morphology = up_tax, envs, stat, morphology
     end
 
     def tax
@@ -69,10 +67,6 @@ module ReportType
 
     def morphology
       OpenStruct.new(@morphology)
-    end
-
-    def mortility
-      OpenStruct.new(@mortility)
     end
 
     def stat
