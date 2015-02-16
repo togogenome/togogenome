@@ -3,22 +3,38 @@ csv << [
   'Organism',
   'Organism ID',
   'Organism URL',
+  'Genome size(bp)',
+  'Gene',
+  'tRNA',
+  'rRNA',
+  'ncRNA',
   'Environments',
   'Environments ID',
   'Environments URL',
+  'Temperature',
+  'Morphology',
+  'Energy source'
 ]
 
 limit = 100
 (0..@hits_count).step(limit) do |offset|
-  ReportType::Organism.search(@args.merge(limit: limit, offset: offset)).each do |p|
+  ReportType::Organism.search(@args.merge(limit: limit, offset: offset)).each do |r|
     csv << [
-      p.tax.taxonomy,
-      p.tax.name,
-      p.tax.id,
-      "http://togogenome.org/organism/#{p.tax.id}",
-      p.envs.map(&:name).join("\n"),
-      p.envs.map(&:id).join("\n"),
-      p.envs.map {|env| "http://togogenome.org/environment/#{env.id}" }.join("\n"),
+      r.tax.taxonomy,
+      r.tax.name,
+      r.tax.id,
+      "http://togogenome.org/organism/#{r.tax.id}",
+      r.stat.try(:genome_size),
+      r.stat.try(:gene_num),
+      r.stat.try(:rrna_num),
+      r.stat.try(:trna_num),
+      r.stat.try(:ncrna_num),
+      r.envs.map(&:name).join("\n"),
+      r.envs.map(&:id).join("\n"),
+      r.envs.map {|env| "http://togogenome.org/environment/#{env.id}" }.join("\n"),
+      'TODO',
+      r.morphology.mpo_name,
+      r.energy_source.mpo_name
     ]
   end
 end
