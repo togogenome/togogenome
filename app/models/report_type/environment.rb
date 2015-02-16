@@ -39,7 +39,7 @@ module ReportType
       OpenStruct.new(
         uri:         @environment[:meo_id],
         name:        @environment[:meo_name],
-        root:        @environment[:category_name],
+        category:    @environment[:category_name],
         inhabitants: @meo_inhabitants_stats.first.try(:[], :count),
         id:          @environment[:meo_id].split('/').last
       )
