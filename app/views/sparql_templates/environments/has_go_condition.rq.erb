@@ -24,7 +24,13 @@ WHERE {
     GRAPH <%= ontology[:mpo_descendants] %> { ?mpo_id rdfs:subClassOf <<%= mpo_id %>> }
   <% end %>
 
-  GRAPH <%= ontology[:meo] %> { ?meo_id rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
+  GRAPH <%= ontology[:meo] %> {
+    ?meo_id rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en"))
+    ?meo_id rdf:type <http://www.w3.org/2002/07/owl#Class> ;
+            rdfs:subClassOf* ?category .
+    ?category rdfs:subClassOf  <http://www.w3.org/2002/07/owl#Thing> ;
+              rdfs:label ?category_name .
+  }
   GRAPH <%= ontology[:tgup] %> {
     ?togogenome rdfs:seeAlso ?taxonomy_id .
     ?togogenome rdfs:seeAlso ?uniprot_id .
@@ -40,4 +46,4 @@ WHERE {
       <http://purl.uniprot.org/go/<%= cc_id.split('/GO_').last %>> up:classifiedWith ?uniprot_id .
     <% end %>
   }
-} LIMIT <%= limit %> OFFSET <%= offset %>
+} <%= order_clause %> LIMIT <%= limit %> OFFSET <%= offset %>

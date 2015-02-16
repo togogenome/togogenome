@@ -8,8 +8,8 @@
             url: '/report_type/environments.json'
           },
           columns: [
-            {data: "environment_link"},
             {data: "category"},
+            {data: "environment_link"},
             {data: "inhabitants"}
           ]
         }),
@@ -21,6 +21,6 @@
 
 %table#environment_results.table.table-striped.table-bordered.table-hover.table-condensed
   %thead
-    %td Environment
     %td Category
+    %td Environment
     %td Inhabitants

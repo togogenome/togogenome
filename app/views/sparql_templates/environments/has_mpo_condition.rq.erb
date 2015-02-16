@@ -15,5 +15,11 @@ WHERE {
     ?gold_iri mccv:MCCV_000020 ?taxonomy_id .
   }
 
-  GRAPH <%= ontology[:meo] %> { ?meo_id rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en")) }
-} LIMIT <%= limit %> OFFSET <%= offset %>
+  GRAPH <%= ontology[:meo] %> {
+    ?meo_id rdfs:label ?meo_name FILTER(LANG(?meo_name) = "" || LANGMATCHES(LANG(?meo_name), "en"))
+    ?meo_id rdf:type <http://www.w3.org/2002/07/owl#Class> ;
+            rdfs:subClassOf* ?category .
+    ?category rdfs:subClassOf  <http://www.w3.org/2002/07/owl#Thing> ;
+              rdfs:label ?category_name .
+  }
+} <%= order_clause %> LIMIT <%= limit %> OFFSET <%= offset %>
