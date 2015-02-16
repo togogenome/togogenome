@@ -25,25 +25,26 @@ module ReportType
           find_genome_stats_sparql(PREFIX, ONTOLOGY, taxids),
           #find_temperature_sparql(PREFIX, ONTOLOGY, taxids),
           find_morphology_sparql(PREFIX, ONTOLOGY, taxids),
-          #find_energy_source_sparql(PREFIX, ONTOLOGY, taxids)
+          find_energy_source_sparql(PREFIX, ONTOLOGY, taxids)
         ]
 
-        envs, stats, morphologies = Parallel.map(sparqls, in_threads: 4) {|sparql|
+        envs, stats, morphologies, energy_sources = Parallel.map(sparqls, in_threads: 4) {|sparql|
           query(sparql)
         }
 
         results.map do |result|
-          select_envs       = envs.select {|e| e[:taxonomy_id] == result[:taxonomy_id] }
-          select_stat       = stats.select {|s| s[:taxonomy_id] == result[:taxonomy_id] }.first
+          select_envs          = envs.select {|e| e[:taxonomy_id] == result[:taxonomy_id] }
+          select_stat          = stats.select {|s| s[:taxonomy_id] == result[:taxonomy_id] }.first
 
-          select_morphology = morphologies.find {|m| m[:taxonomy_id] == result[:taxonomy_id] }
-          new(result, select_envs, select_stat, select_morphology)
+          select_morphology    = morphologies.find {|m| m[:taxonomy_id] == result[:taxonomy_id] }
+          select_energy_source = energy_sources.find {|m| m[:taxonomy_id] == result[:taxonomy_id] }
+          new(result, select_envs, select_stat, select_morphology, select_energy_source)
         end
       end
     end
 
-    def initialize(up_tax, envs, stat, morphology)
-      @uniprot_taxonomy, @envs, @stat, @morphology = up_tax, envs, stat, morphology
+    def initialize(up_tax, envs, stat, morphology, energy_source)
+      @uniprot_taxonomy, @envs, @stat, @morphology, @energy_source = up_tax, envs, stat, morphology, energy_source
     end
 
     def tax
@@ -67,6 +68,10 @@ module ReportType
 
     def morphology
       OpenStruct.new(@morphology)
+    end
+
+    def energy_source
+      OpenStruct.new(@energy_source)
     end
 
     def stat

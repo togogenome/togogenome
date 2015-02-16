@@ -12,6 +12,6 @@ json.aaData do |json|
     json.environment_links link_list(r.envs, 'environment')
     json.temperature       "TODO"
     json.morphology        link_to_if(r.morphology.mpo_name, r.morphology.mpo_name, r.morphology.mpo_url, target: '_blank'){}
-    json.energy_source      "TODO"
+    json.energy_source     link_to_if(r.energy_source.mpo_name, r.energy_source.mpo_name, r.energy_source.mpo_url, target: '_blank'){}
   end
 end
