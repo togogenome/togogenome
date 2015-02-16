@@ -8,7 +8,7 @@ WHERE {
     ?taxonomy_id ?p ?mpo_url .
   }
   GRAPH <%= ontology[:mpo_descendants] %> {
-    ?mpo_url rdfs:subClassOf mpo:MPO_01001 . # MPO_01001 以下
+    ?mpo_url rdfs:subClassOf mpo:MPO_01000 . # MPO_01000 以下
   }
   GRAPH <%= ontology[:mpo] %> {
     ?mpo_url rdfs:label ?mpo_name .
