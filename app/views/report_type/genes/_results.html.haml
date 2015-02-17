@@ -13,7 +13,15 @@
             {data: "protein_names", width: "220px"},
             {data: "go_links"},
             {data: "organism_link"}
-          ]
+          ],
+          initComplete: function (setting) {
+            #{
+              # paginationSlider の描画後にタブを描画しないと Table に width が固定で設定されてしまい
+              # 描画後に、paginationSlider を再描画しないと正しくスライダーが表示されないため...
+            }
+            $('#result_tabs a[href="#gene"]').tab('show');
+            setting.oInit.paginationSlider.render();
+          }
         }),
         downloadCSV: '/report_type/genes.csv'
       };

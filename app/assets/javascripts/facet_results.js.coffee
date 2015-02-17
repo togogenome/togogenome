@@ -199,5 +199,4 @@ $ ->
     window.query()
     return
 
-  $('#result_tabs a:first').tab('show')
   return
