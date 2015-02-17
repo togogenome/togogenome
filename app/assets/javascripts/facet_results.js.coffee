@@ -11,7 +11,7 @@ $ ->
     ordering: false
     searching: true
     pageLength: 25
-    dom: "<'span5'i><'span5'l>r<p><<'.result-download-container.span2'>>t<<'span5'i><'span5'><p>>"
+    dom: "<'span10'<'span5'i><'span5'l>p><'.result-download-container.span2'>rtip"
     pagingType: "custom-bootstrap"
     ajax:
       data: (d) ->
