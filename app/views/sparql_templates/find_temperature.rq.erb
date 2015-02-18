@@ -1,7 +1,7 @@
 DEFINE sql:select-option "order"
 <%= prefix[:mpo] %>
 
-SELECT ?taxonomy_id ?habitat_temperature_range_label ?value
+SELECT ?taxonomy_id ?habitat_temperature_range ?habitat_temperature_range_label ?value
 WHERE {
   VALUES ?taxonomy_id { <%= taxonomies %> }
   GRAPH <%= ontology[:mpo] %> {

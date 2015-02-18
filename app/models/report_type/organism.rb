@@ -68,11 +68,16 @@ module ReportType
     end
 
     def temperature
-      return '' if @temperatures.empty?
+      return nil if @temperatures.empty?
 
-      label = @temperatures.first[:habitat_temperature_range_label]
-      values = @temperatures.map {|t| t[:value].to_i }.sort.join(' - ')
-      "#{label} (#{values}℃)"
+      url, name = @temperatures.first.values_at(:habitat_temperature_range, :habitat_temperature_range_label)
+      value = @temperatures.map {|t| t[:value].to_i }.sort.join(' - ')
+
+      OpenStruct.new(
+        id:    url.split('#').last,
+        name:  name,
+        value: value
+      )
     end
 
     def morphologies
