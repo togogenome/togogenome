@@ -11,7 +11,7 @@ json.aaData do |json|
     json.ncrna_num         number_with_delimiter(r.stat.try(:ncrna_num))
     json.environment_links link_list(r.envs, 'environment')
     json.temperature       "TODO"
-    json.morphology        link_to_if(r.morphology.mpo_name, r.morphology.mpo_name, r.morphology.mpo_url, target: '_blank'){}
-    json.energy_source     link_to_if(r.energy_source.mpo_name, r.energy_source.mpo_name, r.energy_source.mpo_url, target: '_blank'){}
+    json.morphologies      link_list(r.morphologies, 'phenotype')
+    json.energy_sources    link_list(r.energy_sources, 'phenotype')
   end
 end

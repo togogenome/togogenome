@@ -33,18 +33,19 @@ module ReportType
         }
 
         results.map do |result|
-          select_envs          = envs.select {|e| e[:taxonomy_id] == result[:taxonomy_id] }
-          select_stat          = stats.select {|s| s[:taxonomy_id] == result[:taxonomy_id] }.first
+          select_envs           = envs.select {|e| e[:taxonomy_id] == result[:taxonomy_id] }
+          select_stat           = stats.select {|s| s[:taxonomy_id] == result[:taxonomy_id] }.first
 
-          select_morphology    = morphologies.find {|m| m[:taxonomy_id] == result[:taxonomy_id] }
-          select_energy_source = energy_sources.find {|m| m[:taxonomy_id] == result[:taxonomy_id] }
-          new(result, select_envs, select_stat, select_morphology, select_energy_source)
+          select_morphologies   = morphologies.select {|m| m[:taxonomy_id] == result[:taxonomy_id] }
+          select_energy_sources = energy_sources.select {|m| m[:taxonomy_id] == result[:taxonomy_id] }
+
+          new(result, select_envs, select_stat, select_morphologies, select_energy_sources)
         end
       end
     end
 
-    def initialize(up_tax, envs, stat, morphology, energy_source)
-      @uniprot_taxonomy, @envs, @stat, @morphology, @energy_source = up_tax, envs, stat, morphology, energy_source
+    def initialize(up_tax, envs, stat, morphologies, energy_sources)
+      @uniprot_taxonomy, @envs, @stat, @morphologies, @energy_sources = up_tax, envs, stat, morphologies, energy_sources
     end
 
     def tax
@@ -66,12 +67,23 @@ module ReportType
       }
     end
 
-    def morphology
-      OpenStruct.new(@morphology)
+    def morphologies
+      @morphologies.map {|morphology|
+        OpenStruct.new(
+          id:   morphology[:mpo_url].split('#').last,
+          name: morphology[:mpo_name]
+        )
+      }
     end
 
-    def energy_source
-      OpenStruct.new(@energy_source)
+    def energy_sources
+      @energy_sources.map {|energy_source|
+        OpenStruct.new(
+          id:   energy_source[:mpo_url].split('#').last,
+          name: energy_source[:mpo_name]
+        )
+      }
+
     end
 
     def stat
