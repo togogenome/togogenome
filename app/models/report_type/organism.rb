@@ -23,29 +23,29 @@ module ReportType
         sparqls = [
           find_environments_sparql(PREFIX, ONTOLOGY, taxids),
           find_genome_stats_sparql(PREFIX, ONTOLOGY, taxids),
-          #find_temperature_sparql(PREFIX, ONTOLOGY, taxids),
+          find_temperature_sparql(PREFIX, ONTOLOGY, taxids),
           find_morphology_sparql(PREFIX, ONTOLOGY, taxids),
           find_energy_source_sparql(PREFIX, ONTOLOGY, taxids)
         ]
 
-        envs, stats, morphologies, energy_sources = Parallel.map(sparqls, in_threads: 4) {|sparql|
+        envs, stats, temperatures, morphologies, energy_sources = Parallel.map(sparqls, in_threads: 4) {|sparql|
           query(sparql)
         }
 
         results.map do |result|
           select_envs           = envs.select {|e| e[:taxonomy_id] == result[:taxonomy_id] }
           select_stat           = stats.select {|s| s[:taxonomy_id] == result[:taxonomy_id] }.first
-
+          select_temperatures   = temperatures.select {|m| m[:taxonomy_id] == result[:taxonomy_id]}
           select_morphologies   = morphologies.select {|m| m[:taxonomy_id] == result[:taxonomy_id] }
           select_energy_sources = energy_sources.select {|m| m[:taxonomy_id] == result[:taxonomy_id] }
 
-          new(result, select_envs, select_stat, select_morphologies, select_energy_sources)
+          new(result, select_envs, select_stat, select_temperatures, select_morphologies, select_energy_sources)
         end
       end
     end
 
-    def initialize(up_tax, envs, stat, morphologies, energy_sources)
-      @uniprot_taxonomy, @envs, @stat, @morphologies, @energy_sources = up_tax, envs, stat, morphologies, energy_sources
+    def initialize(up_tax, envs, stat, temperatures, morphologies, energy_sources)
+      @uniprot_taxonomy, @envs, @stat, @temperatures, @morphologies, @energy_sources = up_tax, envs, stat, temperatures, morphologies, energy_sources
     end
 
     def tax
@@ -65,6 +65,14 @@ module ReportType
       @envs.map {|env|
         OpenStruct.new(id: env[:meo_id], name: env[:meo_name])
       }
+    end
+
+    def temperature
+      return '' if @temperatures.empty?
+
+      label = @temperatures.first[:habitat_temperature_range_label]
+      values = @temperatures.map {|t| t[:value].to_i }.sort.join(' - ')
+      "#{label} (#{values}℃)"
     end
 
     def morphologies

@@ -10,7 +10,7 @@ json.aaData do |json|
     json.trna_num          number_with_delimiter(r.stat.try(:trna_num))
     json.ncrna_num         number_with_delimiter(r.stat.try(:ncrna_num))
     json.environment_links link_list(r.envs, 'environment')
-    json.temperature       "TODO"
+    json.temperature       r.temperature
     json.morphologies      link_list(r.morphologies, 'phenotype')
     json.energy_sources    link_list(r.energy_sources, 'phenotype')
   end
