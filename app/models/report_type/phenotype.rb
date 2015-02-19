@@ -21,11 +21,13 @@ module ReportType
         mpos = results.map {|r| "<#{r[:mpo_id]}>" }.uniq.join(' ')
 
         sparql = find_phenotype_inhabitants_sparql(PREFIX, ONTOLOGY, mpos)
-        mpo_inhabitants = query(sparql)
+
+        inhabitants = query(sparql)
 
         results.map do |result|
-          select_mpo_inhabitants = mpo_inhabitants.select {|r| r[:mpo_id] == result[:mpo_id] }
-          new(result, select_mpo_inhabitants)
+          select_inhabitants = inhabitants.find {|r| r[:mpo_id] == result[:mpo_id] }
+
+          new(result, select_inhabitants)
         end
       end
     end
@@ -40,7 +42,7 @@ module ReportType
         name:        @phenotype[:mpo_name],
         category:    @phenotype[:category_name],
         id:          @phenotype[:mpo_id].split('#').last,
-        inhabitants: @inhabitants.first.try(:[], :inhabitants)
+        inhabitants: @inhabitants.try(:[], :inhabitants)
       )
     end
   end

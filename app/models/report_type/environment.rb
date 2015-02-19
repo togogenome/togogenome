@@ -22,17 +22,18 @@ module ReportType
 
         sparql = find_environment_inhabitants_stats_sparql(PREFIX, ONTOLOGY, meos)
 
-        meo_inhabitants_stats =  query(sparql)
+        inhabitants = query(sparql)
 
         results.map do |result|
-          select_meo_inhabitants_stats = meo_inhabitants_stats.select {|r| r[:meo_id] == result[:meo_id] }
-          new(result, select_meo_inhabitants_stats)
+          select_inhabitants = inhabitants.find {|r| r[:meo_id] == result[:meo_id] }
+
+          new(result, select_inhabitants)
         end
       end
     end
 
-    def initialize(meo, meo_inhabitants_stats)
-      @environment, @meo_inhabitants_stats = meo, meo_inhabitants_stats
+    def initialize(meo, inhabitants)
+      @environment, @inhabitants = meo, inhabitants
     end
 
     def environment
@@ -40,7 +41,7 @@ module ReportType
         uri:         @environment[:meo_id],
         name:        @environment[:meo_name],
         category:    @environment[:category_name],
-        inhabitants: @meo_inhabitants_stats.first.try(:[], :count),
+        inhabitants: @inhabitants.try(:[], :count),
         id:          @environment[:meo_id].split('/').last
       )
     end

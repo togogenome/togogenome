@@ -34,8 +34,8 @@ module ReportType
 
         results.map do |result|
           select_envs           = envs.select {|e| e[:taxonomy_id] == result[:taxonomy_id] }
-          select_stat           = stats.select {|s| s[:taxonomy_id] == result[:taxonomy_id] }.first
-          select_temperatures   = temperatures.select {|m| m[:taxonomy_id] == result[:taxonomy_id]}
+          select_stat           = stats.find {|s| s[:taxonomy_id] == result[:taxonomy_id] }
+          select_temperatures   = temperatures.select {|m| m[:taxonomy_id] == result[:taxonomy_id] }
           select_morphologies   = morphologies.select {|m| m[:taxonomy_id] == result[:taxonomy_id] }
           select_energy_sources = energy_sources.select {|m| m[:taxonomy_id] == result[:taxonomy_id] }
 
@@ -52,51 +52,47 @@ module ReportType
       category, sub_category, uri, name = @uniprot_taxonomy.values_at(:category_name, :sub_category_name, :taxonomy_id, :taxonomy_name)
 
       OpenStruct.new(
-        category:     category,
-        sub_category: sub_category,
-        uri:          uri,
-        name:         name,
-        id:           uri.split('/').last,
-        taxonomy:     "#{category} / #{sub_category}"
+        category: "#{category} / #{sub_category}",
+        uri:      uri,
+        name:     name,
+        id:       uri.split('/').last
       )
     end
 
     def envs
-      @envs.map {|env|
+      @envs.map do |env|
         OpenStruct.new(id: env[:meo_id], name: env[:meo_name])
-      }
+      end
     end
 
     def temperature
-      return OpenStruct.new() if @temperatures.empty?
+      return nil if @temperatures.empty?
 
-      url, name = @temperatures.first.values_at(:habitat_temperature_range, :habitat_temperature_range_label)
+      range, label = @temperatures.first.values_at(:habitat_temperature_range, :habitat_temperature_range_label)
       value = @temperatures.map {|t| t[:value].to_i }.sort.join(' - ')
 
       OpenStruct.new(
-        id:    url.split('#').last,
-        name:  name,
-        value: value
+        id:    range.split('#').last,
+        label: "#{label} (#{value}°C)"
       )
     end
 
     def morphologies
-      @morphologies.map {|morphology|
+      @morphologies.map do |morphology|
         OpenStruct.new(
           id:   morphology[:mpo_url].split('#').last,
           name: morphology[:mpo_name]
         )
-      }
+      end
     end
 
     def energy_sources
-      @energy_sources.map {|energy_source|
+      @energy_sources.map do |energy_source|
         OpenStruct.new(
           id:   energy_source[:mpo_url].split('#').last,
           name: energy_source[:mpo_name]
         )
-      }
-
+      end
     end
 
     def stat

@@ -31,14 +31,15 @@ module ReportType
 
         results.map do |result|
           select_proteins = proteins.select {|p| p[:gene] == result[:togogenome] }
-          select_gos = gos.select {|g| g[:gene] == result[:togogenome] }
+          select_gos      = gos.select {|g| g[:gene] == result[:togogenome] }
+
           new(result, select_proteins, select_gos)
         end
       end
     end
 
-    def initialize(gene_and_taxonomy, select_proteins, select_gos)
-      @gene_and_taxonomy, @proteins, @gos = gene_and_taxonomy, select_proteins, select_gos
+    def initialize(gene_and_taxonomy, proteins, gos)
+      @gene_and_taxonomy, @proteins, @gos = gene_and_taxonomy, proteins, gos
     end
 
     def gene_and_taxonomy
@@ -50,7 +51,7 @@ module ReportType
         taxonomy_name: taxonomy_name,
         taxonomy_id:   taxonomy.split('/').last,
         gene_id:       togogenome.split('/').last
-      ).tap {|s| s.gene_uri = "/gene/#{s.gene_id}" }
+      )
     end
 
     def proteins

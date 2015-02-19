@@ -20,7 +20,7 @@ limit = 100
 (0..@hits_count).step(limit) do |offset|
   ReportType::Organism.search(@args.merge(limit: limit, offset: offset)).each do |r|
     csv << [
-      r.tax.taxonomy,
+      r.tax.category,
       r.tax.name,
       r.tax.id,
       "http://togogenome.org/organism/#{r.tax.id}",
@@ -32,7 +32,7 @@ limit = 100
       r.envs.map(&:name).join("\n"),
       r.envs.map(&:id).join("\n"),
       r.envs.map {|env| "http://togogenome.org/environment/#{env.id}" }.join("\n"),
-      temperature(r.temperature),
+      r.temperature.try(:label),
       r.morphologies.map(&:name).join("\n"),
       r.energy_sources.map(&:name).join("\n")
     ]
