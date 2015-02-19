@@ -32,9 +32,9 @@ limit = 100
       r.envs.map(&:name).join("\n"),
       r.envs.map(&:id).join("\n"),
       r.envs.map {|env| "http://togogenome.org/environment/#{env.id}" }.join("\n"),
-      'TODO',
-      r.morphology.mpo_name,
-      r.energy_source.mpo_name
+      temperature(r.temperature),
+      r.morphologies.map(&:name).join("\n"),
+      r.energy_sources.map(&:name).join("\n")
     ]
   end
 end

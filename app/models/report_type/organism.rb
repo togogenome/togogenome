@@ -68,7 +68,7 @@ module ReportType
     end
 
     def temperature
-      return nil if @temperatures.empty?
+      return OpenStruct.new() if @temperatures.empty?
 
       url, name = @temperatures.first.values_at(:habitat_temperature_range, :habitat_temperature_range_label)
       value = @temperatures.map {|t| t[:value].to_i }.sort.join(' - ')
