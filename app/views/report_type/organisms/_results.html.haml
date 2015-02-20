@@ -8,43 +8,40 @@
             url: '/report_type/organisms.json'
           },
           columns: [
+            {data: "category"},
             {data: "organism_link"},
+            {data: "genome_size", className: "numeric"},
+            {data: "gene_num", className: "numeric"},
+            {data: "rrna_num", className: "numeric"},
+            {data: "trna_num", className: "numeric"},
+            {data: "ncrna_num", className: "numeric"},
             {data: "environment_links"},
-            {data: "development_links"},
-            {data: "growth_links"},
-            {data: "metabolism_links"},
-            {data: "morphology_links"},
-            {data: "motility_links"},
-            {data: "serotype_links"},
-            {data: "staining_links"},
-            {data: "gene_num"},
-            {data: "rrna_num"},
-            {data: "trna_num"},
-            {data: "ncrna_num"},
+            {data: "temperature"},
+            {data: "morphologies"},
+            {data: "energy_sources"}
           ]
         }),
         downloadCSV: '/report_type/organisms.csv'
       };
 
-      result_table.parent().find(".result-download-container").append("<a>Download CSV</a>");
+      result_table.parent().find(".result-download-container").append("<a><i class='icon-file'></i> Download CSV</a>");
     });
 
 %table#organism_results.table.table-striped.table-bordered.table-hover.table-condensed
   %thead
     %tr
+      %th{rowspan: 2} Taxonomy
       %th{rowspan: 2} Organism
-      %th{rowspan: 2} Environments
-      %th{colspan: 7} Phenotypes
+      %th{rowspan: 2} Genome size (bp)
       %th{colspan: 4} Number of genes
+      %th{rowspan: 2} Environments
+      %th{colspan: 3} Phenotypes
+
     %tr
-      %td Development
-      %td Growth
-      %td Metabolism
-      %td Morphology
-      %td Motility
-      %td Serotype
-      %td Staining
-      %td Gene
-      %td tRNA
-      %td rRNA
-      %td ncRNA
+      %th Gene
+      %th tRNA
+      %th rRNA
+      %th ncRNA
+      %th Temperature
+      %th Morphology
+      %th Energy source

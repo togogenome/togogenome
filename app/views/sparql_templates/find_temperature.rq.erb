@@ -1,0 +1,17 @@
+DEFINE sql:select-option "order"
+<%= prefix[:mpo] %>
+
+SELECT ?taxonomy_id ?habitat_temperature_range ?habitat_temperature_range_label ?value
+WHERE {
+  VALUES ?taxonomy_id { <%= taxonomies %> }
+  GRAPH <%= ontology[:mpo] %> {
+    ?mpo_pred_list rdfs:subPropertyOf+ mpo:MPO_10008 .
+    ?habitat_temperature_range rdfs:label ?habitat_temperature_range_label .
+    FILTER(LANG(?habitat_temperature_range_label) = "en")
+    BIND(str(?habitat_temperature_range_label) AS ?habitat_temperature_range_label_stripped)
+  }
+  GRAPH <%= ontology[:gold] %> {
+    ?taxonomy_id ?mpo_pred_list ?value .
+    ?taxonomy_id mpo:MPO_10003 ?habitat_temperature_range .
+  }
+}

@@ -16,6 +16,12 @@ module ReportTypeHelper
     end
   end
 
+  def link_to_temperature(temperature)
+    return '' unless temperature
+
+    link_to(temperature.label, phenotype_path(temperature.id), target: '_blank')
+  end
+
   private
   def link_to_item(item, target)
     case target

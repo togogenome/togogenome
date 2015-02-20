@@ -31,51 +31,48 @@ module ReportType
 
         results.map do |result|
           select_proteins = proteins.select {|p| p[:gene] == result[:togogenome] }
-          select_gos = gos.select {|g| g[:gene] == result[:togogenome] }
+          select_gos      = gos.select {|g| g[:gene] == result[:togogenome] }
+
           new(result, select_proteins, select_gos)
         end
       end
     end
 
-    def initialize(gene_and_taxonomy, select_proteins, select_gos)
-      @gene_and_taxonomy, @proteins, @gos = gene_and_taxonomy, select_proteins, select_gos
+    def initialize(gene_and_taxonomy, proteins, gos)
+      @gene_and_taxonomy, @proteins, @gos = gene_and_taxonomy, proteins, gos
     end
 
     def gene_and_taxonomy
-      Struct.new(:togogenome, :taxonomy, :taxonomy_name) {
-        def gene_uri
-          "/gene/#{gene_id}"
-        end
+      togogenome, taxonomy, taxonomy_name = @gene_and_taxonomy.values_at(:togogenome, :taxonomy_id, :taxonomy_name)
 
-        def taxonomy_id
-          taxonomy.split('/').last
-        end
-
-        def gene_id
-          refseq_id, locus_tag = togogenome.split('/').last.split(':')
-          "#{refseq_id}:#{locus_tag}"
-        end
-      }.new(@gene_and_taxonomy[:togogenome], @gene_and_taxonomy[:taxonomy_id], @gene_and_taxonomy[:taxonomy_name])
+      OpenStruct.new(
+        togogenome:    togogenome,
+        taxonomy:      taxonomy,
+        taxonomy_name: taxonomy_name,
+        taxonomy_id:   taxonomy.split('/').last,
+        gene_id:       togogenome.split('/').last
+      )
     end
 
     def proteins
-      @proteins.map {|protein|
-        Struct.new(:uri, :uniprot_link, :name) {
-          def id
-            uri.split('/').last
-          end
-        }.new(protein[:uniprot_id], protein[:uniprot_up], protein[:recommended_name])
-      }
+      @proteins.map do |protein|
+        OpenStruct.new(
+          uri:          protein[:uniprot_id],
+          uniprot_link: protein[:uniprot_up],
+          name:         protein[:recommended_name],
+          id:           protein[:uniprot_id].split('/').last
+        )
+      end
     end
 
     def gos
-      @gos.map {|go|
-        Struct.new(:uri, :name) {
-          def id
-            uri.split('id=').last
-          end
-        }.new(go[:quick_go_uri], go[:go_name])
-      }
+      @gos.map do |go|
+        OpenStruct.new(
+          uri:  go[:quick_go_uri],
+          name: go[:go_name],
+          id:   go[:quick_go_uri].split('id=').last
+        )
+      end
     end
   end
 end

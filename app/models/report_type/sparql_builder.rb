@@ -92,11 +92,13 @@ module ReportType
       def_erb_method("find_proteins_sparql(prefix, ontology, genes)", 'app/views/sparql_templates/find_proteins.rq.erb')
       def_erb_method("find_gene_ontologies_sparql(prefix, ontology, genes)", 'app/views/sparql_templates/find_gene_ontologies.rq.erb')
       def_erb_method("find_environments_sparql(prefix, ontology, taxonomies)", 'app/views/sparql_templates/find_environments.rq.erb')
-      def_erb_method("find_phenotypes_sparql(prefix, ontology, taxonomies)", 'app/views/sparql_templates/find_phenotypes.rq.erb')
       def_erb_method("find_genome_stats_sparql(prefix, ontology, taxonomies)", 'app/views/sparql_templates/find_genome_stats.rq.erb')
       def_erb_method("find_environment_inhabitants_stats_sparql(prefix, ontology, meos)", 'app/views/sparql_templates/find_environment_inhabitants_stats.rq.erb')
 
       def_erb_method("find_phenotype_inhabitants_sparql(prefix, ontology, mpos)", 'app/views/sparql_templates/find_phenotype_inhabitants.rq.erb')
+      def_erb_method("find_temperature_sparql(prefix, ontology, taxonomies)", 'app/views/sparql_templates/find_temperature.rq.erb')
+      def_erb_method("find_morphology_sparql(prefix, ontology, taxonomies)", 'app/views/sparql_templates/find_morphology.rq.erb')
+      def_erb_method("find_energy_source_sparql(prefix, ontology, taxonomies)", 'app/views/sparql_templates/find_energy_source.rq.erb')
     end
   end
 end
