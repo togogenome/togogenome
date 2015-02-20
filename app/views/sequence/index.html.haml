@@ -16,24 +16,21 @@
     - if @error
       .alert.alert-error
         = @error
-    - unless @sequences.blank?
-      %table.table.table-striped.table-bordered.table-hover.table-condensed
-        %thead
-          %tr
-            %th Sequence name
-            %th Locus tag
-            %th Product
-            %th Sequence ontology
-            %th Position begin
-            %th Position end
-            %th Sequence
-        %tbody
-          - @sequences.each do |sequence|
-            %tr
-              %td= sequence[:name]
-              %td= link_to sequence[:locus_tag], gene_path("#{sequence[:taxonomy]}:#{sequence[:locus_tag]}"), target: '_blank' if sequence[:locus_tag]
-              %td= sequence[:product] if sequence[:product]
-              %td= link_to sequence[:sequence_ontology_name], sequence[:sequence_ontology], target: '_blank' if sequence[:sequence_ontology_name]
-              %td.numeric= number_with_delimiter(sequence[:position])
-              %td.numeric= number_with_delimiter(sequence[:position_end])
-              %td= match_snippet(sequence[:snippet], sequence[:snippet_pos], sequence[:position], sequence[:position_end])
+    - elsif params[:fragment]
+      %ul.nav.nav-tabs
+        %li.active
+          %a{href: "#sequence", data: {toggle: :tab}} Sequence
+        %li
+          %a{href: "#organism", data: {toggle: :tab}} Organism
+
+      .tab-content
+        #sequence.tab-pane.active
+          - if @sequences.present?
+            = render 'sequence_table', sequences: @sequences
+          - else
+            Not found.
+        #organism.tab-pane
+          - if @organisms.present?
+            = render 'organism_table', organisms: @organisms
+          - else
+            Not found.
