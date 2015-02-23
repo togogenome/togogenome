@@ -7,7 +7,7 @@
             %li= link_to stanza.name, "##{stanza.id}"
 
   #header
-    %h1 Environment #{@meo_id}
+    %h1 Environment #{@meo_id} #{@environment.name}
 
   %section#nanostanzas.row-fluid
     - Stanza.providers.nanostanza.environments.each do |stanza|
