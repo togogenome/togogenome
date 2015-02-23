@@ -103,57 +103,67 @@ defaults: &defaults
 
       phenotypes:
         -
-          id: mpo_shape
-          name: Shape Information
-        -
-          id: my_inf
-          name: Organism List
-        -
-          id: mpo_genus
+          id: microbial_phenotype_genus_composition
           name: Genus List (Phenotype-based)
         -
-          id: mpo_environment
+          id: microbial_phenotype_environment_composition
           name: Environment List (Phenotype-based)
+        -
+          id: microbial_phenotype_cell_shape
+          name: Shape Information
+        -
+          id: microbial_phenotype_information
+          name: Organism List
 
     nanostanza:
       url: http://localhost:9292/stanza
       genes:
         -
-          id: protein_3d_structure_nano
+          id: gene_length_nano
           span: 1
         -
           id: protein_ec_number_nano
           span: 1
         -
+          id: protein_3d_structure_nano
+          span: 1
+        -
           id: protein_references_timeline_nano
           span: 2
-        -
-          id: gene_length_nano
-          span: 1
 
       organisms:
         -
-          id: organism_gc_nano
+          id: organism_genome_size_nano
           span: 1
         -
           id: organism_gene_number_nano
           span: 1
         -
-          id: organism_genome_size_nano
+          id: organism_gc_nano
+          span: 1
+        -
+          id: organism_microbial_cell_shape_nano
           span: 1
         -
           id: organism_ph_nano
           span: 1
+        -
+          id: organism_related_disease_nano
+          span: 1
+
 
       environments:
+        -
+          id: environment_top_level_symbolic_image_nano
+          span: 1
         -
           id: environment_inhabitants_statistics_nano
           span: 1
         -
-          id: environment_organism_distribution_on_ph_nano
+          id: environment_organism_distribution_on_temperature_nano
           span: 1
         -
-          id: environment_organism_distribution_on_temperature_nano
+          id: environment_organism_distribution_on_ph_nano
           span: 1
 
       phenotypes: []
