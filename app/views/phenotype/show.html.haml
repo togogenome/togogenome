@@ -7,7 +7,7 @@
             %li= link_to stanza.name, "##{stanza.id}"
 
   #header
-    %h1 Phenotype #{@phenotype_id}
+    %h1 Phenotype #{@phenotype_id} #{@phenotype.name}
 
   %section#nanostanzas.row-fluid
     - Stanza.providers.nanostanza.phenotypes.each do |stanza|
