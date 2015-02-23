@@ -13,12 +13,12 @@
         = @error
     - if @stanzas
       %ul.nav.nav-tabs
-        - %w(gene organism environment phenotype).each do |type|
+        - %w(gene organism phenotype environment).each do |type|
           %li{class: params[:category] == type ? 'active' : nil}
             %a{href: "##{type}", data: {toggle: :tab, category: type.to_sym}}= type.capitalize
 
       .tab-content
-        - %w(gene organism environment phenotype).each do |type|
+        - %w(gene organism phenotype environment).each do |type|
           .tab-pane{id: type, class: params[:category] == type ? 'active' : nil}
             = render 'count_list', query: params[:q], stanzas: @stanzas[type.pluralize]
 
