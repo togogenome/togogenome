@@ -344,13 +344,13 @@
 
     #methods
       .method-container#facets
-        - %w(environment taxonomy biological_process molecular_function cellular_component phenotype).each do |facet|
+        - %w(biological_process molecular_function cellular_component taxonomy phenotype environment).each do |facet|
           = render partial: 'facets/facet', locals: {name: facet, f_name: "facets::#{facet}"}
 
         .text-center.padding
           .tg-button.clear#facet-all-clear-button Clear
 
-  - report_types = %w(gene organism environment phenotype)
+  - report_types = %w(gene organism phenotype environment)
   #genomes.row-fluid
     %ul#result_tabs.nav.nav-tabs
       - report_types.each do |report_type|
