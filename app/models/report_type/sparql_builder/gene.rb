@@ -25,14 +25,14 @@ module ReportType
 
         extend ERB::DefMethod
 
-        def_erb_method("init_condition(prefix, ontology, select_clause, limit, offset)", 'app/views/sparql_templates/genes/init_condition.rq.erb')
-        def_erb_method("has_mpo_condition(prefix, ontology, mpo_id, select_clause, limit, offset)", 'app/views/sparql_templates/genes/has_mpo_condition.rq.erb')
-        def_erb_method("has_meo_condition(prefix, ontology, mpo_id, meo_id, select_clause, limit, offset)", 'app/views/sparql_templates/genes/has_meo_condition.rq.erb')
-        def_erb_method("has_tax_condition(prefix, ontology, mpo_id, meo_id, tax_id, select_clause, limit, offset)", 'app/views/sparql_templates/genes/has_tax_condition.rq.erb')
-        def_erb_method("has_go_condition(prefix, ontology, mpo_id, meo_id, tax_id, bp_id, mf_id, cc_id, select_clause, limit, offset)", 'app/views/sparql_templates/genes/has_go_condition.rq.erb')
+        def_erb_method("init_condition(prefix, ontology, select_clause, limit, offset)", 'app/views/sparql_templates/report_type/genes/init_condition.rq.erb')
+        def_erb_method("has_mpo_condition(prefix, ontology, mpo_id, select_clause, limit, offset)", 'app/views/sparql_templates/report_type/genes/has_mpo_condition.rq.erb')
+        def_erb_method("has_meo_condition(prefix, ontology, mpo_id, meo_id, select_clause, limit, offset)", 'app/views/sparql_templates/report_type/genes/has_meo_condition.rq.erb')
+        def_erb_method("has_tax_condition(prefix, ontology, mpo_id, meo_id, tax_id, select_clause, limit, offset)", 'app/views/sparql_templates/report_type/genes/has_tax_condition.rq.erb')
+        def_erb_method("has_go_condition(prefix, ontology, mpo_id, meo_id, tax_id, bp_id, mf_id, cc_id, select_clause, limit, offset)", 'app/views/sparql_templates/report_type/genes/has_go_condition.rq.erb')
 
-        def_erb_method("find_proteins_sparql(prefix, ontology, genes)", 'app/views/sparql_templates/find_proteins.rq.erb')
-        def_erb_method("find_gene_ontologies_sparql(prefix, ontology, genes)", 'app/views/sparql_templates/find_gene_ontologies.rq.erb')
+        def_erb_method("find_proteins_sparql(prefix, ontology, genes)", 'app/views/sparql_templates/report_type/genes/proteins.rq.erb')
+        def_erb_method("find_gene_ontologies_sparql(prefix, ontology, genes)", 'app/views/sparql_templates/report_type/genes/gene_ontologies.rq.erb')
       end
     end
   end
