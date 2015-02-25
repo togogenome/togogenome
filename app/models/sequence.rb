@@ -32,8 +32,6 @@ class Sequence
       end
     end
 
-    private
-
     def build_sequence_ontologies_sparqls(gggenome)
       # slice の理由
       # gggenome での検索結果が多い時、それらをまとめて1つのSPARQL にすると、
@@ -75,6 +73,8 @@ class Sequence
         SPARQL
       end
     end
+
+    private
 
     def build_organisms_sparqls(gggenome)
       # slice の理由
