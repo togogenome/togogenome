@@ -5,7 +5,7 @@ module ReportType
     class << self
       def count(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '')
         select_clause =  "SELECT COUNT(DISTINCT ?mpo_id) AS ?hits_count"
-        sparql = build_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause)
+        sparql = build_base_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause)
 
         results = query(sparql)
 
@@ -14,7 +14,7 @@ module ReportType
 
       def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
         select_clause, order_clause = "SELECT DISTINCT ?mpo_id ?mpo_name ?category ?category_name", "ORDER BY ?category_name"
-        sparql = build_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause, limit, offset)
+        sparql = build_base_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause, limit, offset)
 
         results = query(sparql)
 
@@ -22,7 +22,7 @@ module ReportType
 
         mpos = results.map {|r| "<#{r[:mpo_id]}>" }.uniq.join(' ')
 
-        sparql = find_phenotype_inhabitants_sparql(PREFIX, ONTOLOGY, mpos)
+        sparql = find_inhabitants_sparql(PREFIX, ONTOLOGY, mpos)
 
         inhabitants = query(sparql)
 

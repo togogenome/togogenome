@@ -9,7 +9,7 @@ module ReportType
       module ClassMethods
         include SPARQLUtil
 
-        def build_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause = '', limit = 1, offset = 0)
+        def build_base_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause = '', limit = 1, offset = 0)
           if [bp_id, mf_id, cc_id].any?(&:present?)
             has_go_condition(PREFIX, ONTOLOGY, mpo_id, meo_id, tax_id, bp_id, mf_id, cc_id, select_clause, order_clause, limit, offset)
           elsif tax_id.present?

@@ -9,7 +9,7 @@ module ReportType
       module ClassMethods
         include SPARQLUtil
 
-        def build_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause = '', limit = 1, offset = 0)
+        def build_base_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause = '', limit = 1, offset = 0)
           if [bp_id, mf_id, cc_id].any?(&:present?)
             has_go_condition(PREFIX, ONTOLOGY, mpo_id, meo_id, tax_id, bp_id, mf_id, cc_id, select_clause, order_clause, limit, offset)
           elsif tax_id.present?
@@ -31,7 +31,7 @@ module ReportType
         def_erb_method("has_tax_condition(prefix, ontology, mpo_id, meo_id, tax_id, select_clause, order_clause, limit, offset)", 'app/views/sparql_templates/environments/has_tax_condition.rq.erb')
         def_erb_method("has_go_condition(prefix, ontology, mpo_id, meo_id, tax_id, bp_id, mf_id, cc_id, select_clause, order_clause, limit, offset)", 'app/views/sparql_templates/environments/has_go_condition.rq.erb')
 
-        def_erb_method("find_environment_inhabitants_stats_sparql(prefix, ontology, meos)", 'app/views/sparql_templates/find_environment_inhabitants_stats.rq.erb')
+        def_erb_method("find_inhabitants_sparql(prefix, ontology, meos)", 'app/views/sparql_templates/find_environment_inhabitants_stats.rq.erb')
       end
     end
   end
