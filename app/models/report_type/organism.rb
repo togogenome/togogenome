@@ -1,9 +1,11 @@
 module ReportType
   class Organism < Base
+    include SparqlBuilder::Organism
+
     class << self
       def count(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '')
         select_clause =  "SELECT COUNT(DISTINCT ?taxonomy_id) AS ?hits_count"
-        sparql = build_organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause)
+        sparql = build_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause)
 
         results = query(sparql)
 
@@ -12,7 +14,7 @@ module ReportType
 
       def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
         select_clause, order_clause = "SELECT DISTINCT ?taxonomy_id ?taxonomy_name ?category_name ?sub_category_name", 'ORDER BY ?category_name ?sub_category_name'
-        sparql = build_organism_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause, limit, offset)
+        sparql = build_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause, limit, offset)
 
         results = query(sparql)
 
