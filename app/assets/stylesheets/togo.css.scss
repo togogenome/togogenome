@@ -304,16 +304,16 @@ only screen and (min-device-pixel-ratio: 2),
 /* header */
 header .navbar .nav {
   padding-left: 10px;
-}
-header .navbar .nav > li > a {
-  color: #888;
-  position: relative;
-  top: 4px;
-  font-weight: normal;
-}
-header .navbar .nav > li > a:hover {
-  color: #888;
-  text-decoration: underline;
+  & > li > a {
+    color: #888;
+    position: relative;
+    top: 4px;
+    font-weight: normal;
+    &:hover {
+      color: #888;
+      text-decoration: underline;
+    }
+  }
 }
 .navbar-inverse .navbar-inner {
   background-color: #fff;
@@ -431,6 +431,37 @@ header .navbar .nav > li > a:hover {
   padding-top: 26px;
   margin-bottom: 24px;
   border-bottom: solid 3px #555;
+  &.tg-report-header {
+    p.tg-report-type {
+      font-size: 12px;
+      line-height: 14px;
+      font-weight: bold;
+      margin-bottom: 2px;
+      background-color: #333;
+      color: #fff;
+      padding: 1px 8px;
+      letter-spacing: .15em;
+    }
+    h1 {
+      padding: 3px 0 0;
+      span {
+        &:before {
+          color: $color_base_blue;
+          font-size: 14px;
+          font-weight: lighter;
+        }
+        &#tg-title-id:before {
+          content: "ID: ";
+        }
+        &#tg-title-label:before {
+          content: "Label: ";
+        }
+        & + span {
+          margin-left: .75em;
+        }
+      }
+    }
+  }
 }
 
 /* footer */
