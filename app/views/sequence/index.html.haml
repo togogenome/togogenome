@@ -25,8 +25,8 @@
 
       .tab-content
         #sequence.tab-pane.active
-          - if @sequences.present?
-            = render 'sequence_table', sequences: @sequences
+          - if @genomes.present?
+            = render 'genome_table', genomes: @genomes
           - else
             Not found.
         #organism.tab-pane

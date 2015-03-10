@@ -1,7 +1,7 @@
 require 'sparql_util'
 
 module Sequence
-  class SequenceOntology
+  class Genome
     include Queryable
 
     class << self

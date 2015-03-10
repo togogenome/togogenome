@@ -3,8 +3,8 @@ class SequenceController < ApplicationController
   end
 
   def search(fragment)
-    sequence = fragment.delete("\s\n")
-    @sequences = Sequence::SequenceOntology.search(sequence)
+    sequence   = fragment.delete("\s\n")
+    @genomes   = Sequence::Genome.search(sequence)
     @organisms = Sequence::Organism.search(sequence)
   rescue => ex
     @error = ex

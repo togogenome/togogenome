@@ -1,8 +1,8 @@
 class Api::GggenomeController < ApplicationController
   def show(gggenome)
     genomes = gggenome['results'].map {|r| OpenStruct.new(r) }
-    sparqls = Sequence::SequenceOntology.build_sparqls(genomes)
-    sparql_results = sparqls.flat_map {|sparql| Sequence::SequenceOntology.query(sparql) }
+    sparqls = Sequence::Genome.build_sparqls(genomes)
+    sparql_results = sparqls.flat_map {|sparql| Sequence::Genome.query(sparql) }
 
     results = genomes.map do |genome|
       so = sparql_results.select {|r| r[:name] == genome.name }
