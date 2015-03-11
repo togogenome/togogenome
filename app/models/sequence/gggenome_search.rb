@@ -1,6 +1,9 @@
 require 'ostruct'
 
 module Sequence
+
+  class GggenomeSearchError < StandardError; end
+
   module GggenomeSearch
     class << self
       def search(sequence, url = 'http://gggenome.dbcls.jp/prok', format = 'json')
@@ -11,7 +14,7 @@ module Sequence
 
         gggenome = JSON.parse(result, {symbolize_names: true})
 
-        raise StandardError, "[GGGenome Error] #{gggenome[:error]}" unless gggenome[:error] == 'none'
+        raise GggenomeSearchError, "[GGGenome Error] #{gggenome[:error]}" unless gggenome[:error] == 'none'
 
         gggenome[:results].map {|r| OpenStruct.new(r) }
       end
