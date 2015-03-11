@@ -17,7 +17,7 @@ module Sequence
             sequence_ontologies: so.map {|r| {uri: r[:sequence_ontology], name: r[:sequence_ontology_name]} },
             locus_tags: so.map {|r| r[:locus_tag] }.compact.uniq,
             products: so.map {|r| r[:product] }.compact.uniq
-            )
+          )
         end
       end
 
