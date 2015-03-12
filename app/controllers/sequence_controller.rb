@@ -3,11 +3,14 @@ class SequenceController < ApplicationController
   end
 
   def search(fragment)
-    sequence = fragment.delete("\s\n")
-    @sequences = Sequence.search_sequence_ontologies(sequence)
-    @organisms = Sequence.search_organisms(sequence)
-  rescue => ex
+    sequence   = fragment.delete("\s\n")
+    @genomes   = Sequence::Genome.search(sequence)
+    @organisms = Sequence::Organism.search(sequence)
+  rescue Sequence::GggenomeSearchError => ex
     @error = ex
+  rescue  => ex
+    @error = '[Server Error] Please contact the site administrator .'
+    Rails.logger.error ex
   ensure
     render 'index'
   end

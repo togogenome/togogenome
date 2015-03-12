@@ -1,0 +1,32 @@
+%table.table.table-striped.table-bordered.table-hover.table-condensed
+  %thead
+    %tr
+      %th Sequence name
+      %th Locus tag
+      %th Product
+      %th Sequence ontology
+      %th Position begin
+      %th Position end
+      %th Sequence
+  %tbody
+    - genomes.each do |genome|
+      %tr
+        %td= genome[:name]
+        %td
+          - if genome[:locus_tags].present?
+            %ul
+              - genome[:locus_tags].each do |locus_tag|
+                %li= link_to locus_tag, gene_path("#{genome[:taxonomy]}:#{locus_tag}"), target: '_blank'
+        %td
+          - if genome[:products].present?
+            %ul
+              - genome[:products].each do |product|
+                %li= product
+        %td
+          - if genome[:sequence_ontologies].present?
+            %ul
+              - genome[:sequence_ontologies].each do |so|
+                %li= link_to so[:name], so[:uri], target: '_blank'
+        %td.numeric= number_with_delimiter(genome[:position])
+        %td.numeric= number_with_delimiter(genome[:position_end])
+        %td= match_snippet(genome[:snippet], genome[:snippet_pos], genome[:position], genome[:position_end])
