@@ -13,7 +13,7 @@ module ReportType
       end
 
       def search(meo_id: '', tax_id: '', bp_id: '', mf_id: '', cc_id: '', mpo_id: '', limit: 25, offset: 0)
-        select_clause, order_clause = "SELECT DISTINCT ?mpo_id ?mpo_name ?category ?category_name", "ORDER BY ?category_name"
+        select_clause, order_clause = "SELECT DISTINCT ?mpo_id ?mpo_name ?category ?category_name ?definition", "ORDER BY ?category_name"
         sparql = build_base_sparql(meo_id, tax_id, bp_id, mf_id, cc_id, mpo_id, select_clause, order_clause, limit, offset)
 
         results = query(sparql)
@@ -44,6 +44,7 @@ module ReportType
         name:        @phenotype[:mpo_name],
         category:    @phenotype[:category_name],
         id:          @phenotype[:mpo_id].split('#').last,
+        definition:  @phenotype[:definition],
         inhabitants: @inhabitants.try(:[], :inhabitants)
       )
     end
