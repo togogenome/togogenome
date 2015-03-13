@@ -10,6 +10,7 @@ WHERE {
             rdfs:subClassOf* ?category .
     ?category rdfs:subClassOf  <http://purl.jp/bio/01/mpo#MPO_00000> ;
               rdfs:label ?category_name .
+    OPTIONAL { ?mpo_id skos:definition ?definition }
   }
 
 } <%= order_clause %> LIMIT <%= limit %> OFFSET <%= offset %>
