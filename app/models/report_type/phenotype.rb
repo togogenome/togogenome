@@ -22,30 +22,30 @@ module ReportType
 
         mpos = results.map {|r| "<#{r[:mpo_id]}>" }.uniq.join(' ')
 
-        sparql = find_inhabitants_sparql(PREFIX, ONTOLOGY, mpos)
+        sparql = find_organisms_sparql(PREFIX, ONTOLOGY, mpos)
 
-        inhabitants = query(sparql)
+        organisms = query(sparql)
 
         results.map do |result|
-          select_inhabitants = inhabitants.find {|r| r[:mpo_id] == result[:mpo_id] }
+          select_organisms = organisms.find {|r| r[:mpo_id] == result[:mpo_id] }
 
-          new(result, select_inhabitants)
+          new(result, select_organisms)
         end
       end
     end
 
-    def initialize(mpo, inhabitants)
-      @phenotype, @inhabitants = mpo, inhabitants
+    def initialize(mpo, organisms)
+      @phenotype, @organisms = mpo, organisms
     end
 
     def phenotype
       OpenStruct.new(
-        uri:         @phenotype[:mpo_id],
-        name:        @phenotype[:mpo_name],
-        category:    @phenotype[:category_name],
-        id:          @phenotype[:mpo_id].split('#').last,
-        definition:  @phenotype[:definition],
-        inhabitants: @inhabitants.try(:[], :inhabitants)
+        uri:        @phenotype[:mpo_id],
+        name:       @phenotype[:mpo_name],
+        category:   @phenotype[:category_name],
+        id:         @phenotype[:mpo_id].split('#').last,
+        definition: @phenotype[:definition],
+        organisms:  @organisms.try(:[], :organisms)
       )
     end
   end

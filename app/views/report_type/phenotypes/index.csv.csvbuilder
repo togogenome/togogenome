@@ -4,7 +4,7 @@ csv << [
   'Phenotype ID',
   'Phenotype URL',
   'Definition',
-  'Inhabitants'
+  'Organisms'
 ]
 
 limit = 100
@@ -16,7 +16,7 @@ limit = 100
       r.phenotype.id,
       "http://togogenome.org/phenotype/#{r.phenotype.id}",
       r.phenotype.definition,
-      r.phenotype.inhabitants
+      r.phenotype.organisms
     ]
   end
 end

@@ -30,7 +30,7 @@ module ReportType
         def_erb_method("has_tax_condition(prefix, ontology, mpo_id, meo_id, tax_id, select_clause, order_clause, limit, offset)", 'app/views/sparql_templates/report_type/phenotypes/has_tax_condition.rq.erb')
         def_erb_method("has_go_condition(prefix, ontology, mpo_id, meo_id, tax_id, bp_id, mf_id, cc_id, select_clause, order_clause, limit, offset)", 'app/views/sparql_templates/report_type/phenotypes/has_go_condition.rq.erb')
 
-        def_erb_method("find_inhabitants_sparql(prefix, ontology, mpos)", 'app/views/sparql_templates/report_type/phenotypes/inhabitants.rq.erb')
+        def_erb_method("find_organisms_sparql(prefix, ontology, mpos)", 'app/views/sparql_templates/report_type/phenotypes/organisms.rq.erb')
       end
     end
   end

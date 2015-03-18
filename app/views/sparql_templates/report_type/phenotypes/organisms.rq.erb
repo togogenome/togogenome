@@ -3,7 +3,7 @@ DEFINE sql:select-option "order"
 <%= prefix[:mpo] %>
 PREFIX taxonomy: <http://ddbj.nig.ac.jp/ontologies/taxonomy/>
 
-SELECT ?mpo_id COUNT(DISTINCT ?taxonomy) AS ?inhabitants
+SELECT ?mpo_id COUNT(DISTINCT ?taxonomy) AS ?organisms
 WHERE {
   VALUES ?mpo_id { <%= mpos %> }
   GRAPH <%= ontology[:mpo_descendants] %> { ?mpo_descendants rdfs:subClassOf ?mpo_id }
