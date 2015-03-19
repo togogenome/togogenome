@@ -1,5 +1,6 @@
 .bundle
 .sass-cache
+.ruby-version
 capybara-*.html
 config/database.yml
 config/endpoint.yml
