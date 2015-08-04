@@ -11,7 +11,6 @@ module Queryable
       end
       result_json = JSON.parse(result)
 
-      return result_json['boolean'] if result_json.has_key?('boolean') # SELECT じゃなく ASK で聞いた時はこちらを返す
       return [] if result_json['results']['bindings'].empty?
 
       result_json['results']['bindings'].map do |b|
