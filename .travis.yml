@@ -1,0 +1,9 @@
+language: ruby
+sudo: false
+rvm: 2.2.2
+bundler_args: --without production -j4
+cache: bundler
+before_script:
+  - cp config/endpoint.yml.sample config/endpoint.yml
+  - cp config/stanza.yml.sample config/stanza.yml
+script: bundle exec rspec --exclude-pattern spec/models/stanza_search_spec.rb
