@@ -116,6 +116,7 @@ GEM
     nokogiri (1.5.7)
     parallel (0.6.2)
     polyglot (0.3.5)
+    power_assert (0.2.3)
     pry (0.9.12)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
@@ -179,6 +180,8 @@ GEM
       tilt (~> 1.1, != 1.3.0)
     tapp (1.4.0)
       thor
+    test-unit (3.0.8)
+      power_assert
     thin (1.6.3)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0)
@@ -229,6 +232,7 @@ DEPENDENCIES
   sass-rails (~> 3.2.3)
   settingslogic
   tapp
+  test-unit (~> 3.0)
   thin
   uglifier (>= 1.0.3)
   unicorn
