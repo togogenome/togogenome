@@ -36,7 +36,7 @@ class StanzaSearch
       # 検索可能なスタンザか否かを返す。
       # プロバイダーに所属する各スタンザが、テキスト検索に対応しているか否かを取得する仕組みが無いため
       # ハードコードしている
-      %w(organism_names organism_phenotype).include?(stanza_id)
+      %w(environment_attributes).include?(stanza_id)
     end
 
     private
