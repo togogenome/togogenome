@@ -16,8 +16,7 @@ class StanzaSearch
     end
 
     def search_by_stanza_id(q, stanza_id)
-      stanza_url = "#{Stanza.providers.togostanza.url}/#{stanza_id}"
-      url = "#{stanza_url}/text_search?q=#{URI.encode_www_form_component(q)}"
+      url = "#{Endpoint.fulltextsearch}/#{stanza_id}/select?q=#{URI.encode_www_form_component(q)}&wt=json&&rows=100"
 
       stanza_data = Stanza.all.find {|s| s['id'] == stanza_id }
 

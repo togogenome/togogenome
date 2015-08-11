@@ -3,11 +3,11 @@ module Queryable
 
   module ClassMethods
     def query(sparql)
-      Rails.logger.info "===== SPARQL (EP: #{Endpoint.uri}) =====\n" + sparql
+      Rails.logger.info "===== SPARQL (EP: #{Endpoint.rdfstore}) =====\n" + sparql
 
       result = Rails.cache.fetch Digest::MD5.hexdigest(sparql), expires_in: 1.month do
         client = HTTPClient.new
-        client.post_content(Endpoint.uri, { query: sparql }, { Accept: "application/sparql-results+json"} )
+        client.post_content(Endpoint.rdfstore, { query: sparql }, { Accept: "application/sparql-results+json"} )
       end
       result_json = JSON.parse(result)
 
