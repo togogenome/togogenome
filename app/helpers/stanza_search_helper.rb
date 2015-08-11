@@ -7,30 +7,25 @@ module StanzaSearchHelper
   end
 
   def link_to_report_page(stanza)
-    label, path =
-      case stanza[:report_type]
-      when 'genes'
-        gene_id = "#{stanza[:stanza_query]['tax_id']}:#{stanza[:stanza_query]['gene_id']}"
-        ["Gene #{gene_id}", gene_path(gene_id)]
-      when 'organisms'
-        tax_id = stanza[:stanza_query]['tax_id']
-        ["Organism #{tax_id}", organism_path(tax_id)]
-      when 'environments'
-        env_id = stanza[:stanza_query]['env_id']
-        ["Environment #{env_id}", environment_path(env_id)]
-      when 'phenotypes'
-        mpo_id = stanza[:stanza_query]['mpo_id']
-        ["Phenotype #{mpo_id}", phenotype_path(mpo_id)]
-      end
+    label = "#{stanza[:report_type].classify} #{stanza[:stanza_attr_id]}"
 
-    link_to(label, path, target: '_blank')
+    link_to(label, stanza[:togogenome_url], target: '_blank')
   end
 
   def stanza_prefix(stanza)
-    # パラメータ名に stanza_ のプリフィックスをつける
-    stanza_prefix_params = stanza[:stanza_query].map {|key, val| ["stanza_#{key}", val] }.to_h
+    stanza_attr_id, report_type, stanza_id = stanza.values_at(:stanza_attr_id, :report_type, :stanza_id)
 
-    {stanza: stanza[:stanza_url]}.merge(stanza_prefix_params)
+    case report_type
+    when 'genes'
+      gene_id, tax_id = stanza_attr_id.split(':')
+      {stanza_gene_id: gene_id, stanza_tax_id: tax_id}
+    when 'environments'
+      {stanza_meo_id: stanza_attr_id}
+    when 'organisms'
+      {stanza_tax_id: stanza_attr_id}
+    when 'phenotypes'
+      {stanza_mpo_id: stanza_attr_id}
+    end.merge(stanza: "http://togogenome.org/stanza/#{stanza_id}")
   end
 
   def stanza_collection

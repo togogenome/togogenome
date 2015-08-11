@@ -10,9 +10,10 @@ class StanzaSearchController < ApplicationController
 
     stanzas = result['urls'].map {|url|
       {
-        stanza_query: Rack::Utils.parse_query(URI(url).query),
-        report_type:  result[:report_type],
-        stanza_url:   result[:stanza_url]
+        togogenome_url: url,
+        stanza_id:      result[:stanza_id],
+        report_type:    result[:report_type],
+        stanza_attr_id: url.split('/').last
       }
     }
 
