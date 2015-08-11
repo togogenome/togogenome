@@ -8,7 +8,7 @@ class StanzaSearchController < ApplicationController
   def show(q, stanza_id)
     result = StanzaSearch.search_by_stanza_id(q, stanza_id)
 
-    stanzas = result['urls'].map {|url|
+    stanzas = result[:urls].map {|url|
       {
         togogenome_url: url,
         stanza_id:      result[:stanza_id],

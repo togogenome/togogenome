@@ -25,7 +25,7 @@ module StanzaSearchHelper
       {stanza_tax_id: stanza_attr_id}
     when 'phenotypes'
       {stanza_mpo_id: stanza_attr_id}
-    end.merge(stanza: "http://togogenome.org/stanza/#{stanza_id}")
+    end.merge(stanza: "#{Stanza.providers.togostanza.url}/#{stanza_id}")
   end
 
   def stanza_collection

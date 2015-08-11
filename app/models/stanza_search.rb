@@ -16,6 +16,7 @@ class StanzaSearch
     end
 
     def search_by_stanza_id(q, stanza_id)
+      # とりあえず 100件まで取得としているが、Solr側でページングの機能があるのでそれを使うように対応したい
       url = "#{Endpoint.fulltextsearch}/#{stanza_id}/select?q=#{URI.encode_www_form_component(q)}&wt=json&&rows=100"
 
       stanza_data = Stanza.all.find {|s| s['id'] == stanza_id }
@@ -29,7 +30,7 @@ class StanzaSearch
         stanza_id:   stanza_id,
         stanza_name: stanza_data['name'],
         report_type: stanza_data['report_type']
-      }.with_indifferent_access
+      }
     end
 
     def searchable?(stanza_id)
@@ -48,7 +49,7 @@ class StanzaSearch
           open(url).read
         end
       rescue OpenURI::HTTPError => e
-        code, message = e.io.status
+        code, _message = e.io.status
 
         case code.to_i
         when 404
