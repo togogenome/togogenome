@@ -15,11 +15,9 @@ class StanzaSearch
       }
     end
 
-    def search_by_stanza_id(q, stanza_id)
+    def search_by_stanza_id(q, stanza_id, page = 1)
       stanza_data = Stanza.all.find {|s| s['id'] == stanza_id }
-
-      result = get_with_cache(stanza_id, q)
-
+      result = get_with_cache(stanza_id, q, page)
       {
         enabled:     result.present?,
         urls:        (result ? result['response']['docs'].map {|doc| doc['@id']} : []),
@@ -39,14 +37,10 @@ class StanzaSearch
 
     private
 
-    def get_with_cache(stanza_id, q)
+    def get_with_cache(stanza_id, q, page)
       begin
-        # 「件数取得」と「検索結果取得」で2回同じ検索が行われるのでキャッシュしておく
-        Rails.cache.fetch Digest::MD5.hexdigest(stanza_id + q), expires_in: 1.day, compress: true do
-          solr = RSolr.connect(url: "#{Endpoint.fulltextsearch}/#{stanza_id}")
-          # とりあえず 100件まで取得としているが、Solr側でページングの機能があるのでそれを使うように対応したい
-          solr.get 'select', params: {q: q, rows: 100}
-        end
+        solr = RSolr.connect(url: "#{Endpoint.fulltextsearch}/#{stanza_id}")
+        solr.paginate(page, PAGINATE[:per_page], 'select', params: {q: q})
       rescue RSolr::Error::Http => e
         case e.response[:status]
         when 404

@@ -6,8 +6,9 @@ class StanzaSearchController < ApplicationController
   end
 
   def show(q, stanza_id)
-    result = StanzaSearch.search_by_stanza_id(q, stanza_id)
+    page = params[:page] || 1
 
+    result = StanzaSearch.search_by_stanza_id(q, stanza_id, page)
     stanzas = result[:urls].map {|url|
       {
         togogenome_url: url,
@@ -17,6 +18,6 @@ class StanzaSearchController < ApplicationController
       }
     }
 
-    @stanzas = Kaminari.paginate_array(stanzas).page(params[:page]).per(StanzaSearch::PAGINATE[:per_page])
+    @stanzas = Kaminari.paginate_array(stanzas, total_count: result[:count]).page(page).per(StanzaSearch::PAGINATE[:per_page])
   end
 end

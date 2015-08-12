@@ -62,6 +62,6 @@ module StanzaSearchHelper
                2
              end
 
-    paginate @stanzas, window: window
+    paginate stanzas, window: window
   end
 end
