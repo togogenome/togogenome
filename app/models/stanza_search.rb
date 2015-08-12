@@ -16,17 +16,14 @@ class StanzaSearch
     end
 
     def search_by_stanza_id(q, stanza_id)
-      # とりあえず 100件まで取得としているが、Solr側でページングの機能があるのでそれを使うように対応したい
-      url = "#{Endpoint.fulltextsearch}/#{stanza_id}/select?q=#{URI.encode_www_form_component(q)}&wt=json&&rows=100"
-
       stanza_data = Stanza.all.find {|s| s['id'] == stanza_id }
 
-      result = JSON.parse(get_with_cache(url))
+      result = get_with_cache(stanza_id, q)
 
       {
         enabled:     result.present?,
-        urls:        (result['response'].try {|r| r['docs'].map {|doc| doc['@id']} } || []),
-        count:       (result['response'].try {|r| r['numFound'] } || 0),
+        urls:        (result ? result['response']['docs'].map {|doc| doc['@id']} : []),
+        count:       (result ? result['response']['numFound'] : 0),
         stanza_id:   stanza_id,
         stanza_name: stanza_data['name'],
         report_type: stanza_data['report_type']
@@ -42,18 +39,18 @@ class StanzaSearch
 
     private
 
-    def get_with_cache(url)
+    def get_with_cache(stanza_id, q)
       begin
         # 「件数取得」と「検索結果取得」で2回同じ検索が行われるのでキャッシュしておく
-        Rails.cache.fetch Digest::MD5.hexdigest(url), expires_in: 1.day, compress: true do
-          open(url).read
+        Rails.cache.fetch Digest::MD5.hexdigest(stanza_id + q), expires_in: 1.day, compress: true do
+          solr = RSolr.connect(url: "#{Endpoint.fulltextsearch}/#{stanza_id}")
+          # とりあえず 100件まで取得としているが、Solr側でページングの機能があるのでそれを使うように対応したい
+          solr.get 'select', params: {q: q, rows: 100}
         end
-      rescue OpenURI::HTTPError => e
-        code, _message = e.io.status
-
-        case code.to_i
+      rescue RSolr::Error::Http => e
+        case e.response[:status]
         when 404
-          '{}'
+          nil
         when 400...500
           raise 'Could not full-text search in your query. Please request again by changing the query.'
         else
