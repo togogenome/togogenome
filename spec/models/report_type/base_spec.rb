@@ -7,12 +7,12 @@ describe ReportType::Base do
     context "初期表示の場合" do
       context "Gene" do
         subject { ReportType::Gene.count() }
-        it { subject.should eq("1893802") }
+        it { subject.should eq("1724902") }
       end
 
       context "Organism" do
         subject { ReportType::Organism.count() }
-        it { subject.should eq("3189") }
+        it { subject.should eq("4110") }
       end
 
       context "Phenotype" do
@@ -47,7 +47,7 @@ describe ReportType::Base do
 
       context "Gene" do
         subject { ReportType::Gene.count(@args) }
-        it { subject.should eq("50") }
+        it { subject.should eq("48") }
       end
 
       context "Organism" do
