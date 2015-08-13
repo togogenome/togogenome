@@ -38,13 +38,13 @@ WHERE {
   }
   GRAPH <%= ontology[:goup] %> {
     <% unless bp_id.empty? %>
-      <http://purl.uniprot.org/go/<%= bp_id.split('/GO_').last %>> up:classifiedWith ?uniprot_id .
+      <<%= bp_id %>> up:classifiedWith ?uniprot_id .
     <% end %>
     <% unless mf_id.empty? %>
-      <http://purl.uniprot.org/go/<%= mf_id.split('/GO_').last %>> up:classifiedWith ?uniprot_id .
+      <<%= mf_id %>> up:classifiedWith ?uniprot_id .
     <% end %>
     <% unless cc_id.empty? %>
-      <http://purl.uniprot.org/go/<%= cc_id.split('/GO_').last %>> up:classifiedWith ?uniprot_id .
+      <<%= cc_id %>> up:classifiedWith ?uniprot_id .
     <% end %>
   }
 } <%= order_clause %> LIMIT <%= limit %> OFFSET <%= offset %>
