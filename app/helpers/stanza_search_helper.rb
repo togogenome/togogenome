@@ -30,7 +30,7 @@ module StanzaSearchHelper
 
   def stanza_collection
     stanza_ary = Stanza.all.sort_by {|s| s["name"] }.map {|s|
-      [s['name'], s['id']] << (StanzaSearch.searchable?(s['id']) ? {'data-search-target' => 'stanza'} : {disabled: 'disabled', 'data-search-target' => 'stanza'} )
+      [s['name'], s['id'], {'data-search-target' => 'stanza'}]
     }
 
     [
