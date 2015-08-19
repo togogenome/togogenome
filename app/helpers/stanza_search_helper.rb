@@ -17,8 +17,8 @@ module StanzaSearchHelper
 
     case report_type
     when 'genes'
-      gene_id, tax_id = stanza_attr_id.split(':')
-      {stanza_gene_id: gene_id, stanza_tax_id: tax_id}
+      tax_id, gene_id = stanza_attr_id.split(':')
+      {stanza_tax_id: tax_id, stanza_gene_id: gene_id}
     when 'environments'
       {stanza_meo_id: stanza_attr_id}
     when 'organisms'
