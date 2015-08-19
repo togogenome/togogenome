@@ -9,7 +9,7 @@ module StanzaSearchHelper
   def link_to_report_page(stanza)
     label = "#{stanza[:report_type].classify} #{stanza[:stanza_attr_id]}"
 
-    link_to(label, stanza[:togogenome_url], target: '_blank')
+    link_to(label, URI(stanza[:togogenome_url]).path, target: '_blank')
   end
 
   def stanza_prefix(stanza)
