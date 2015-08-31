@@ -147,6 +147,8 @@ GEM
     rake (10.4.2)
     rdoc (3.12.2)
       json (~> 1.4)
+    rsolr (1.0.12)
+      builder (>= 2.1.2)
     rspec-core (3.3.2)
       rspec-support (~> 3.3.0)
     rspec-expectations (3.3.1)
@@ -225,6 +227,7 @@ DEPENDENCIES
   parallel
   pry-rails
   rails (~> 3.2.12)
+  rsolr
   rspec-rails
   sass-rails (~> 3.2.3)
   settingslogic

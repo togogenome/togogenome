@@ -12,6 +12,7 @@ gem 'jquery-rails'
 gem 'kaminari'
 gem 'parallel'
 gem 'rails', '~> 3.2.12'
+gem 'rsolr'
 gem 'settingslogic'
 gem 'unicorn'
 

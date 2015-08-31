@@ -1,5 +1,6 @@
 defaults: &defaults
-  uri: 'http://dev.togogenome.org/sparql-test'
+  rdfstore: 'http://dev.togogenome.org/sparql-test'
+  fulltextsearch: 'http://example.com/test'
 
 development:
   <<: *defaults
