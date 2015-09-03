@@ -27,6 +27,7 @@
       var self = $facet.get(0);
       self.$this = $facet;
       self.key = key;
+      self.storageKey = "facet_" + key;
       // ルートのファセットのデータ
       /// この変数いらないかも
       self.rootNodeData = facetDatum;
@@ -78,6 +79,8 @@
         self.toggle_clear(false);
         self.formSet.target.val('');
         self.formSet.id.val('');
+        localStorage.removeItem(self.storageKey);
+
         window.query();
         self.clearAllNodes();
       });
@@ -109,6 +112,14 @@
         self.createNodesQueue = ancestor;
       }
 
+      var facetCond = JSON.parse(localStorage.getItem(self.storageKey));
+      if (facetCond) {
+        self.formSet.id.val(facetCond.id);
+        self.formSet.target.val(facetCond.label);
+        self.createNodesQueue = facetCond.ancestor;
+        self.toggle_clear(true);
+      }
+
       // インクリメンタルサーチを実行する関数
       self.formSet.target
         .limitedcomplete({
@@ -117,6 +128,8 @@
             $.getJSON(Routes.search_facet_path(self.key, {format: 'json'}), {word: $(this.element).val()}, response);
           },
           select: function(event, ui) {
+            localStorage.setItem(self.storageKey, JSON.stringify(ui.item));
+
             self.formSet.id.val(ui.item.id);
             var ancestor = ui.item.ancestor;
             self.settlement(ancestor);
