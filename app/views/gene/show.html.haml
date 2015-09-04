@@ -9,18 +9,18 @@
   #header.tg-report-header
     %p.tg-report-type Gene report
     %h1
-      %span#tg-title-id #{@refseq_id}:#{@gene_id}
+      %span#tg-title-id #{@tax_id}:#{@gene_id}
       %span#tg-title-label #{@gene.name}
 
   %section#nanostanzas.row-fluid
     - Stanza.providers.nanostanza.genes.each do |stanza|
-      .nanostanza-container{data: {stanza: "#{Stanza.providers.nanostanza.url}/#{stanza.id}", stanza_refseq_id: @refseq_id, stanza_gene_id: @gene_id, nanostanza_span: stanza.span}}
+      .nanostanza-container{data: {stanza: "#{Stanza.providers.nanostanza.url}/#{stanza.id}", stanza_tax_id: @tax_id, stanza_gene_id: @gene_id, nanostanza_span: stanza.span}}
 
   - Stanza.providers.togostanza.genes.each do |stanza|
     %section{id: stanza.id}
       .page-header
         %h2= stanza.name
-      %div{data: {stanza: "#{Stanza.providers.togostanza.url}/#{stanza.id}", stanza_refseq_id: @refseq_id, stanza_gene_id: @gene_id}}
+      %div{data: {stanza: "#{Stanza.providers.togostanza.url}/#{stanza.id}", stanza_tax_id: @tax_id, stanza_gene_id: @gene_id}}
 
 = content_for :javascript do
   = javascript_include_tag "#{Stanza.providers.togostanza.url}/assets/stanza.js"
