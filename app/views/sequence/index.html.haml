@@ -1,13 +1,5 @@
-:coffee
-  $ ->
-    seq = localStorage.getItem('sequence')
-    if seq
-      $("#fragment").val(seq)
-
-    $('button').on "click", ->
-      if $("#fragment").val()
-        localStorage.setItem('sequence', $("#fragment").val())
-
+= content_for :header do
+  = javascript_include_tag 'sequence'
 
 .main-container
   #search-methods-container
