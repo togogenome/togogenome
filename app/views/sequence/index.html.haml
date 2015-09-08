@@ -1,3 +1,6 @@
+= content_for :header do
+  = javascript_include_tag 'sequence'
+
 .main-container
   #search-methods-container
     = render 'shared/header', current: :sequence
