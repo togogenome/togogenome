@@ -1,13 +1,24 @@
 $ ->
-  seq = localStorage.getItem('sequence')
+  saveSequence = (sequence) ->
+    if sequence?
+      localStorage.setItem('sequence', sequence)
+    true
 
-  if seq
-    $("#fragment").val(seq)
+  loadSequence = ->
+    localStorage.getItem('sequence')
+
+  input    = $("input#fragment")
+  button   = $("#methods button")
+  sequence = loadSequence()
+
+  if sequence?
+    input.val(sequence)
 
     unless window.location.search
-      $('button').click()
+      button.click()
 
-  $('button').on "click", ->
-    fragment = $("#fragment").val()
-    if fragment
-      localStorage.setItem('sequence', fragment)
+  button.on "click", ->
+    val = input.val()
+    saveSequence(val)
+
+  false
