@@ -1,7 +1,7 @@
 $ ->
-  saveTextSearchCondition = (selectTag) ->
+  saveTextSearchCondition = ->
     cond =
-      selectedValue: selectTag.find(':selected').val()
+      selectedValue: $('select#category').find(':selected').val()
       query: $('input#q').val()
 
     localStorage.setItem('textSearch', JSON.stringify(cond))
@@ -12,7 +12,7 @@ $ ->
     selectTag    = $('select#category')
     searchTarget = selectTag.find(':selected').data('searchTarget')
 
-    saveTextSearchCondition(selectTag)
+    saveTextSearchCondition()
 
     switch searchTarget
       when 'category'
@@ -27,7 +27,9 @@ $ ->
   $(window).on "load", (e) ->
     search = window.location.search
 
-    unless search
+    if search
+      saveTextSearchCondition()
+    else
       cond = JSON.parse(localStorage.getItem('textSearch'))
 
       if cond
