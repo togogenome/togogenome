@@ -7,15 +7,21 @@ $ ->
   loadSequence = ->
     localStorage.getItem('sequence')
 
-  input    = $("input#fragment")
-  button   = $("#methods button")
-  sequence = loadSequence()
+  button = $("#methods button")
+  input  = $("input#fragment")
 
-  if sequence?
-    input.val(sequence)
+  $(window).on "load", (e) ->
+    search = window.location.search
 
-    unless window.location.search
-      button.click()
+    if search
+      val = input.val()
+      saveSequence(val)
+    else
+      sequence = loadSequence()
+
+      if sequence?
+        input.val(sequence)
+        button.click()
 
   button.on "click", ->
     val = input.val()
