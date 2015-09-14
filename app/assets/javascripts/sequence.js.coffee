@@ -21,7 +21,7 @@ $ ->
       sequence = do loadSequenceSearchCondition
 
       if sequence?
-        window.location.href = '/sequence/search?fragment=' + sequence
+        window.location.href = Routes.sequence_search_path({fragment: sequence})
 
   $("button#search_button").on "click", ->
     do saveSequenceSearchCondition
@@ -29,7 +29,7 @@ $ ->
 
   $("button#reset_button").on "click", ->
     do deleteSequenceSearchCondition
-    window.location.href = '/sequence'
+    window.location.href = Routes.sequence_index_path()
     false
 
   false

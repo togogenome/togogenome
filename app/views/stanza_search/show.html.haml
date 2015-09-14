@@ -69,10 +69,10 @@
                   $(window).off("mousemove.paginationSlider mouseup.paginationSlider");
 
                   // 検索をリクエスト
-                  var q = "#{URI.encode_www_form_component(params[:q])}";
+                  var q = "#{params[:q]}";
                   var stanza_id = "#{params[:stanza_id]}";
                   var nextPage = page + 1;
-                  location.href = "/text/search?q=" + q + "&stanza_id=" + stanza_id + "&page=" + nextPage;
+                  location.href = Routes.text_search_path({q: q, stanza_id: stanza_id, page: nextPage});
                 });
               });
 

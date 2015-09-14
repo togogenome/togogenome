@@ -1,7 +1,6 @@
 = content_for :javascript do
   :javascript
-    var FACETS_ROOT_URL = "/facets/",
-        facetAllClearButton;
+    var facetAllClearButton;
     $(function() {
       // ファセットをすべて消去するボタン
       $facetAllClearButton = $("#facet-all-clear-button");
@@ -115,7 +114,7 @@
         .limitedcomplete({
           delay: 1000,
           source: function(request, response) {
-            $.getJSON(FACETS_ROOT_URL + self.key + '/search.json', {word: $(this.element).val()}, response);
+            $.getJSON(Routes.search_facet_path(self.key, {format: 'json'}), {word: $(this.element).val()}, response);
           },
           select: function(event, ui) {
             self.formSet.id.val(ui.item.id);
@@ -263,7 +262,7 @@
       }
 
       // プルダウンメニューの生成
-      var requestUrl = FACETS_ROOT_URL + facet.dataset.facetName + ".json?node=" + escape(facetDatum.id);
+      var requestUrl = Routes.facet_path(facet.dataset.facetName, {format: "json", node: facetDatum.id});
       $.getJSON(requestUrl, function(data){
         self.childFacets = data;
         // 子の要素を持たなかったら中断

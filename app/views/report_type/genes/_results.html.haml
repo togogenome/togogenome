@@ -5,7 +5,7 @@
       drawInfo.gene = {
         dataTable: result_table.DataTable({
           ajax: {
-            url: '/report_type/genes.json'
+            url: Routes.report_type_genes_path({format: 'json'})
           },
           columns: [
             {data: "gene_link"},
@@ -23,7 +23,7 @@
             setting.oInit.paginationSlider.render();
           }
         }),
-        downloadCSV: '/report_type/genes.csv'
+        downloadCSV: Routes.report_type_genes_path({format: 'csv'})
       };
 
       result_table.parent().find(".result-download-container").append("<a><i class='icon-file'></i> Download CSV</a>");

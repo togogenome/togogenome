@@ -1243,7 +1243,7 @@ $(function(){
           return;
         };
 
-        var url = sampleMode ? "/identifiers/teach" : "/identifiers/convert";
+        var url = sampleMode ? Routes.identifiers_teach_path() : Routes.identifiers_convert_path();
 
         var condition = {
           identifiers: identifiers,

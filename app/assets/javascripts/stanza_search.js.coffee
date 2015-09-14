@@ -16,10 +16,10 @@ $ ->
 
     switch searchTarget
       when 'category'
-        @.action = "/text"
+        @.action = Routes.text_index_path()
         selectTag.attr('name', 'category')
       when 'stanza'
-        @.action = "/text/search"
+        @.action = Routes.text_search_path()
         selectTag.attr('name', 'stanza_id')
 
     @.submit()

@@ -5,7 +5,7 @@
       drawInfo.environment = {
         dataTable: result_table.DataTable({
           ajax: {
-            url: '/report_type/environments.json'
+            url: Routes.report_type_environments_path({format: 'json'})
           },
           columns: [
             {data: "category"},
@@ -14,7 +14,7 @@
             {data: "inhabitants", className: "numeric"}
           ]
         }),
-        downloadCSV: '/report_type/environments.csv'
+        downloadCSV: Routes.report_type_environments_path({format: 'csv'})
       };
 
       result_table.parent().find(".result-download-container").append("<a><i class='icon-file'></i> Download CSV</a>");

@@ -5,3 +5,4 @@
 #= require dataTables/jquery.dataTables
 #= require dataTables/bootstrap/2/jquery.dataTables.bootstrap
 #= require custom-bootstrap
+#= require js-routes
