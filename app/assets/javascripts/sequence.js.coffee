@@ -1,30 +1,35 @@
 $ ->
-  saveSequence = (sequence) ->
+  saveSequenceSearchCondition = ->
+    sequence = $("input#fragment").val()
     if sequence?
       localStorage.setItem('sequence', sequence)
-    true
 
-  loadSequence = ->
+  loadSequenceSearchCondition = ->
     localStorage.getItem('sequence')
 
-  button = $("#methods button")
-  input  = $("input#fragment")
+  deleteSequenceSearchCondition = ->
+    $("input#fragment").val('')
+    localStorage.removeItem('sequence')
 
   $(window).on "load", (e) ->
+    input = $("input#fragment")
     search = window.location.search
 
     if search
-      val = input.val()
-      saveSequence(val)
+      do saveSequenceSearchCondition
     else
-      sequence = loadSequence()
+      sequence = do loadSequenceSearchCondition
 
       if sequence?
-        input.val(sequence)
-        button.click()
+        window.location.href = '/sequence/search?fragment=' + sequence
 
-  button.on "click", ->
-    val = input.val()
-    saveSequence(val)
+  $("button#search_button").on "click", ->
+    do saveSequenceSearchCondition
+    true
+
+  $("button#reset_button").on "click", ->
+    do deleteSequenceSearchCondition
+    window.location.href = '/sequence'
+    false
 
   false
