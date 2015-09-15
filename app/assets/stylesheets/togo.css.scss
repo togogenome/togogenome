@@ -1803,9 +1803,12 @@ div#mapping-reset-button {
 
 #textsearch-container .form-line span {
   display: table-cell;
+}
+
+#textsearch-container .form-line span.input-area {
   width: 100%;
-  padding: 0px 0px 0px 10px;
   vertical-align: middle;
+  padding: 0px 0px 0px 10px;
 }
 
 #textsearch-container.method-container .form-line span input[type="search"] {
