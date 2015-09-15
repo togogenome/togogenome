@@ -8,7 +8,6 @@ $ ->
     localStorage.getItem('sequence')
 
   deleteSequenceSearchCondition = ->
-    $("input#fragment").val('')
     localStorage.removeItem('sequence')
 
   $(window).on "load", (e) ->
