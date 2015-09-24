@@ -43,7 +43,38 @@
       facetAllClearButton.addClearButton(self.formSet.clear);
 
       // フィルタリングの実行
-      self.filtering = function(id, name) {
+      self.filtering = function(id, name, $baseNode) {
+
+        var baseNodeName = $baseNode.find('.node-name').text();
+        var descriptionArr = [];
+        var ancestor = [];
+        var cond = JSON.parse(localStorage.getItem(self.storageKey));
+
+        if (cond) {
+          descriptionArr = cond.description.split(' > ');
+          ancestor = cond.ancestor;
+        }
+
+        var index = descriptionArr.indexOf(baseNodeName);
+
+        if (index === -1 && baseNodeName !== 'All') {
+          var newAncestor = ancestor.concat(id);
+          var newDescription = descriptionArr.concat(name).join(' > ');
+        } else {
+          var newAncestor = ancestor.slice(0, index+1).concat(id);
+          var newDescription = descriptionArr.slice(0, index+1).concat(name).join(' > ');
+        }
+
+        var newCond = {
+          ancestor: newAncestor,
+          label: name,
+          value: name,
+          id: id,
+          description: newDescription
+        }
+
+        localStorage.setItem(self.storageKey, JSON.stringify(newCond));
+
         self.formSet.target.val(name);
         self.formSet.id.val(id);
         self.toggle_clear(true);
@@ -200,7 +231,7 @@
         } else {
           // それ以外であれば、通常のフィルタリング
           createFacetNode($target, $parentNode, facetDatum, facet);
-          self.facet.filtering(facetDatum.id, facetDatum.name);
+          self.facet.filtering(facetDatum.id, facetDatum.name, $parentNode);
         }
       })
 
@@ -265,7 +296,6 @@
 
       // セレクタ内の項目の選択
       self.selectItem = function($item, isNeedQuery) {
-
         // アイテムのハイライトの切り替え
         this.items[this.currentItem].removeClass(SELECTED);
         $item.addClass(SELECTED);
@@ -274,38 +304,7 @@
         if (!isNeedQuery) return;
         var facetData = $item.get(0).facetData;
 
-        var baseNodeName = $node.find('.node-name').text();
-
-        var descriptionArr = [];
-        var ancestor = [];
-        var cond = JSON.parse(localStorage.getItem(self.facet.storageKey));
-
-        if (cond) {
-          descriptionArr = cond.description.split(' > ');
-          ancestor = cond.ancestor;
-        }
-
-        var index = descriptionArr.indexOf(baseNodeName);
-
-        if (index === -1 && baseNodeName !== 'All') {
-          var newAncestor = ancestor.concat(facetData.id);
-          var newDescription = descriptionArr.concat(facetData.name).join(' > ');
-        } else {
-          var newAncestor = ancestor.slice(0, index+1).concat(facetData.id);
-          var newDescription = descriptionArr.slice(0, index+1).concat(facetData.name).join(' > ');
-        }
-
-        var newCond = {
-          ancestor: newAncestor,
-          label: facetData.name,
-          value: facetData.name,
-          id: facetData.id,
-          description: newDescription
-        }
-
-        localStorage.setItem(self.facet.storageKey, JSON.stringify(newCond));
-
-        this.facet.filtering(facetData.id, facetData.name);
+        this.facet.filtering(facetData.id, facetData.name, $node);
       }
 
       // プルダウンメニューの生成
