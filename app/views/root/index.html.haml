@@ -112,6 +112,7 @@
         self.createNodesQueue = ancestor;
       }
 
+      // 表示時
       var facetCond = JSON.parse(localStorage.getItem(self.storageKey));
       if (facetCond) {
         self.formSet.id.val(facetCond.id);
@@ -264,6 +265,7 @@
 
       // セレクタ内の項目の選択
       self.selectItem = function($item, isNeedQuery) {
+
         // アイテムのハイライトの切り替え
         this.items[this.currentItem].removeClass(SELECTED);
         $item.addClass(SELECTED);
@@ -271,6 +273,38 @@
         // フィルタリング実行
         if (!isNeedQuery) return;
         var facetData = $item.get(0).facetData;
+
+        var baseNodeName = $node.find('.node-name').text();
+
+        var descriptionArr = [];
+        var ancestor = [];
+        var cond = JSON.parse(localStorage.getItem(self.facet.storageKey));
+
+        if (cond) {
+          descriptionArr = cond.description.split(' > ');
+          ancestor = cond.ancestor;
+        }
+
+        var index = descriptionArr.indexOf(baseNodeName);
+
+        if (index === -1 && baseNodeName !== 'All') {
+          var newAncestor = ancestor.concat(facetData.id);
+          var newDescription = descriptionArr.concat(facetData.name).join(' > ');
+        } else {
+          var newAncestor = ancestor.slice(0, index+1).concat(facetData.id);
+          var newDescription = descriptionArr.slice(0, index+1).concat(facetData.name).join(' > ');
+        }
+
+        var newCond = {
+          ancestor: newAncestor,
+          label: facetData.name,
+          value: facetData.name,
+          id: facetData.id,
+          description: newDescription
+        }
+
+        localStorage.setItem(self.facet.storageKey, JSON.stringify(newCond));
+
         this.facet.filtering(facetData.id, facetData.name);
       }
 
