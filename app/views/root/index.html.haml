@@ -42,39 +42,51 @@
       // 「Clear」ボタンへの登録
       facetAllClearButton.addClearButton(self.formSet.clear);
 
-      // フィルタリングの実行
-      self.filtering = function(id, name, $baseNode) {
+      // Facet 検索の保存
+      self.saveFacetCondition = function(condition) {
+        localStorage.setItem(self.storageKey, JSON.stringify(condition));
+      }
 
-        var baseNodeName = $baseNode.find('.node-name').text();
-        var descriptionArr = [];
-        var ancestor = [];
-        var cond = JSON.parse(localStorage.getItem(self.storageKey));
+      // Facet 検索の読み込み
+      self.loadFacetCondition = function() {
+        return JSON.parse(localStorage.getItem(self.storageKey));
+      }
 
-        if (cond) {
-          descriptionArr = cond.description.split(' > ');
-          ancestor = cond.ancestor;
+      // Facet 階層操作による検索条件の更新
+      self.updateFacetCondition = function(id, name, $baseNode) {
+        var baseNodeName = $baseNode.find('.node-name').text(),
+            hierarchy_symbol = ' > ',
+            newDescriptionArr = [],
+            newAncestor = [],
+            facetCond = self.loadFacetCondition();
+
+        if (facetCond) {
+          newDescriptionArr = facetCond.description.split(hierarchy_symbol);
+          newAncestor = facetCond.ancestor;
         }
 
-        var index = descriptionArr.indexOf(baseNodeName);
-
-        if (index === -1 && baseNodeName !== 'All') {
-          var newAncestor = ancestor.concat(id);
-          var newDescription = descriptionArr.concat(name).join(' > ');
-        } else {
-          var newAncestor = ancestor.slice(0, index+1).concat(id);
-          var newDescription = descriptionArr.slice(0, index+1).concat(name).join(' > ');
+        // 'hydrosphere > water > fresh water' が 'hydrosphere > water > sea water' に変わる時は、
+        // 'hydrosphere > water' まででスライスし、後で 'sea water' を追加する
+        var index = newDescriptionArr.indexOf(baseNodeName);
+        if (index > -1 || baseNodeName === 'All') {
+          newDescriptionArr = newDescriptionArr.slice(0, index + 1);
+          newAncestor = newAncestor.slice(0, index + 1);
         }
 
         var newCond = {
-          ancestor: newAncestor,
+          id: id,
           label: name,
           value: name,
-          id: id,
-          description: newDescription
+          description: newDescriptionArr.concat(name).join(hierarchy_symbol),
+          ancestor: newAncestor.concat(id)
         }
 
-        localStorage.setItem(self.storageKey, JSON.stringify(newCond));
+        self.saveFacetCondition(newCond);
+      }
 
+      // フィルタリングの実行
+      self.filtering = function(id, name, $baseNode) {
+        self.updateFacetCondition(id, name, $baseNode);
         self.formSet.target.val(name);
         self.formSet.id.val(id);
         self.toggle_clear(true);
@@ -144,7 +156,7 @@
       }
 
       // 表示時
-      var facetCond = JSON.parse(localStorage.getItem(self.storageKey));
+      var facetCond = self.loadFacetCondition();
       if (facetCond) {
         self.formSet.id.val(facetCond.id);
         self.formSet.target.val(facetCond.label);
@@ -160,7 +172,7 @@
             $.getJSON(Routes.search_facet_path(self.key, {format: 'json'}), {word: $(this.element).val()}, response);
           },
           select: function(event, ui) {
-            localStorage.setItem(self.storageKey, JSON.stringify(ui.item));
+            self.saveFacetCondition(ui.item);
 
             self.formSet.id.val(ui.item.id);
             var ancestor = ui.item.ancestor;
