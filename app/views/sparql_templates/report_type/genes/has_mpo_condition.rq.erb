@@ -2,7 +2,6 @@ DEFINE sql:select-option "order"
 <%= prefix[:mccv] %>
 <%= prefix[:meo] %>
 <%= prefix[:mpo] %>
-<%= prefix[:up] %>
 
 <%= select_clause %>
 WHERE {
@@ -12,8 +11,6 @@ WHERE {
   GRAPH <%= ontology[:taxonomy] %> { ?taxonomy_id rdfs:label ?taxonomy_name }
   GRAPH <%= ontology[:tgup] %> {
     ?togogenome rdfs:seeAlso ?taxonomy_id .
-    ?togogenome rdfs:seeAlso ?uniprot_id .
-    ?uniprot_id rdfs:seeAlso ?uniprot_up .
+    ?togogenome skos:exactMatch ?refseq_gene .
   }
-  GRAPH <%= ontology[:uniprot] %> { ?uniprot_up up:recommendedName/up:fullName ?recommended_name }
 } LIMIT <%= limit %> OFFSET <%= offset %>
