@@ -3,12 +3,15 @@ class Stanza < Settingslogic
   namespace Rails.env
 
   def ids
-    providers.togostanza.reject {|key| key == 'url' }.values.flatten.map {|s| s['id'] }
+    providers.flat_map {|_report_type, stanzas| stanzas['togostanza'].map {|stanza| stanza['uri'].split('/').last } }
   end
 
   def all
-    providers.togostanza.reject {|key| key == 'url' }.flat_map {|report_type, stanzas|
-      stanzas.map {|s| s.merge('report_type' => report_type) }
+    providers.flat_map {|report_type, stanzas|
+      stanzas['togostanza'].map {|stanza|
+        id = stanza['uri'].split('/').last
+        stanza.merge('report_type' => report_type, 'id' => id, 'uri' => stanza['uri'])
+      }
     }
   end
 end

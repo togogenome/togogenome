@@ -77,12 +77,14 @@ class StanzaSearch
     def search_by_stanza_id(q, stanza_id, page = 1)
       stanza_data = Stanza.all.find {|s| s['id'] == stanza_id }
       result = get_with_cache(stanza_id, q, page)
+
       {
         enabled:     result.present?,
         urls:        (result ? result['response']['docs'].map {|doc| doc['@id']} : []),
         count:       (result ? result['response']['numFound'] : 0),
         stanza_id:   stanza_id,
         stanza_name: stanza_data['name'],
+        stanza_uri:  stanza_data['uri'],
         report_type: stanza_data['report_type']
       }
     end
