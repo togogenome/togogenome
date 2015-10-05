@@ -1,172 +1,170 @@
 defaults: &defaults
   providers:
-    togostanza:
-      url: http://localhost:9292/stanza
-      genes:
+    genes:
+      nanostanza:
         -
-          id:   protein_names
-          name: Protein names
-        -
-          id:   genome_jbrowse
-          name: Genomic context
-        -
-          id:   gene_attributes
-          name: Gene attributes
-        -
-          id:   nucleotide_sequence
-          name: Nucleotide sequence
-        -
-          id:   protein_attributes
-          name: Protein attributes
-        -
-          id:   protein_sequence
-          name: Protein sequence
-        -
-          id:   protein_general_annotation
-          name: Protein general annotation
-        -
-          id:   protein_ontologies
-          name: Protein ontologies
-        -
-          id:   protein_sequence_annotation
-          name: Protein sequence annotation
-        -
-          id:   protein_pfam_plot
-          name: Pfam plot
-        -
-          id:   protein_orthologs
-          name: Protein orthologs
-        -
-          id:   protein_references
-          name: Protein references
-        -
-          id:   protein_cross_references
-          name: Protein cross references
-
-      organisms:
-        -
-          id:   organism_names
-          name: Organism name
-        -
-          id:   genome_information
-          name: Genome information
-        -
-          id:   organism_jbrowse
-          name: Genomic context
-        -
-          id:   taxonomy_ortholog_profile
-          name: Ortholog profile
-        -
-          id:   lineage_information
-          name: Taxonomic information
-        -
-          id:   organism_culture_collections
-          name: Culture collections
-        -
-          id:   organism_medium_information
-          name: Medium information
-        -
-          id:   organism_phenotype
-          name: Phenotype information
-        -
-          id:   genome_plot
-          name: Genomic plot
-        -
-          id:   organism_pathogen_information
-          name: Pathogen information
-        -
-          id:   organism_cross_references
-          name: Organism cross references
-        -
-          id:   genome_cross_references
-          name: Genome cross references
-
-      environments:
-        -
-          id:   environment_attributes
-          name: Environment attributes
-        -
-          id:   environment_inhabitants_statistics
-          name: Inhabitants statistics
-        -
-          id:   environment_inhabitants
-          name: Inhabitants
-        -
-          id:   environment_geographical_map
-          name: Geographical map
-        -
-          id:   environment_taxonomic_composition
-          name: Taxonomic composition
-        -
-          id:   environment_environmental_ontology
-          name: Environmental ontology (MEO)
-
-      phenotypes:
-        -
-          id: microbial_phenotype_genus_composition
-          name: Genus List (Phenotype-based)
-        -
-          id: microbial_phenotype_environment_composition
-          name: Environment List (Phenotype-based)
-        -
-          id: microbial_phenotype_cell_shape
-          name: Shape Information
-        -
-          id: microbial_phenotype_information
-          name: Organism List
-
-    nanostanza:
-      url: http://localhost:9292/stanza
-      genes:
-        -
-          id: gene_length_nano
+          uri: http://togostanza.org/stanza/gene_length_nano
           span: 1
         -
-          id: protein_ec_number_nano
+          uri: http://togostanza.org/stanza/protein_ec_number_nano
           span: 1
         -
-          id: protein_3d_structure_nano
+          uri: http://togostanza.org/stanza/protein_3d_structure_nano
           span: 1
         -
-          id: protein_references_timeline_nano
+          uri: http://togostanza.org/stanza/protein_references_timeline_nano
           span: 2
 
-      organisms:
+      togostanza:
         -
-          id: organism_genome_size_nano
+          uri: http://togostanza.org/stanza/protein_names
+          name: Protein names
+        -
+          uri: http://togostanza.org/stanza/genome_jbrowse
+          name: Genomic context
+        -
+          uri: http://togostanza.org/stanza/gene_attributes
+          name: Gene attributes
+        -
+          uri: http://togostanza.org/stanza/nucleotide_sequence
+          name: Nucleotide sequence
+        -
+          uri: http://togostanza.org/stanza/protein_attributes
+          name: Protein attributes
+        -
+          uri: http://togostanza.org/stanza/protein_sequence
+          name: Protein sequence
+        -
+          uri: http://togostanza.org/stanza/protein_general_annotation
+          name: Protein general annotation
+        -
+          uri: http://togostanza.org/stanza/protein_ontologies
+          name: Protein ontologies
+        -
+          uri: http://togostanza.org/stanza/protein_sequence_annotation
+          name: Protein sequence annotation
+        -
+          uri: http://togostanza.org/stanza/protein_pfam_plot
+          name: Pfam plot
+        -
+          uri: http://togostanza.org/stanza/protein_orthologs
+          name: Protein orthologs
+        -
+          uri: http://togostanza.org/stanza/protein_references
+          name: Protein references
+        -
+          uri: http://togostanza.org/stanza/protein_cross_references
+          name: Protein cross references
+
+    organisms:
+      nanostanza:
+        -
+          uri: http://togostanza.org/stanza/organism_genome_size_nano
           span: 1
         -
-          id: organism_gene_number_nano
+          uri: http://togostanza.org/stanza/organism_gene_number_nano
           span: 1
         -
-          id: organism_gc_nano
+          uri: http://togostanza.org/stanza/organism_gc_nano
           span: 1
         -
-          id: organism_microbial_cell_shape_nano
+          uri: http://togostanza.org/stanza/organism_microbial_cell_shape_nano
           span: 1
         -
-          id: organism_ph_nano
+          uri: http://togostanza.org/stanza/organism_ph_nano
           span: 1
         -
-          id: organism_related_disease_nano
+          uri: http://togostanza.org/stanza/organism_related_disease_nano
           span: 1
 
+      togostanza:
+        -
+          uri: http://togostanza.org/stanza/organism_names
+          name: Organism name
+        -
+          uri: http://togostanza.org/stanza/genome_information
+          name: Genome information
+        -
+          uri: http://togostanza.org/stanza/organism_jbrowse
+          name: Genomic context
+        -
+          uri: http://togostanza.org/stanza/taxonomy_ortholog_profile
+          name: Ortholog profile
+        -
+          uri: http://togostanza.org/stanza/lineage_information
+          name: Taxonomic information
+        -
+          uri: http://togostanza.org/stanza/organism_culture_collections
+          name: Culture collections
+        -
+          uri: http://togostanza.org/stanza/organism_medium_information
+          name: Medium information
+        -
+          uri: http://togostanza.org/stanza/organism_phenotype
+          name: Phenotype information
+        -
+          uri: http://togostanza.org/stanza/genome_plot
+          name: Genomic plot
+        -
+          uri: http://togostanza.org/stanza/organism_pathogen_information
+          name: Pathogen information
+        -
+          uri: http://togostanza.org/stanza/organism_cross_references
+          name: Organism cross references
+        -
+          uri: http://togostanza.org/stanza/genome_cross_references
+          name: Genome cross references
 
-      environments:
+    environments:
+      nanostanza:
         -
-          id: environment_top_level_symbolic_image_nano
+          uri: http://togostanza.org/stanza/environment_top_level_symbolic_image_nano
           span: 1
         -
-          id: environment_inhabitants_statistics_nano
+          uri: http://togostanza.org/stanza/environment_inhabitants_statistics_nano
           span: 1
         -
-          id: environment_organism_distribution_on_temperature_nano
+          uri: http://togostanza.org/stanza/environment_organism_distribution_on_temperature_nano
           span: 1
         -
-          id: environment_organism_distribution_on_ph_nano
+          uri: http://togostanza.org/stanza/environment_organism_distribution_on_ph_nano
           span: 1
 
-      phenotypes: []
+      togostanza:
+        -
+          uri: http://togostanza.org/stanza/environment_attributes
+          name: Environment attributes
+        -
+          uri: http://togostanza.org/stanza/environment_inhabitants_statistics
+          name: Inhabitants statistics
+        -
+          uri: http://togostanza.org/stanza/environment_inhabitants
+          name: Inhabitants
+        -
+          uri: http://togostanza.org/stanza/environment_geographical_map
+          name: Geographical map
+        -
+          uri: http://togostanza.org/stanza/environment_taxonomic_composition
+          name: Taxonomic composition
+        -
+          uri: http://togostanza.org/stanza/environment_environmental_ontology
+          name: Environmental ontology (MEO)
+
+    phenotypes:
+      nanostanza: []
+      togostanza:
+        -
+          uri: http://togostanza.org/stanza/microbial_phenotype_genus_composition
+          name: Genus List (Phenotype-based)
+        -
+          uri: http://togostanza.org/stanza/microbial_phenotype_environment_composition
+          name: Environment List (Phenotype-based)
+        -
+          uri: http://togostanza.org/stanza/microbial_phenotype_cell_shape
+          name: Shape Information
+        -
+          uri: http://togostanza.org/stanza/microbial_phenotype_information
+          name: Organism List
 
 development:
   <<: *defaults

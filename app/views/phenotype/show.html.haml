@@ -3,8 +3,8 @@
     #navbar.navbar
       .navbar-inner
         %ul.nav
-          - Stanza.providers.togostanza.phenotypes.each do |stanza|
-            %li= link_to stanza.name, "##{stanza.id}"
+          - Stanza.providers.phenotypes.togostanza.each do |stanza|
+            %li= link_to stanza.name, "##{stanza.uri.split('/').last}"
 
   #header.tg-report-header
     %p.tg-report-type Phenotype report
@@ -13,14 +13,14 @@
       %span#tg-title-label #{@phenotype.name}
 
   %section#nanostanzas.row-fluid
-    - Stanza.providers.nanostanza.phenotypes.each do |stanza|
-      .nanostanza-container{data: {stanza: "#{Stanza.providers.nanostanza.url}/#{stanza.id}", stanza_mpo_id: @phenotype_id, nanostanza_span: stanza.span}}
+    - Stanza.providers.phenotypes.nanostanza.each do |stanza|
+      .nanostanza-container{data: {stanza: stanza.uri, stanza_mpo_id: @phenotype_id, nanostanza_span: stanza.span}}
 
-  - Stanza.providers.togostanza.phenotypes.each do |stanza|
-    %section{id: stanza.id}
+  - Stanza.providers.phenotypes.togostanza.each do |stanza|
+    %section{id: stanza.uri.split('/').last}
       .page-header
         %h2= stanza.name
-      %div{data: {stanza: "#{Stanza.providers.togostanza.url}/#{stanza.id}", stanza_mpo_id: @phenotype_id}}
+      %div{data: {stanza: stanza.uri, stanza_mpo_id: @phenotype_id}}
 
 = content_for :javascript do
-  = javascript_include_tag "#{Stanza.providers.togostanza.url}/assets/stanza.js"
+  = javascript_include_tag "http://togostanza.org/stanza/assets/stanza.js"

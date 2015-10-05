@@ -13,7 +13,7 @@ module StanzaSearchHelper
   end
 
   def stanza_prefix(stanza)
-    stanza_attr_id, report_type, stanza_id = stanza.values_at(:stanza_attr_id, :report_type, :stanza_id)
+    stanza_attr_id, report_type, stanza_id, stanza_uri = stanza.values_at(:stanza_attr_id, :report_type, :stanza_id, :stanza_uri)
 
     case report_type
     when 'genes'
@@ -25,7 +25,7 @@ module StanzaSearchHelper
       {stanza_tax_id: stanza_attr_id}
     when 'phenotypes'
       {stanza_mpo_id: stanza_attr_id}
-    end.merge(stanza: "#{Stanza.providers.togostanza.url}/#{stanza_id}")
+    end.merge(stanza: stanza_uri)
   end
 
   def stanza_collection
