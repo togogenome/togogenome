@@ -20,6 +20,7 @@ WHERE {
   GRAPH <%= ontology[:tgup] %> {
     ?togogenome rdfs:seeAlso ?uniprot_id .
     ?togogenome rdfs:seeAlso ?taxonomy_id .
+    ?togogenome skos:exactMatch ?refseq_gene .
   }
   <% if tax_id.present? %>
     GRAPH <%= ontology[:tgtax] %> { ?taxonomy_id rdfs:subClassOf <<%= tax_id %>> }

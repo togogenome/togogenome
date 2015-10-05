@@ -35,6 +35,7 @@ WHERE {
   GRAPH <%= ontology[:tgup] %> {
     ?togogenome rdfs:seeAlso ?taxonomy_id .
     ?togogenome rdfs:seeAlso ?uniprot_id .
+    ?togogenome skos:exactMatch ?refseq_gene .
   }
   GRAPH <%= ontology[:goup] %> {
     <% unless bp_id.empty? %>
