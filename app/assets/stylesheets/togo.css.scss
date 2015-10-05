@@ -940,8 +940,8 @@ table#results {
 }
 #sequence-container.method-container input[type="search"] {
   width: 100%;
-  margin-right: -90px;
-  padding-right: 100px;
+  margin-right: -180px;
+  padding-right: 200px;
   height: 28px;
   display: inline-block;
 }
@@ -950,8 +950,8 @@ table#results {
 }
 #sequence-container button {
   width: 90px;
-  left: 10px;
-  margin-left: -10px;
+  left: 5px;
+  margin-left: -5px;
 }
 
 
@@ -1803,9 +1803,12 @@ div#mapping-reset-button {
 
 #textsearch-container .form-line span {
   display: table-cell;
+}
+
+#textsearch-container .form-line span.input-area {
   width: 100%;
-  padding: 0px 0px 0px 10px;
   vertical-align: middle;
+  padding: 0px 0px 0px 10px;
 }
 
 #textsearch-container.method-container .form-line span input[type="search"] {

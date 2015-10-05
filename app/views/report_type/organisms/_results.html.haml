@@ -5,7 +5,7 @@
       drawInfo.organism = {
         dataTable: result_table.DataTable({
           ajax: {
-            url: '/report_type/organisms.json'
+            url: Routes.report_type_organisms_path({format: 'json'})
           },
           columns: [
             {data: "category"},
@@ -21,7 +21,7 @@
             {data: "energy_sources"}
           ]
         }),
-        downloadCSV: '/report_type/organisms.csv'
+        downloadCSV: Routes.report_type_organisms_path({format: 'csv'})
       };
 
       result_table.parent().find(".result-download-container").append("<a><i class='icon-file'></i> Download CSV</a>");

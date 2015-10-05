@@ -1,7 +1,6 @@
 = content_for :javascript do
   :javascript
-    var FACETS_ROOT_URL = "/facets/",
-        facetAllClearButton;
+    var facetAllClearButton;
     $(function() {
       // ファセットをすべて消去するボタン
       $facetAllClearButton = $("#facet-all-clear-button");
@@ -28,6 +27,7 @@
       var self = $facet.get(0);
       self.$this = $facet;
       self.key = key;
+      self.storageKey = "facet_" + key;
       // ルートのファセットのデータ
       /// この変数いらないかも
       self.rootNodeData = facetDatum;
@@ -42,8 +42,51 @@
       // 「Clear」ボタンへの登録
       facetAllClearButton.addClearButton(self.formSet.clear);
 
+      // Facet 検索の保存
+      self.saveFacetCondition = function(condition) {
+        localStorage.setItem(self.storageKey, JSON.stringify(condition));
+      }
+
+      // Facet 検索の読み込み
+      self.loadFacetCondition = function() {
+        return JSON.parse(localStorage.getItem(self.storageKey));
+      }
+
+      // Facet 階層操作による検索条件の更新
+      self.updateFacetCondition = function(id, name, $baseNode) {
+        var baseNodeName = $baseNode.find('.node-name').text(),
+            hierarchy_symbol = ' > ',
+            newDescriptionArr = [],
+            newAncestor = [],
+            facetCond = self.loadFacetCondition();
+
+        if (facetCond) {
+          newDescriptionArr = facetCond.description.split(hierarchy_symbol);
+          newAncestor = facetCond.ancestor;
+        }
+
+        // 'hydrosphere > water > fresh water' が 'hydrosphere > water > sea water' に変わる時は、
+        // 'hydrosphere > water' まででスライスし、後で 'sea water' を追加する
+        var index = newDescriptionArr.indexOf(baseNodeName);
+        if (index > -1 || baseNodeName === 'All') {
+          newDescriptionArr = newDescriptionArr.slice(0, index + 1);
+          newAncestor = newAncestor.slice(0, index + 1);
+        }
+
+        var newCond = {
+          id: id,
+          label: name,
+          value: name,
+          description: newDescriptionArr.concat(name).join(hierarchy_symbol),
+          ancestor: newAncestor.concat(id)
+        }
+
+        self.saveFacetCondition(newCond);
+      }
+
       // フィルタリングの実行
-      self.filtering = function(id, name) {
+      self.filtering = function(id, name, $baseNode) {
+        self.updateFacetCondition(id, name, $baseNode);
         self.formSet.target.val(name);
         self.formSet.id.val(id);
         self.toggle_clear(true);
@@ -79,6 +122,8 @@
         self.toggle_clear(false);
         self.formSet.target.val('');
         self.formSet.id.val('');
+        localStorage.removeItem(self.storageKey);
+
         window.query();
         self.clearAllNodes();
       });
@@ -110,14 +155,25 @@
         self.createNodesQueue = ancestor;
       }
 
+      // 表示時
+      var facetCond = self.loadFacetCondition();
+      if (facetCond) {
+        self.formSet.id.val(facetCond.id);
+        self.formSet.target.val(facetCond.label);
+        self.createNodesQueue = facetCond.ancestor;
+        self.toggle_clear(true);
+      }
+
       // インクリメンタルサーチを実行する関数
       self.formSet.target
         .limitedcomplete({
           delay: 1000,
           source: function(request, response) {
-            $.getJSON(FACETS_ROOT_URL + self.key + '/search.json', {word: $(this.element).val()}, response);
+            $.getJSON(Routes.search_facet_path(self.key, {format: 'json'}), {word: $(this.element).val()}, response);
           },
           select: function(event, ui) {
+            self.saveFacetCondition(ui.item);
+
             self.formSet.id.val(ui.item.id);
             var ancestor = ui.item.ancestor;
             self.settlement(ancestor);
@@ -187,7 +243,7 @@
         } else {
           // それ以外であれば、通常のフィルタリング
           createFacetNode($target, $parentNode, facetDatum, facet);
-          self.facet.filtering(facetDatum.id, facetDatum.name);
+          self.facet.filtering(facetDatum.id, facetDatum.name, $parentNode);
         }
       })
 
@@ -259,11 +315,12 @@
         // フィルタリング実行
         if (!isNeedQuery) return;
         var facetData = $item.get(0).facetData;
-        this.facet.filtering(facetData.id, facetData.name);
+
+        this.facet.filtering(facetData.id, facetData.name, $node);
       }
 
       // プルダウンメニューの生成
-      var requestUrl = FACETS_ROOT_URL + facet.dataset.facetName + ".json?node=" + escape(facetDatum.id);
+      var requestUrl = Routes.facet_path(facet.dataset.facetName, {format: "json", node: facetDatum.id});
       $.getJSON(requestUrl, function(data){
         self.childFacets = data;
         // 子の要素を持たなかったら中断

@@ -5,7 +5,7 @@
       drawInfo.phenotype = {
         dataTable: result_table.DataTable({
           ajax: {
-            url: '/report_type/phenotypes.json'
+            url: Routes.report_type_phenotypes_path({format: 'json'})
           },
           columns: [
             {data: "category"},
@@ -14,7 +14,7 @@
             {data: "organisms", className: "numeric"}
           ]
         }),
-        downloadCSV: '/report_type/phenotypes.csv'
+        downloadCSV: Routes.report_type_phenotypes_path({format: 'csv'})
       };
 
       result_table.parent().find(".result-download-container").append("<a><i class='icon-file'></i> Download CSV</a>");

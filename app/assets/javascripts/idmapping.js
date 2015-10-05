@@ -54,6 +54,14 @@ $(function(){
         .y(function(d){ return d[1]; });
       IDM.sampleMode = true;
 
+      var condition = JSON.parse(localStorage.getItem($mappingsContainer.data("mappingMode")));
+
+      if (condition) {
+        IDM.route = condition.databases;
+        IDM.sampleMode = condition.sampleMode;
+        $('textarea#identifiers').val(condition.identifiers.join('\n'));
+      }
+
       /* DBリストクラス
        */
       IDM.DBList = function($target) {
@@ -217,6 +225,13 @@ $(function(){
           $('table#mapped-ids tbody').html('');
           $('span#download-area').html('');
           $('div#results_info').html('');
+
+          // テキストエリアの初期化
+          $('textarea#identifiers').val('');
+
+          // ストレージのリセット
+          localStorage.removeItem(IDM.mode);
+
           IDM.selectRoute([]);
         }
 
@@ -1174,11 +1189,9 @@ $(function(){
           });
         }
 
-        { // ハッシュからルートを生成
-          var hash = window.location.hash;
-          if (hash.length > 0) {
-            hash = hash.substring(1);
-            var route = hash.split(":");
+        { // ルートを生成
+          if (IDM.route.length > 0) {
+            var route = IDM.route;
             // 値のチェック
             var valid = true;
             for (var i = 0; i < route.length; i++) {
@@ -1187,17 +1200,17 @@ $(function(){
               }
             }
             if (valid) {
-            switch (true) {
+              switch (true) {
               case (IDM.mode === IDM.MODE_CONVERTER):
                 IDM.selectDB("from", route[0], route);
                 IDM.selectDB("to", route[route.length - 1], route);
               break;
               case (IDM.mode === IDM.MODE_RESOLVER):
-              {
-                IDM.selectDB("from", route[0], route);
-              }
+                {
+                  IDM.selectDB("from", route[0], route);
+                }
               break;
-            }
+              }
             }
           }
         }
@@ -1230,7 +1243,15 @@ $(function(){
           return;
         };
 
-        var url = sampleMode ? "/identifiers/teach" : "/identifiers/convert";
+        var url = sampleMode ? Routes.identifiers_teach_path() : Routes.identifiers_convert_path();
+
+        var condition = {
+          identifiers: identifiers,
+          databases: route,
+          sampleMode: sampleMode
+        }
+
+        localStorage.setItem(IDM.mode, JSON.stringify(condition))
 
         $('#loading').html("<div class='identifiers_processing'>Processing...</div>");
         $.get(url, { identifiers: identifiers, databases: route }).done(function() {
