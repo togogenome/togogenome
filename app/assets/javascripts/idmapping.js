@@ -1109,7 +1109,7 @@ $(function(){
           <div id='mapping-arrows-container'></div>\
           <div id='mapping-dbicons-container'></div>\
           <div id='mapping-routes-container'></div>\
-          <div id='mapping-reset-button' class='tg-button clear'>Reset</div>\
+          <div id='mapping-reset-button' class='tg-button clear'>Clear</div>\
           </div>";
           $("#mappings-selector-container").append(html);
 
