@@ -20,7 +20,7 @@ module ReportType
 
         return [] if results.empty?
 
-        genes = results.map {|b| "<#{b[:togogenome]}>" }.uniq.join(' ')
+        genes = results.map {|b| "<#{b[:togogenome]}>" }.uniq.join(', ')
 
         sparqls = [
           find_proteins_sparql(PREFIX, ONTOLOGY, genes),
