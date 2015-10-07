@@ -6,10 +6,13 @@ FROM <%= ontology[:tgup] %>
 FROM <%= ontology[:uniprot] %>
 FROM <%= ontology[:go] %>
 WHERE {
-  VALUES ?gene { <%= genes %> }
+  ?gene skos:exactMatch ?refseq_gene .
+  FILTER (?gene IN( <%= genes %> ) )
   ?gene rdfs:seeAlso ?uniprot_id .
   ?uniprot_id rdf:type <http://identifiers.org/uniprot> .
   ?uniprot_id rdfs:seeAlso ?uniprot_up .
   ?uniprot_up rdf:type <http://purl.uniprot.org/core/Protein> .
-  ?uniprot_up up:recommendedName/up:fullName ?recommended_name.
+  OPTIONAL {
+    ?uniprot_up up:recommendedName/up:fullName ?recommended_name.
+  }
 }

@@ -1,7 +1,9 @@
 module ReportTypeHelper
   def list(items)
+    return nil if items.all?(&:nil?)
+
     content_tag(:ul) do
-      items.uniq.each do |item|
+      items.compact.uniq.each do |item|
         concat content_tag(:li, item)
       end
     end

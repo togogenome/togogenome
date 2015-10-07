@@ -6,7 +6,8 @@ FROM <%= ontology[:tgup] %>
 FROM <%= ontology[:uniprot] %>
 FROM <%= ontology[:go] %>
 WHERE {
-  VALUES ?gene { <%= genes %> }
+  ?gene skos:exactMatch ?refseq_gene .
+  FILTER (?gene IN( <%= genes %> ) )
   GRAPH <%= ontology[:tgup] %> {
   	?gene rdfs:seeAlso ?uniprot_id .
     ?uniprot_id rdf:type <http://identifiers.org/uniprot> .
@@ -14,7 +15,6 @@ WHERE {
   }
   GRAPH <%= ontology[:uniprot] %> {
     ?uniprot_up rdf:type <http://purl.uniprot.org/core/Protein> .
-    ?uniprot_up up:recommendedName/up:fullName ?recommended_name .
     ?uniprot_up up:classifiedWith ?obo_go_uri  .
     ?obo_go_uri a owl:Class .
   }
