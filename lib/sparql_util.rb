@@ -14,7 +14,8 @@ module SPARQLUtil
     refseq:          '<http://togogenome.org/graph/refseq>',
     stats:           '<http://togogenome.org/graph/stats>',
     edgestore:       '<http://togogenome.org/graph/edgestore>',
-    so:              '<http://togogenome.org/graph/so>'
+    so:              '<http://togogenome.org/graph/so>',
+    gotax:           '<http://togogenome.org/graph/gotax>'
   }
 
   PREFIX = {
