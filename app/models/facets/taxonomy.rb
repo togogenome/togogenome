@@ -12,7 +12,7 @@ module Facets
       end
 
       def filter
-        "FILTER(?parent != <http://identifiers.org/taxonomy/1> && ?parent != <#{root_uri}>)"
+        "FILTER(?parent != <http://identifiers.org/taxonomy/131567> && ?parent != <#{root_uri}>)"
       end
     end
   end
