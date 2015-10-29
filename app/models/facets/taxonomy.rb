@@ -1,5 +1,3 @@
-# coding: utf-8
-
 module Facets
   class Taxonomy < Base
     class << self
