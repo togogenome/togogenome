@@ -1,5 +1,29 @@
 module Facets
   class Taxonomy < Base
+    def children
+      sparql = <<-SPARQL.strip_heredoc
+        SELECT ?target ?name (COUNT(?name) AS ?hits)
+        WHERE {
+          GRAPH <http://togogenome.org/graph/taxonomy_lite> {
+            FILTER EXISTS { ?target rdfs:subClassOf ?_parent } .
+            ?target rdfs:subClassOf <#{self.id}>  .
+            OPTIONAL {
+              ?sub rdfs:subClassOf ?target .
+            }
+          }
+          GRAPH <http://togogenome.org/graph/taxonomy> {
+            ?target  rdfs:label ?name .
+            FILTER(LANG(?name) = "" || LANGMATCHES(LANG(?name), "en")) .
+          }
+        }
+        GROUP BY ?target ?name
+      SPARQL
+
+      Taxonomy.query(sparql).map {|h|
+        Taxonomy.new(id: h[:target].to_s, name: h[:name].to_s, hits: h[:hits].to_i)
+      }.sort_by {|f| f.name }
+    end
+
     class << self
       def graph_uri
         SPARQLUtil::ONTOLOGY[:taxonomy]
