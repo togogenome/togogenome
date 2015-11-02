@@ -15,6 +15,7 @@ gem 'parallel'
 gem 'rails', '~> 3.2.12'
 gem 'rsolr'
 gem 'settingslogic'
+gem 'test-unit', '~> 3.0'
 gem 'unicorn'
 
 
@@ -35,7 +36,6 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'test-unit', '~> 3.0'
 
   group :development do
     gem 'pry-rails'
