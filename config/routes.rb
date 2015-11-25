@@ -32,6 +32,7 @@ TogoGenome::Application.routes.draw do
   resources :organism,    only: %w(show), constraints: { id: /[\w\-\:\.]+/ }
   resources :environment, only: %w(show), constraints: { id: /[\w\-\:\.]+/ }
   resources :phenotype,   only: %w(show), constraints: { id: /MPO_\d+/ }
+  resources :virus,       only: %w(show), constraints: { id: /[\w\-\:\.]+/ }
 
   namespace :api do
     post '/gggenome', to: 'gggenome#show'

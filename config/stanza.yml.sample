@@ -166,6 +166,18 @@ defaults: &defaults
           uri: http://togostanza.org/stanza/microbial_phenotype_information
           name: Organism List
 
+    # 以下、新たに追加した Virus 用のレポートページに出すスタンザ
+    viruses:
+      nanostanza:
+        -
+          uri: http://togostanza.org/stanza/virus_size_nano
+          span: 1
+
+      togostanza:
+        -
+          uri: http://togostanza.org/stanza/virus_names
+          name: Virus names
+
 development:
   <<: *defaults
 
