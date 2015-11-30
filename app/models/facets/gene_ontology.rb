@@ -15,20 +15,18 @@ module Facets
               SELECT DISTINCT ?target ?name ?link ?path ?step
               WHERE {
                 {
-                  SELECT DISTINCT ?target ?name
+                  SELECT DISTINCT ?target ?name ?parent
                   WHERE {
                     FILTER regex(?name, "#{word}", "i") .
                     ?target rdfs:label ?name .
                     FILTER(LANG(?name) = "" || LANGMATCHES(LANG(?name), "en")) .
 
-                    ?target rdfs:subClassOf+ ?parent .
-                    # 下のを入れないと何故かヒット数が減ってしまう
-                    ?parent ?p ?o .
-                    FILTER (?parent = <#{root_uri}> ).
+                    ?target rdfs:subClassOf* ?parent .
+                    ?parent rdfs:subClassOf <#{root_uri}> .
                   }
                   LIMIT 15
                 }
-                ?target rdfs:subClassOf ?parent  OPTION (TRANSITIVE, T_DISTINCT, T_EXISTS, T_DIRECTION 1, T_IN(?target), T_OUT(?parent), T_MIN(1), T_STEP(?target) AS ?link, T_STEP("path_id") AS ?path , T_STEP('step_no') AS ?step ) .
+                ?target rdfs:subClassOf ?parent  OPTION (TRANSITIVE, T_DISTINCT, T_EXISTS, T_DIRECTION 1, T_IN(?target), T_OUT(?parent), T_MIN(0), T_STEP(?target) AS ?link, T_STEP("path_id") AS ?path , T_STEP('step_no') AS ?step ) .
               }
             }
             ?link rdfs:label ?link_name .
@@ -39,10 +37,10 @@ module Facets
         self.query(sparql).sort_by {|b| b[:name] }.group_by {|b|
           b[:target]
         }.map {|uri, vals|
-          target_vals = vals.group_by {|b| b[:path] }.sort_by {|path, vals| -path.to_i }.first.last.sort_by {|b| -b[:step].to_i }
+          target_vals = vals.group_by {|b| b[:path] }.sort_by {|path, vals| -path.to_i }.first.last.sort_by {|b| -b[:step].to_i }.tap(&:pop)
 
-          desc = target_vals.map {|v| v[:link_name] }.tap(&:shift).push(vals.first[:name]).join(' > ')
-          parents = target_vals.map {|v| v[:link] }.push(uri).tap(&:shift)
+          desc = target_vals.map {|v| v[:link_name] }.push(vals.first[:name]).join(' > ')
+          parents = target_vals.map {|v| v[:link] }.push(uri)
           self.new(id: uri, name: vals.first[:name], description: desc, ancestor: parents)
         }
       end
