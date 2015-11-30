@@ -15,7 +15,7 @@ module Facets
               SELECT DISTINCT ?target ?name ?link ?path ?step
               WHERE {
                 {
-                  SELECT DISTINCT ?target ?name ?parent
+                  SELECT DISTINCT ?target ?name SAMPLE(?parent) AS ?parent
                   WHERE {
                     FILTER regex(?name, "#{word}", "i") .
                     ?target rdfs:label ?name .
@@ -24,6 +24,8 @@ module Facets
                     ?target rdfs:subClassOf* ?parent .
                     ?parent rdfs:subClassOf <#{root_uri}> .
                   }
+                  GROUP BY ?target ?name
+                  ORDER BY ?name
                   LIMIT 15
                 }
                 ?target rdfs:subClassOf ?parent  OPTION (TRANSITIVE, T_DISTINCT, T_EXISTS, T_DIRECTION 1, T_IN(?target), T_OUT(?parent), T_MIN(0), T_STEP(?target) AS ?link, T_STEP("path_id") AS ?path , T_STEP('step_no') AS ?step ) .
