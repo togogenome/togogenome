@@ -1253,6 +1253,14 @@ $(function(){
 
         localStorage.setItem(IDM.mode, JSON.stringify(condition))
 
+        var condition = {
+          identifiers: identifiers,
+          databases: route,
+          sampleMode: sampleMode
+        }
+
+        localStorage.setItem(IDM.mode, JSON.stringify(condition))
+
         $('#loading').html("<div class='identifiers_processing'>Processing...</div>");
         $.get(url, { identifiers: identifiers, databases: route }).done(function() {
           $('#loading').html('');
