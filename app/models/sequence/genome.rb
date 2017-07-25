@@ -17,7 +17,7 @@ module Sequence
             sequence_ontologies: so.map {|r| {uri: r[:sequence_ontology], name: r[:sequence_ontology_name]} },
             locus_tags: so.map {|r| r[:locus_tag] }.compact.uniq,
             products: so.map {|r| r[:product] }.compact.uniq
-          )
+          ).merge(fetch_genes(genome.taxonomy, genome.position, genome.position_end))
         end
       end
 
@@ -69,6 +69,46 @@ module Sequence
         genomes.map {|genome|
           "( \"#{genome.name}\" #{genome.position} #{genome.position_end} \"#{genome.refseq}\" \"#{genome.strand}\" )"
         }.join("\n")
+      end
+
+      def fetch_genes(tax_id, result_begin, result_end)
+        r_begin, r_end = [result_begin.to_i, result_end.to_i].sort
+
+        genes = query(build_gene_sparql(tax_id, r_begin, r_end))
+        prev, other = genes.partition { |g| g[:faldo_begin].to_i < r_begin && g[:faldo_end].to_i < r_begin }
+        nxt, overlap = other.partition { |g| r_end < g[:faldo_begin].to_i && r_end < g[:faldo_end].to_i }
+
+        { previous: prev, overlap: overlap, next: nxt }
+      end
+
+      def build_gene_sparql(tax_id, result_begin, result_end)
+        <<-SPARQL.strip_heredoc
+          #{SPARQLUtil::PREFIX[:insdc]}
+          #{SPARQLUtil::PREFIX[:faldo]}
+          #{SPARQLUtil::PREFIX[:obo]}
+          SELECT ?togogenome ?gene_name ?faldo_begin ?faldo_end
+          FROM <http://togogenome.org/graph/tgup>
+          FROM <http://togogenome.org/graph/refseq>
+          WHERE {
+            VALUES (?taxonomy_id ?begin ?end) {
+              ( \"#{tax_id.to_s}\" #{r_begin.to_s} #{r_end.to_s} )
+            }
+            ?togogenome rdfs:seeAlso ?taxonomy ;
+                        skos:exactMatch ?feature .
+            ?taxonomy a insdc:Taxonomy ;
+                      rdfs:label ?taxonomy_id .
+            ?feature a insdc:Gene ;
+                     rdfs:label ?gene_name ;
+                     faldo:location ?loc .
+            ?loc faldo:begin/faldo:position ?faldo_begin ;
+                 faldo:end/faldo:position ?faldo_end .
+            FILTER(
+              ?faldo_begin != 1 &&
+              ! ( ( ?faldo_begin < (?begin - 1000) && ?faldo_end < (?begin - 1000) ) || 
+                  ( (?end + 1000) < ?faldo_begin && (?end + 1000) < ?faldo_end ) )
+            )
+          }
+        SPARQL
       end
     end
   end
