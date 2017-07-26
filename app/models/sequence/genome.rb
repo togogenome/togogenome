@@ -91,7 +91,7 @@ module Sequence
           FROM <http://togogenome.org/graph/refseq>
           WHERE {
             VALUES (?taxonomy_id ?begin ?end) {
-              ( \"#{tax_id.to_s}\" #{r_begin.to_s} #{r_end.to_s} )
+              ( \"#{tax_id.to_s}\" #{result_begin.to_s} #{result_end.to_s} )
             }
             ?togogenome rdfs:seeAlso ?taxonomy ;
                         skos:exactMatch ?feature .
