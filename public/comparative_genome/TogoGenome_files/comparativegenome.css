@@ -1,0 +1,1263 @@
+@charset "UTF-8";
+@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300);
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+html {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+q, blockquote {
+  quotes: none;
+}
+q:before, q:after, blockquote:before, blockquote:after {
+  content: "";
+  content: none;
+}
+
+a img {
+  border: none;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
+  display: block;
+}
+
+@font-face {
+  font-family: 'FontAwesome';
+  src: url("../fonts/fontawesome-webfont.eot?v=4.5.0");
+  src: url("../fonts/fontawesome-webfont.eot?#iefix&v=4.5.0") format("embedded-opentype"), url("../fonts/fontawesome-webfont.woff2?v=4.5.0") format("woff2"), url("../fonts/fontawesome-webfont.woff?v=4.5.0") format("woff"), url("../fonts/fontawesome-webfont.ttf?v=4.5.0") format("truetype"), url("../fonts/fontawesome-webfont.svg?v=4.5.0#fontawesomeregular") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+html {
+  height: 100%;
+}
+
+.main-container {
+  margin-top: 85px;
+}
+
+#comparative-genome {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 300;
+  margin-top: -8px;
+  /* UI: drill down */
+  /* modal window */
+}
+#comparative-genome a {
+  color: #5D90C2;
+}
+#comparative-genome h1 {
+  text-align: center;
+  font-size: 30px;
+  line-height: 30px;
+  padding: 17px 0 13px;
+  background-color: rgba(222, 230, 229, 0.9);
+  color: #3C7177;
+  font-weight: 400;
+}
+#comparative-genome h1:before {
+  content: url("../images/logomark");
+  position: relative;
+  vertical-align: middle;
+  display: inline-block;
+  top: -2px;
+  margin: -22px 0;
+}
+#comparative-genome h1 strong {
+  color: #000;
+  font-weight: 700;
+}
+#comparative-genome main .section {
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+#comparative-genome main .section header {
+  position: relative;
+  cursor: pointer;
+  background-color: rgba(222, 230, 229, 0.9);
+  width: calc(100vw - 40px);
+  height: 30px;
+  z-index: 1000;
+  -moz-transition: background-color 0.2s ease-out, opacity 0.2s ease-out;
+  -o-transition: background-color 0.2s ease-out, opacity 0.2s ease-out;
+  -webkit-transition: background-color 0.2s ease-out, opacity 0.2s ease-out;
+  transition: background-color 0.2s ease-out, opacity 0.2s ease-out;
+}
+#comparative-genome main .section header:hover {
+  background-color: #fff6c8;
+}
+#comparative-genome main .section header h2 {
+  font-size: 18px;
+  line-height: 30px;
+  font-weight: 400;
+  color: #3C7177;
+  text-align: left;
+  border-top: solid 1px rgba(119, 80, 60, 0.25);
+  position: relative;
+  padding-left: 18px;
+  padding-right: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+#comparative-genome main .section header h2 em {
+  font-weight: bold;
+  margin-right: .5em;
+}
+#comparative-genome main .section header h2 strong {
+  color: #000;
+  font-weight: bold;
+}
+#comparative-genome main .section header h2 strong span + span {
+  margin-left: 0.5em;
+}
+#comparative-genome main .section header h2 strong span.sign {
+  font-weight: normal;
+  margin: 0 0.25em;
+}
+#comparative-genome main .section header .heading-button {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+  cursor: pointer;
+  position: absolute;
+  top: 1px;
+  right: 5px;
+  -moz-transition: -moz-transform 0.2s ease-out, opacity 0.2s ease-out;
+  -o-transition: -o-transform 0.2s ease-out, opacity 0.2s ease-out;
+  -webkit-transition: -webkit-transform 0.2s ease-out, opacity 0.2s ease-out;
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+}
+#comparative-genome main .section header .heading-button:before, #comparative-genome main .section header .heading-button:after {
+  content: "";
+  display: block;
+  position: absolute;
+  border-top: solid 2px #3C7177;
+  width: 8px;
+  -moz-transition: -moz-transform 0.2s ease-out;
+  -o-transition: -o-transform 0.2s ease-out;
+  -webkit-transition: -webkit-transform 0.2s ease-out;
+  transition: transform 0.2s ease-out;
+}
+#comparative-genome main .section header .heading-button:before {
+  -moz-transform: translate(8px, 13px) rotate(135deg);
+  -ms-transform: translate(8px, 13px) rotate(135deg);
+  -webkit-transform: translate(8px, 13px) rotate(135deg);
+  transform: translate(8px, 13px) rotate(135deg);
+}
+#comparative-genome main .section header .heading-button:after {
+  -moz-transform: translate(13px, 13px) rotate(45deg);
+  -ms-transform: translate(13px, 13px) rotate(45deg);
+  -webkit-transform: translate(13px, 13px) rotate(45deg);
+  transform: translate(13px, 13px) rotate(45deg);
+}
+#comparative-genome main .section.sticked {
+  padding-top: 31px;
+}
+#comparative-genome main .section.sticked header {
+  position: fixed;
+}
+#comparative-genome main .section.bottom header .heading-button {
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+#comparative-genome main .section.disabled header {
+  cursor: default;
+}
+#comparative-genome main .section.disabled header:hover {
+  background-color: rgba(222, 230, 229, 0.9);
+}
+#comparative-genome main .section.disabled header h2 {
+  opacity: 0.2;
+}
+#comparative-genome main .section.disabled header .heading-button {
+  opacity: 0;
+}
+#comparative-genome main .section.loading header:before {
+  content: url(../images/loading.gif);
+  z-index: 1001;
+  position: absolute;
+  left: 50%;
+  margin-left: -30px;
+  top: 5px;
+}
+#comparative-genome main .section.loading header .heading-button {
+  opacity: 0;
+}
+#comparative-genome .bar-chart {
+  border-top: solid 1px #DEE6E5;
+  padding: 4px 0 8px;
+  position: relative;
+  cursor: pointer;
+  -moz-transition: background-color 0.2s ease-out;
+  -o-transition: background-color 0.2s ease-out;
+  -webkit-transition: background-color 0.2s ease-out;
+  transition: background-color 0.2s ease-out;
+}
+#comparative-genome .bar-chart:first-child {
+  border-top: none;
+}
+#comparative-genome .bar-chart .bar-name {
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 18px;
+  margin-bottom: 2px;
+}
+#comparative-genome .bar-chart .bar-name span.sign {
+  font-weight: normal;
+  margin: 0 4px;
+}
+#comparative-genome .bar-chart .color-ball {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border-radius: 100%;
+  bottom: 6px;
+  left: 0;
+}
+#comparative-genome .bar-chart .bar {
+  background-color: #AD968A;
+  height: 14px;
+  position: relative;
+  -moz-transition: background-color 0.2s ease-out;
+  -o-transition: background-color 0.2s ease-out;
+  -webkit-transition: background-color 0.2s ease-out;
+  transition: background-color 0.2s ease-out;
+}
+#comparative-genome .bar-chart .bar span {
+  color: #3C7177;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 14px;
+  position: absolute;
+  left: 100%;
+  margin-left: 4px;
+}
+#comparative-genome .bar-chart .bar.over-half span {
+  color: #fff;
+  right: 4px;
+  left: auto;
+  margin-left: auto;
+}
+#comparative-genome .bar-chart:hover, #comparative-genome .bar-chart.selected {
+  background-color: #FFF6C8;
+}
+#comparative-genome .bar-chart:hover .bar, #comparative-genome .bar-chart.selected .bar {
+  background-color: #3C7177;
+}
+#comparative-genome #aspects-selector {
+  margin: 16px 40px 30px;
+}
+#comparative-genome #aspects-selector label {
+  display: inline-block;
+  width: 49%;
+  text-align: left;
+  border-bottom: solid 1px #DEE6E5;
+  line-height: 16px;
+  padding: 8px 0;
+  cursor: pointer;
+  vertical-align: top;
+}
+#comparative-genome #aspects-selector label:hover {
+  background-color: #FFF4D3;
+}
+#comparative-genome #aspects-selector label small {
+  font-size: 12px;
+  color: #96948D;
+}
+#comparative-genome #section-species header h2 strong span:before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 100%;
+  margin-right: 3px;
+}
+#comparative-genome #section-species .species-container {
+  position: relative;
+  text-align: center;
+  padding: 0 40px;
+}
+#comparative-genome #section-species .species-container .species {
+  display: inline-block;
+  vertical-align: top;
+  height: 200px;
+  text-align: center;
+  border-left: solid 1px #DEE6E5;
+  border-right: solid 1px #DEE6E5;
+  margin-right: -1px;
+}
+#comparative-genome #section-species .species-container .species .color-ball {
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  background-color: #DEE6E5;
+  margin: 64px auto 4px;
+  -moz-transition: background-color 0.2s ease-out;
+  -o-transition: background-color 0.2s ease-out;
+  -webkit-transition: background-color 0.2s ease-out;
+  transition: background-color 0.2s ease-out;
+}
+#comparative-genome #section-species .species-container .species h3 {
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: bold;
+}
+#comparative-genome #section-species .species-container .species p.scientific-name {
+  font-size: 12px;
+  line-height: 14px;
+  color: #3C7177;
+}
+#comparative-genome #section-species .species-container .species .close-button {
+  cursor: pointer;
+  position: relative;
+  height: 20px;
+  width: 20px;
+  margin: 14px auto;
+  opacity: 0.25;
+}
+#comparative-genome #section-species .species-container .species .close-button:before, #comparative-genome #section-species .species-container .species .close-button:after {
+  content: "";
+  display: block;
+  width: 14px;
+  border-top: solid 1px #3C7177;
+  position: absolute;
+  margin: 9px 0 0 3px;
+}
+#comparative-genome #section-species .species-container .species .close-button:before {
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+#comparative-genome #section-species .species-container .species .close-button:after {
+  -moz-transform: rotate(135deg);
+  -ms-transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  transform: rotate(135deg);
+}
+#comparative-genome #section-species .species-container .species .close-button:hover {
+  opacity: 1;
+}
+#comparative-genome #section-species #species-selector {
+  position: relative;
+  box-sizing: border-box;
+  margin: 0 12px 12px;
+  box-shadow: 0 2px 1px rgba(0, 0, 0, 0.3);
+  background-color: #3C7177;
+  height: 320px;
+  left: 0%;
+  -moz-transition: width 0.2s ease-out, height 0.2s ease-out, left 0.2s ease-out, margin-top 0.2s ease-out, -moz-transform 0.2s ease-out;
+  -o-transition: width 0.2s ease-out, height 0.2s ease-out, left 0.2s ease-out, margin-top 0.2s ease-out, -o-transform 0.2s ease-out;
+  -webkit-transition: width 0.2s ease-out, height 0.2s ease-out, left 0.2s ease-out, margin-top 0.2s ease-out, -webkit-transform 0.2s ease-out;
+  transition: width 0.2s ease-out, height 0.2s ease-out, left 0.2s ease-out, margin-top 0.2s ease-out, transform 0.2s ease-out;
+}
+#comparative-genome #section-species #species-selector:before {
+  content: "";
+  display: block;
+  position: absolute;
+  right: 5px;
+  top: -7px;
+  width: 14px;
+  height: 14px;
+  background-color: #3C7177;
+  -moz-transform: translateX(-50%) rotate(45deg);
+  -ms-transform: translateX(-50%) rotate(45deg);
+  -webkit-transform: translateX(-50%) rotate(45deg);
+  transform: translateX(-50%) rotate(45deg);
+}
+#comparative-genome #section-species #species-selector .toggle-button {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  cursor: pointer;
+  z-index: 1;
+}
+#comparative-genome #section-species #species-selector .toggle-button:before, #comparative-genome #section-species #species-selector .toggle-button:after {
+  content: "";
+  display: block;
+  position: absolute;
+  border-top: solid 2px #fff;
+  width: 12px;
+  -moz-transition: -moz-transform 0.2s ease-out;
+  -o-transition: -o-transform 0.2s ease-out;
+  -webkit-transition: -webkit-transform 0.2s ease-out;
+  transition: transform 0.2s ease-out;
+}
+#comparative-genome #section-species #species-selector .toggle-button:before {
+  -moz-transform: translate(9px, 14px) rotate(135deg);
+  -ms-transform: translate(9px, 14px) rotate(135deg);
+  -webkit-transform: translate(9px, 14px) rotate(135deg);
+  transform: translate(9px, 14px) rotate(135deg);
+}
+#comparative-genome #section-species #species-selector .toggle-button:after {
+  -moz-transform: translate(9px, 14px) rotate(45deg);
+  -ms-transform: translate(9px, 14px) rotate(45deg);
+  -webkit-transform: translate(9px, 14px) rotate(45deg);
+  transform: translate(9px, 14px) rotate(45deg);
+}
+#comparative-genome #section-species #species-selector.closed {
+  width: 40px;
+  height: 40px;
+  margin-top: -52px;
+  left: 100%;
+  transform: translateX(-64px);
+}
+#comparative-genome #section-species #species-selector.closed .toggle-button:before {
+  -moz-transform: translate(9px, 14px) rotate(90deg);
+  -ms-transform: translate(9px, 14px) rotate(90deg);
+  -webkit-transform: translate(9px, 14px) rotate(90deg);
+  transform: translate(9px, 14px) rotate(90deg);
+}
+#comparative-genome #section-species #species-selector.closed .toggle-button:after {
+  -moz-transform: translate(9px, 14px) rotate(0deg);
+  -ms-transform: translate(9px, 14px) rotate(0deg);
+  -webkit-transform: translate(9px, 14px) rotate(0deg);
+  transform: translate(9px, 14px) rotate(0deg);
+}
+#comparative-genome #section-species svg {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  fill: transparent;
+}
+#comparative-genome #section-species svg rect.event-capture {
+  width: 100%;
+  height: 100%;
+}
+#comparative-genome #section-species svg path.link {
+  stroke: rgba(255, 254, 245, 0.2);
+  fill: transparent;
+}
+#comparative-genome #section-species svg .node {
+  margin-bottom: 20px;
+}
+#comparative-genome #section-species svg .node circle {
+  stroke: #FFFEF5;
+  stroke-width: 2px;
+  fill: #3C7177;
+}
+#comparative-genome #section-species svg .node text {
+  font-size: 14px;
+  font-style: italic;
+  fill: rgba(255, 254, 245, 0.6);
+  -moz-transform: translate(-13px, 5px);
+  -ms-transform: translate(-13px, 5px);
+  -webkit-transform: translate(-13px, 5px);
+  transform: translate(-13px, 5px);
+}
+#comparative-genome #section-species svg .node.collapsed circle {
+  fill: #AFCFCC;
+}
+#comparative-genome #section-species svg .node.leaf {
+  cursor: pointer;
+}
+#comparative-genome #section-species svg .node.leaf.selected circle {
+  fill: #AFCFCC;
+  stroke: #AFCFCC;
+}
+#comparative-genome #section-species svg .node.leaf.selected text {
+  opacity: 0.2;
+}
+#comparative-genome #section-species svg .node.leaf.selected rect.plus1 {
+  display: none;
+}
+#comparative-genome #section-species svg .node.leaf circle {
+  fill: #FFFEF5;
+}
+#comparative-genome #section-species svg .node.leaf text {
+  font-style: normal;
+  fill: #FFFEF5;
+  -moz-transform: translate(13px, 5px);
+  -ms-transform: translate(13px, 5px);
+  -webkit-transform: translate(13px, 5px);
+  transform: translate(13px, 5px);
+}
+#comparative-genome #section-species svg .node.leaf rect {
+  fill: #3C7177;
+}
+#comparative-genome #section-species svg .node.leaf rect.plus1 {
+  -moz-transform: translate(-1px, -4px);
+  -ms-transform: translate(-1px, -4px);
+  -webkit-transform: translate(-1px, -4px);
+  transform: translate(-1px, -4px);
+}
+#comparative-genome #section-species svg .node.leaf rect.plus2 {
+  -moz-transform: translate(-4px, -1px);
+  -ms-transform: translate(-4px, -1px);
+  -webkit-transform: translate(-4px, -1px);
+  transform: translate(-4px, -1px);
+}
+#comparative-genome #section-species[data-number-of-species="0"] #species-selector {
+  margin-top: 12px;
+}
+#comparative-genome #section-species[data-number-of-species="1"] header h2 strong span[data-index="0"]:before {
+  background-color: #96938D;
+}
+#comparative-genome #section-species[data-number-of-species="1"] .species {
+  width: 99%;
+}
+#comparative-genome #section-species[data-number-of-species="1"] .species[data-index="0"] .color-ball {
+  background-color: #96938D;
+}
+#comparative-genome #section-species[data-number-of-species="2"] header h2 strong span[data-index="0"]:before {
+  background-color: #804040;
+}
+#comparative-genome #section-species[data-number-of-species="2"] header h2 strong span[data-index="1"]:before {
+  background-color: #408080;
+}
+#comparative-genome #section-species[data-number-of-species="2"] .species {
+  width: 49%;
+}
+#comparative-genome #section-species[data-number-of-species="2"] .species[data-index="0"] .color-ball {
+  background-color: #804040;
+}
+#comparative-genome #section-species[data-number-of-species="2"] .species[data-index="1"] .color-ball {
+  background-color: #408080;
+}
+#comparative-genome #section-species[data-number-of-species="3"] header h2 strong span[data-index="0"]:before {
+  background-color: #804040;
+}
+#comparative-genome #section-species[data-number-of-species="3"] header h2 strong span[data-index="1"]:before {
+  background-color: #408040;
+}
+#comparative-genome #section-species[data-number-of-species="3"] header h2 strong span[data-index="2"]:before {
+  background-color: #404080;
+}
+#comparative-genome #section-species[data-number-of-species="3"] .species {
+  width: 33%;
+}
+#comparative-genome #section-species[data-number-of-species="3"] .species[data-index="0"] .color-ball {
+  background-color: #804040;
+}
+#comparative-genome #section-species[data-number-of-species="3"] .species[data-index="1"] .color-ball {
+  background-color: #408040;
+}
+#comparative-genome #section-species[data-number-of-species="3"] .species[data-index="2"] .color-ball {
+  background-color: #404080;
+}
+#comparative-genome #section-species[data-number-of-species="4"] header h2 strong span[data-index="0"]:before {
+  background-color: #807040;
+}
+#comparative-genome #section-species[data-number-of-species="4"] header h2 strong span[data-index="1"]:before {
+  background-color: #408050;
+}
+#comparative-genome #section-species[data-number-of-species="4"] header h2 strong span[data-index="2"]:before {
+  background-color: #405080;
+}
+#comparative-genome #section-species[data-number-of-species="4"] header h2 strong span[data-index="3"]:before {
+  background-color: #804070;
+}
+#comparative-genome #section-species[data-number-of-species="4"] .species {
+  width: 24%;
+}
+#comparative-genome #section-species[data-number-of-species="4"] .species[data-index="0"] .color-ball {
+  background-color: #807040;
+}
+#comparative-genome #section-species[data-number-of-species="4"] .species[data-index="1"] .color-ball {
+  background-color: #408050;
+}
+#comparative-genome #section-species[data-number-of-species="4"] .species[data-index="2"] .color-ball {
+  background-color: #405080;
+}
+#comparative-genome #section-species[data-number-of-species="4"] .species[data-index="3"] .color-ball {
+  background-color: #804070;
+}
+#comparative-genome #section-species[data-number-of-species="5"] header h2 strong span[data-index="0"]:before {
+  background-color: #804040;
+}
+#comparative-genome #section-species[data-number-of-species="5"] header h2 strong span[data-index="1"]:before {
+  background-color: #738040;
+}
+#comparative-genome #section-species[data-number-of-species="5"] header h2 strong span[data-index="2"]:before {
+  background-color: #40805A;
+}
+#comparative-genome #section-species[data-number-of-species="5"] header h2 strong span[data-index="3"]:before {
+  background-color: #405A80;
+}
+#comparative-genome #section-species[data-number-of-species="5"] header h2 strong span[data-index="4"]:before {
+  background-color: #734080;
+}
+#comparative-genome #section-species[data-number-of-species="5"] .species {
+  width: 19%;
+}
+#comparative-genome #section-species[data-number-of-species="5"] .species[data-index="0"] .color-ball {
+  background-color: #804040;
+}
+#comparative-genome #section-species[data-number-of-species="5"] .species[data-index="1"] .color-ball {
+  background-color: #738040;
+}
+#comparative-genome #section-species[data-number-of-species="5"] .species[data-index="2"] .color-ball {
+  background-color: #40805A;
+}
+#comparative-genome #section-species[data-number-of-species="5"] .species[data-index="3"] .color-ball {
+  background-color: #405A80;
+}
+#comparative-genome #section-species[data-number-of-species="5"] .species[data-index="4"] .color-ball {
+  background-color: #734080;
+}
+#comparative-genome #section-combination .combination-results {
+  min-height: 335px;
+  position: relative;
+  padding-right: 380px;
+}
+#comparative-genome #section-combination #combination-results-graph {
+  position: relative;
+}
+#comparative-genome #section-combination #combination-results-graph > .inner {
+  margin: 15px 20px 20px 40px;
+}
+#comparative-genome #section-combination #combination-results-graph .bar-chart {
+  padding-left: 24px;
+}
+#comparative-genome #section-combination #combination-results-graph .bar-chart .bar-name {
+  margin-left: -24px;
+}
+#comparative-genome #section-combination svg {
+  width: 365px;
+  height: 365px;
+  position: absolute;
+  right: 0;
+  top: -14px;
+}
+#comparative-genome #section-combination svg .venn-diagram {
+  visibility: hidden;
+  opacity: 0;
+  -moz-transition: opacity 0.2s ease-out;
+  -o-transition: opacity 0.2s ease-out;
+  -webkit-transition: opacity 0.2s ease-out;
+  transition: opacity 0.2s ease-out;
+}
+#comparative-genome #section-combination svg .venn-diagram circle, #comparative-genome #section-combination svg .venn-diagram path {
+  cursor: pointer;
+}
+#comparative-genome #section-combination svg .venn-diagram circle, #comparative-genome #section-combination svg .venn-diagram path, #comparative-genome #section-combination svg .venn-diagram text {
+  -moz-transition: opacity 0.2s ease-out;
+  -o-transition: opacity 0.2s ease-out;
+  -webkit-transition: opacity 0.2s ease-out;
+  transition: opacity 0.2s ease-out;
+}
+#comparative-genome #section-combination svg .venn-diagram text {
+  font-size: 14px;
+  font-weight: bold;
+  fill: #000;
+  pointer-events: none;
+}
+#comparative-genome #section-combination svg #venn-shape-set1-0 {
+  fill: #96938D;
+}
+#comparative-genome #section-combination svg #venn-shape-set2-0 {
+  fill: #804040;
+}
+#comparative-genome #section-combination svg #venn-shape-set2-1 {
+  fill: #408080;
+}
+#comparative-genome #section-combination svg #venn-shape-set3-0 {
+  fill: #804040;
+}
+#comparative-genome #section-combination svg #venn-shape-set3-1 {
+  fill: #408040;
+}
+#comparative-genome #section-combination svg #venn-shape-set3-2 {
+  fill: #404080;
+}
+#comparative-genome #section-combination svg #venn-shape-set3-0_1 {
+  fill: #AAAA68;
+}
+#comparative-genome #section-combination svg #venn-shape-set3-0_2 {
+  fill: #AA68AA;
+}
+#comparative-genome #section-combination svg #venn-shape-set3-1_2 {
+  fill: #68AAAA;
+}
+#comparative-genome #section-combination svg #venn-shape-set4-0 {
+  fill: #807040;
+}
+#comparative-genome #section-combination svg #venn-shape-set4-1 {
+  fill: #408050;
+}
+#comparative-genome #section-combination svg #venn-shape-set4-2 {
+  fill: #405080;
+}
+#comparative-genome #section-combination svg #venn-shape-set4-3 {
+  fill: #804070;
+}
+#comparative-genome #section-combination svg #venn-shape-set4-0_1 {
+  fill: #AAC67A;
+}
+#comparative-genome #section-combination svg #venn-shape-set4-0_2 {
+  fill: #AAA6AA;
+}
+#comparative-genome #section-combination svg #venn-shape-set4-0_3 {
+  fill: #CE9B9B;
+}
+#comparative-genome #section-combination svg #venn-shape-set4-1_2 {
+  fill: #68B4B4;
+}
+#comparative-genome #section-combination svg #venn-shape-set4-1_3 {
+  fill: #AAAAA6;
+}
+#comparative-genome #section-combination svg #venn-shape-set4-2_3 {
+  fill: #AA7AC6;
+}
+#comparative-genome #section-combination svg #venn-shape-set4-0_1_2 {
+  fill: #D1E6D7;
+}
+#comparative-genome #section-combination svg #venn-shape-set4-0_1_3 {
+  fill: #E7E3CF;
+}
+#comparative-genome #section-combination svg #venn-shape-set4-0_2_3 {
+  fill: #E7CFE3;
+}
+#comparative-genome #section-combination svg #venn-shape-set4-1_2_3 {
+  fill: #D1D7E6;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0 {
+  fill: #804040;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-1 {
+  fill: #738040;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-2 {
+  fill: #40805A;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-3 {
+  fill: #405A80;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-4 {
+  fill: #734080;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0_1 {
+  fill: #C6AA61;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0_2 {
+  fill: #ACAC81;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0_3 {
+  fill: #AC85AC;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0_4 {
+  fill: #C869A8;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-1_2 {
+  fill: #9ECD88;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-1_3 {
+  fill: #9CBAA9;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-1_4 {
+  fill: #C1A9AA;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-2_3 {
+  fill: #6FBAB2;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-2_4 {
+  fill: #A0AAB7;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-3_4 {
+  fill: #9F85CB;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0_1_2 {
+  fill: #E3E6B5;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0_1_3 {
+  fill: #E3DAD1;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0_1_4 {
+  fill: #EED1D1;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0_2_3 {
+  fill: #D1DADB;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0_2_4 {
+  fill: #E3D1DB;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0_3_4 {
+  fill: #E3B7E7;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-1_2_3 {
+  fill: #C8ECDB;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-1_2_4 {
+  fill: #DEE7DB;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-1_3_4 {
+  fill: #DEDAE7;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-2_3_4 {
+  fill: #C8DAEC;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0_1_2_3 {
+  fill: #F3F6EF;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0_1_2_4 {
+  fill: #F6F4EF;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0_1_3_4 {
+  fill: #F6EFF4;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-0_2_3_4 {
+  fill: #F3EFF6;
+}
+#comparative-genome #section-combination svg #venn-shape-set5-1_2_3_4 {
+  fill: #F0F6F6;
+}
+#comparative-genome #section-combination svg #venn-shape-set2-0_1,
+#comparative-genome #section-combination svg #venn-shape-set3-0_1_2,
+#comparative-genome #section-combination svg #venn-shape-set4-0_1_2_3,
+#comparative-genome #section-combination svg #venn-shape-set5-0_1_2_3_4 {
+  fill: #fff;
+}
+#comparative-genome #section-combination[data-number-of-species="0"] .combination-results {
+  min-height: auto;
+}
+#comparative-genome #section-combination[data-number-of-species="1"] .bar-chart .color-ball.set1-0 {
+  background-color: #96938D;
+}
+#comparative-genome #section-combination[data-number-of-species="1"] #venn-diagram1 {
+  visibility: visible;
+  opacity: 1;
+}
+#comparative-genome #section-combination[data-number-of-species="2"] .bar-chart .color-ball.set2-0 {
+  background-color: #804040;
+}
+#comparative-genome #section-combination[data-number-of-species="2"] .bar-chart .color-ball.set2-1 {
+  background-color: #408080;
+}
+#comparative-genome #section-combination[data-number-of-species="2"] #venn-diagram2 {
+  visibility: visible;
+  opacity: 1;
+}
+#comparative-genome #section-combination[data-number-of-species="3"] .bar-chart .color-ball.set3-0 {
+  background-color: #804040;
+}
+#comparative-genome #section-combination[data-number-of-species="3"] .bar-chart .color-ball.set3-1 {
+  background-color: #408040;
+}
+#comparative-genome #section-combination[data-number-of-species="3"] .bar-chart .color-ball.set3-2 {
+  background-color: #404080;
+}
+#comparative-genome #section-combination[data-number-of-species="3"] .bar-chart .color-ball.set3-0_1 {
+  background-color: #AAAA68;
+}
+#comparative-genome #section-combination[data-number-of-species="3"] .bar-chart .color-ball.set3-0_2 {
+  background-color: #AA68AA;
+}
+#comparative-genome #section-combination[data-number-of-species="3"] .bar-chart .color-ball.set3-1_2 {
+  background-color: #68AAAA;
+}
+#comparative-genome #section-combination[data-number-of-species="3"] #venn-diagram3 {
+  visibility: visible;
+  opacity: 1;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] .bar-chart .color-ball.set4-0 {
+  background-color: #807040;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] .bar-chart .color-ball.set4-1 {
+  background-color: #408050;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] .bar-chart .color-ball.set4-2 {
+  background-color: #405080;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] .bar-chart .color-ball.set4-3 {
+  background-color: #804070;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] .bar-chart .color-ball.set4-0_1 {
+  background-color: #AAC67A;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] .bar-chart .color-ball.set4-0_2 {
+  background-color: #AAA6AA;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] .bar-chart .color-ball.set4-0_3 {
+  background-color: #CE9B9B;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] .bar-chart .color-ball.set4-1_2 {
+  background-color: #68B4B4;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] .bar-chart .color-ball.set4-1_3 {
+  background-color: #AAAAA6;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] .bar-chart .color-ball.set4-2_3 {
+  background-color: #AA7AC6;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] .bar-chart .color-ball.set4-0_1_2 {
+  background-color: #D1E6D7;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] .bar-chart .color-ball.set4-0_1_3 {
+  background-color: #E7E3CF;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] .bar-chart .color-ball.set4-0_2_3 {
+  background-color: #E7CFE3;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] .bar-chart .color-ball.set4-1_2_3 {
+  background-color: #D1D7E6;
+}
+#comparative-genome #section-combination[data-number-of-species="4"] #venn-diagram4 {
+  visibility: visible;
+  opacity: 1;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0 {
+  background-color: #804040;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-1 {
+  background-color: #738040;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-2 {
+  background-color: #40805A;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-3 {
+  background-color: #405A80;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-4 {
+  background-color: #734080;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0_1 {
+  background-color: #C6AA61;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0_2 {
+  background-color: #ACAC81;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0_3 {
+  background-color: #AC85AC;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0_4 {
+  background-color: #C869A8;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-1_2 {
+  background-color: #9ECD88;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-1_3 {
+  background-color: #9CBAA9;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-1_4 {
+  background-color: #C1A9AA;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-2_3 {
+  background-color: #6FBAB2;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-2_4 {
+  background-color: #A0AAB7;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-3_4 {
+  background-color: #9F85CB;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0_1_2 {
+  background-color: #E3E6B5;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0_1_3 {
+  background-color: #E3DAD1;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0_1_4 {
+  background-color: #EED1D1;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0_2_3 {
+  background-color: #D1DADB;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0_2_4 {
+  background-color: #E3D1DB;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0_3_4 {
+  background-color: #E3B7E7;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-1_2_3 {
+  background-color: #C8ECDB;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-1_2_4 {
+  background-color: #DEE7DB;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-1_3_4 {
+  background-color: #DEDAE7;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-2_3_4 {
+  background-color: #C8DAEC;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0_1_2_3 {
+  background-color: #F3F6EF;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0_1_2_4 {
+  background-color: #F6F4EF;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0_1_3_4 {
+  background-color: #F6EFF4;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-0_2_3_4 {
+  background-color: #F3EFF6;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] .bar-chart .color-ball.set5-1_2_3_4 {
+  background-color: #F0F6F6;
+}
+#comparative-genome #section-combination[data-number-of-species="5"] #venn-diagram5 {
+  visibility: visible;
+  opacity: 1;
+}
+#comparative-genome #section-combination .bar-chart {
+  -moz-transition: opacity 0.2s ease-out;
+  -o-transition: opacity 0.2s ease-out;
+  -webkit-transition: opacity 0.2s ease-out;
+  transition: opacity 0.2s ease-out;
+}
+#comparative-genome #section-combination .bar-chart .color-ball.set2-0_1, #comparative-genome #section-combination .bar-chart .color-ball.set3-0_1_2, #comparative-genome #section-combination .bar-chart .color-ball.set4-0_1_2_3, #comparative-genome #section-combination .bar-chart .color-ball.set5-0_1_2_3_4 {
+  background-color: #fff;
+  border: solid 1px #000;
+}
+#comparative-genome #section-combination .bar-chart.set5 + .set4, #comparative-genome #section-combination .bar-chart.set4 + .set3, #comparative-genome #section-combination .bar-chart.set3 + .set2, #comparative-genome #section-combination .bar-chart.set2 + .set1 {
+  border-top-color: #000;
+}
+#comparative-genome #section-combination.hovering .bar-chart {
+  opacity: 0.2;
+}
+#comparative-genome #section-combination.hovering .bar-chart:hover, #comparative-genome #section-combination.hovering .bar-chart.relative {
+  opacity: 1;
+}
+#comparative-genome #section-combination.hovering svg .venn-diagram circle, #comparative-genome #section-combination.hovering svg .venn-diagram path, #comparative-genome #section-combination.hovering svg .venn-diagram text {
+  opacity: 0.2;
+}
+#comparative-genome #section-combination.hovering svg .venn-diagram circle:hover, #comparative-genome #section-combination.hovering svg .venn-diagram circle.relative, #comparative-genome #section-combination.hovering svg .venn-diagram path:hover, #comparative-genome #section-combination.hovering svg .venn-diagram path.relative, #comparative-genome #section-combination.hovering svg .venn-diagram text:hover, #comparative-genome #section-combination.hovering svg .venn-diagram text.relative {
+  opacity: 1;
+}
+#comparative-genome #section-category #category-container {
+  position: relative;
+}
+#comparative-genome #section-category #category-container > .inner {
+  margin: 15px 40px;
+}
+#comparative-genome #section-link-to #link-to-container > .inner {
+  padding: 15px 40px;
+}
+#comparative-genome #section-link-to #link-to-container table {
+  font-size: 14px;
+  line-height: 18px;
+  width: 100%;
+}
+#comparative-genome #section-link-to #link-to-container table th, #comparative-genome #section-link-to #link-to-container table td {
+  padding: 5px 1em 5px 1px;
+  word-wrap: break-word;
+}
+#comparative-genome #section-link-to #link-to-container table thead th {
+  font-weight: bold;
+}
+#comparative-genome #section-link-to #link-to-container table tbody tr {
+  border-top: solid 1px #DEE6E5;
+}
+#comparative-genome #section-link-to #link-to-container table tbody tr:first-child {
+  border-top-color: #333;
+}
+#comparative-genome footer {
+  text-align: center;
+  font-size: 10px;
+  padding: 20px 0;
+  background-color: #DEE6E5;
+  border-top: solid 1px rgba(119, 80, 60, 0.25);
+}
+#comparative-genome .ui-drill-down-menu {
+  padding: 0 0 0 0;
+  height: 100%;
+  position: relative;
+}
+#comparative-genome .ui-drill-down-menu .ui-pop-drill-down-menu {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  top: 6px;
+  left: 0;
+  text-align: center;
+  font-size: 20px;
+  cursor: pointer;
+}
+#comparative-genome .ui-drill-down-menu .ui-pop-drill-down-menu:after {
+  content: "";
+  font-family: 'FontAwesome';
+  font-style: normal;
+  font-size: 20px;
+  color: #3C7177;
+  line-height: 40px;
+}
+#comparative-genome .ui-drill-down-menu menu {
+  list-style: none;
+}
+#comparative-genome .ui-drill-down-menu menu li.item {
+  font-size: 16px;
+  line-height: 18px;
+  padding: 10px 10px;
+  border-top: solid 1px rgba(119, 80, 60, 0.2);
+  position: relative;
+  background-color: #fff;
+  cursor: pointer;
+  -moz-transition: background-color 0.2s ease-out;
+  -o-transition: background-color 0.2s ease-out;
+  -webkit-transition: background-color 0.2s ease-out;
+  transition: background-color 0.2s ease-out;
+}
+#comparative-genome .ui-drill-down-menu menu li.item:after {
+  font-family: 'FontAwesome';
+  font-style: normal;
+  display: block;
+  position: absolute;
+  color: #3C7177;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+#comparative-genome .ui-drill-down-menu menu li.item.item-terminal {
+  font-weight: 400;
+}
+#comparative-genome .ui-drill-down-menu menu li.item.item-terminal:after {
+  content: "";
+}
+#comparative-genome .ui-drill-down-menu menu li.item.has-children {
+  font-style: italic;
+}
+#comparative-genome .ui-drill-down-menu menu li.item.has-children:after {
+  content: "";
+}
+#comparative-genome .ui-drill-down-menu menu li.item:hover {
+  background-color: #DEE6E5;
+}
+@-moz-keyframes modal-window-container {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes modal-window-container {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes modal-window-container {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-moz-keyframes show-modal-window {
+  0% {
+    opacity: 0;
+    top: 47.5%;
+  }
+  100% {
+    opacity: 1;
+    top: 50%;
+  }
+}
+@-webkit-keyframes show-modal-window {
+  0% {
+    opacity: 0;
+    top: 47.5%;
+  }
+  100% {
+    opacity: 1;
+    top: 50%;
+  }
+}
+@keyframes show-modal-window {
+  0% {
+    opacity: 0;
+    top: 47.5%;
+  }
+  100% {
+    opacity: 1;
+    top: 50%;
+  }
+}
+#comparative-genome .modal-window-container {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  top: 0;
+  left: 0;
+  -moz-animation-name: modal-window-container;
+  -webkit-animation-name: modal-window-container;
+  animation-name: modal-window-container;
+  -moz-animation-duration: 0.5s;
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+  -moz-animation-timing-function: ease-out;
+  -webkit-animation-timing-function: ease-out;
+  animation-timing-function: ease-out;
+  -moz-animation-iteration-count: 1;
+  -webkit-animation-iteration-count: 1;
+  animation-iteration-count: 1;
+}
+#comparative-genome .modal-window-container .modal-window {
+  width: 500px;
+  margin: 0 auto;
+  max-height: 200px;
+  overflow-y: scroll;
+  background-color: #fff;
+  border-radius: 10px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  -moz-transition: -moz-transform 0.2s ease-out, height 0.2s ease-out;
+  -o-transition: -o-transform 0.2s ease-out, height 0.2s ease-out;
+  -webkit-transition: -webkit-transform 0.2s ease-out, height 0.2s ease-out;
+  transition: transform 0.2s ease-out, height 0.2s ease-out;
+  -moz-animation-name: show-modal-window;
+  -webkit-animation-name: show-modal-window;
+  animation-name: show-modal-window;
+  -moz-animation-duration: 0.5s;
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+  -moz-animation-timing-function: ease-out;
+  -webkit-animation-timing-function: ease-out;
+  animation-timing-function: ease-out;
+  -moz-animation-iteration-count: 1;
+  -webkit-animation-iteration-count: 1;
+  animation-iteration-count: 1;
+}
+
+/*# sourceMappingURL=comparativegenome.css.map */
