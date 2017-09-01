@@ -392,7 +392,7 @@ Tree.prototype = {
 				return this.diagonal({ source: o, target: o });
 			}.bind(this))
 			.remove();
-			
+
 		// Stash the old positions for transition.
 		nodes.forEach(function(d) {
 			d.x0 = d.x;
@@ -410,7 +410,7 @@ Tree.prototype = {
 
 /**
  * Species class
- * 
+ *
  * @param	data:Object	taxonomy の json データ
  */
 function Species(data, index, targetNode) {
@@ -465,7 +465,7 @@ Species.prototype = {
 
 /**
  * VennDiagram class
- * 
+ *
  * @param	elm:HTMLElement
  * @param	parentElm:HTMLElement
  */
@@ -633,7 +633,7 @@ Application.prototype = {
 			document.getElementById('section-combination')
 			);
 
-		// ナビゲーション	
+		// ナビゲーション
 		this.HeadingNavigation = new HeadingNavigation();
 
 		// インタラクション：Aspect の選択
@@ -733,7 +733,7 @@ Application.prototype = {
 					pride: 'PRIDE'
 				};
 		switch(aspect) {
-			case 'pathway': sparql = '?up up:annotation ?annotation .\n\t?annotation rdf:type up:Pathway_Annotation .\n\t?annotation rdfs:comment ?label .'; break;
+			case 'pathway': sparql = '?up up:annotation ?annotation .\n\t?annotation rdf:type up:Pathway_Annotation .\n\t?annotation rdfs:seeAlso ?pathway .\n\t?pathway rdfs:label ?label .'; break;			
 			case 'location': sparql = '?up up:annotation ?annotation .\n\t?annotation a up:Subcellular_Location_Annotation .\n\t?annotation up:locatedIn/up:cellularComponent ?location .\n\t?location up:alias ?label .'; break;
 			case 'geneontology': sparql = '?up up:classifiedWith ?go .\n\t?go up:database db:go .\n\t?go rdfs:label ?label .'; break;
 			case 'interpro':
@@ -838,7 +838,7 @@ Application.prototype = {
 			results.sort(function(a, b){
 				if( a.taxIds.length > b.taxIds.length ) return -1;
 				if( a.taxIds.length < b.taxIds.length ) return 1;
-				return 0;				
+				return 0;
 			});
 
 			// 結果の描画
