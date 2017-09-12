@@ -1,13 +1,18 @@
 %table.table.table-striped.table-bordered.table-hover.table-condensed
   %thead
     %tr
-      %th Sequence name
-      %th Locus tag
-      %th Product
-      %th Sequence ontology
-      %th Position begin
-      %th Position end
-      %th Sequence
+      %th{rowspan: 2} Sequence name
+      %th{rowspan: 2} Locus tag
+      %th{rowspan: 2} Product
+      %th{rowspan: 2} Sequence ontology
+      %th{colspan: 3} Related Genes
+      %th{rowspan: 2} Position begin
+      %th{rowspan: 2} Position end
+      %th{rowspan: 2} Sequence
+    %tr
+      %th Previous
+      %th Over Lap
+      %th Next
   %tbody
     - genomes.each do |genome|
       %tr
@@ -27,6 +32,21 @@
             %ul
               - genome[:sequence_ontologies].each do |so|
                 %li= link_to so[:name], so[:uri], target: '_blank'
+        %td
+          - if (genes = genome[:previous]).present?
+            %ul
+              - genes.each do |gene|
+                %li= link_to gene[:gene_name], gene[:togogenome], target: '_blank'
+        %td
+          - if (genes = genome[:overlap]).present?
+            %ul
+              - genes.each do |gene|
+                %li= link_to gene[:gene_name], gene[:togogenome], target: '_blank'
+        %td
+          - if (genes = genome[:next]).present?
+            %ul
+              - genes.each do |gene|
+                %li= link_to gene[:gene_name], gene[:togogenome], target: '_blank'
         %td.numeric= number_with_delimiter(genome[:position])
         %td.numeric= number_with_delimiter(genome[:position_end])
         %td= match_snippet(genome[:snippet], genome[:snippet_pos], genome[:position], genome[:position_end])

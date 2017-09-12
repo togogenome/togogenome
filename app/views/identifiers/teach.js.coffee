@@ -1,4 +1,4 @@
-sampleIds = <%=raw @identifiers.to_json %>
+sampleIds = <%=raw @identifiers.uniq.to_json %>
 
 $('textarea#identifiers').val(sampleIds.join("\n"))
 $('div#add-new-id').addClass 'sample'
