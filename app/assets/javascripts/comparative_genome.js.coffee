@@ -309,7 +309,6 @@ Tree.prototype =
       if d.isLeaf
         if d.isSelected
 # 選択を解除
-          window.console.log this, d3.select(this)
           d.isSelected = false
           d3.select(this).classed selected: false
           application.deleteSpecies d, this
@@ -432,7 +431,6 @@ VennDiagram.prototype =
   MARGIN_BOTTOM: 80
   FIXED_TOP: 110
   scroll: ->
-    window.console.log window.scrollY, @$vennDiagram.offset().top
     if window.scrollY + @MARGIN_TOP > @$parent.offset().top
       @$vennDiagram.css
         position: 'fixed'
