@@ -13,61 +13,68 @@ module Sequence
 
         genomes.map do |genome|
           so = results.select {|r| r[:name] == genome.name }
+
           genome.to_h.merge(
             sequence_ontologies: so.map {|r| {uri: r[:sequence_ontology], name: r[:sequence_ontology_name]} },
             locus_tags: so.map {|r| r[:locus_tag] }.compact.uniq,
             products: so.map {|r| r[:product] }.compact.uniq
           ).merge(fetch_genes(genome.refseq, genome.position, genome.position_end))
-        end
+          end
       end
 
       def build_sparqls(gggenome)
-        # slice の理由
-        # gggenome での検索結果が多い時、それらをまとめて1つのSPARQL にすると、
-        # SPARQLのサーバで 'error code 414: uri too large' にひっかかってしまうため Query を分割している
         gggenome.each_slice(300).map do |sub_results|
           <<-SPARQL.strip_heredoc
             DEFINE sql:select-option "order"
             #{SPARQLUtil::PREFIX[:insdc]}
             #{SPARQLUtil::PREFIX[:faldo]}
             #{SPARQLUtil::PREFIX[:obo]}
-            SELECT DISTINCT ?name ?sequence_ontology ?sequence_ontology_name ?locus_tag ?product
-            FROM #{SPARQLUtil::ONTOLOGY[:so]}
+            PREFIX refseq: <http://identifiers.org/refseq/>
+
+            SELECT ?refseq_uri ?seq_label ?togogenome ?gene_name ?faldo_begin ?faldo_end
+            FROM #{SPARQLUtil::ONTOLOGY[:tgup]}
             FROM #{SPARQLUtil::ONTOLOGY[:refseq]}
-            WHERE {
+            {
               {
-                SELECT DISTINCT ?name ?sequence_ontology ?sequence_ontology_name ?feature
+                SELECT ?refseq_uri (MAX(?faldo_end) AS ?max_pos)
+                FROM #{SPARQLUtil::ONTOLOGY[:tgup]}
+                FROM #{SPARQLUtil::ONTOLOGY[:refseq]}
                 WHERE {
-                  VALUES (?name ?position ?position_end ?refseq ?strand ) {
-                    #{bind_values(sub_results)}
+                  VALUES (?refseq_uri ?begin ?end ?dummy1 ?dummy2) {
+                   #{bind_values(sub_results)}
                   }
-                  ?refseq_uri insdc:sequence_version ?refseq .
-                  ?refseq_uri insdc:sequence ?sequence .
-
-                  ?feature obo:so_part_of+ ?sequence .
-                  ?feature faldo:location ?loc .
-                  ?loc faldo:begin/faldo:position ?feature_position_beg .
-                  ?loc faldo:end/faldo:position ?feature_position_end .
-                  ?feature rdfs:subClassOf ?sequence_ontology .
-                  ?sequence_ontology rdfs:label ?sequence_ontology_name .
-
-                  BIND ( IF (?strand = "+", ?feature_position_beg, ?feature_position_end) AS ?begin ).
-                  BIND ( IF (?strand = "+", ?feature_position_end, ?feature_position_beg) AS ?end ).
-                  FILTER(?begin < ?position && ?position < ?end && ?begin != 1)
-                }
+                  ?refseq_uri insdc:sequence ?seq .
+                  ?feature obo:so_part_of ?seq;
+                    rdfs:label ?gene_name;
+                    faldo:location ?loc.
+                  ?loc faldo:begin/faldo:position ?faldo_begin;
+                    faldo:end/faldo:position ?faldo_end.
+                  FILTER(
+                    ?faldo_begin != 1 && (?faldo_begin < ?begin && ?faldo_end < ?begin)
+                  )
+                } GROUP BY ?refseq_uri
               }
-              OPTIONAL { ?feature insdc:locus_tag ?locus_tag . }
-              OPTIONAL { ?feature insdc:product ?product .}
+              ?refseq_uri insdc:sequence ?seq ;
+                rdfs:label ?seq_label .
+              ?feature obo:so_part_of ?seq;
+                rdfs:label ?gene_name;
+                faldo:location ?loc.
+              ?loc faldo:begin/faldo:position ?faldo_begin;
+                faldo:end/faldo:position ?faldo_end.
+              ?togogenome skos:exactMatch ?feature .
+              FILTER( ?faldo_begin = ?max_pos || ?faldo_end = ?max_pos)
             }
-          SPARQL
+            SPARQL
         end
       end
+
+
 
       private
 
       def bind_values(genomes)
         genomes.map { |genome|
-          "( \"#{genome.name}\" #{genome.position} #{genome.position_end} \"#{genome.refseq}\" \"#{genome.strand}\" )"
+          "( refseq:#{genome.refseq} #{genome.position} #{genome.position_end} \"#{genome.name}\" \"#{genome.strand}\" )"
         }.join("\n")
       end
 
