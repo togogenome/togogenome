@@ -1,0 +1,823 @@
+#= require d3sparql
+
+###global d3, CodeMirror, d3sparql ###
+###jshint multistr: true ###
+
+ENDPOINT = 'http://dev.togogenome.org/sparql-test'
+DEFAULT =
+  aspect: 'pathway'
+  species: [
+    9606
+    10090
+    10116
+  ]
+DURATION =
+  scroll: 250
+  css: 200
+TREE =
+  svgHeight: 320
+  lineHeight: 32
+  width: 200
+  nodeSize: 8
+  nodeStrokeWidth: 2
+SPARQLS =
+  step1: '\u0009\u0009\u0009DEFINE sql:select-option "order"\n\u0009\u0009\u0009\n\u0009\u0009\u0009PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\u0009\u0009\u0009PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\u0009\u0009\u0009PREFIX up: <http://purl.uniprot.org/core/>\n\u0009\u0009\u0009PREFIX tax: <http://purl.uniprot.org/taxonomy/>\n\u0009\u0009\u0009PREFIX db: <http://purl.uniprot.org/database/>\n\u0009\u0009\u0009\n\u0009\u0009\u0009SELECT ?orgs (COUNT(?orgs) AS ?count)\n\u0009\u0009\u0009WHERE {\n\u0009\u0009\u0009\u0009SELECT ?label (GROUP_CONCAT(REPLACE(STR(?tax), tax:, "") ;\u0009separator=", ") AS ?orgs)\n\u0009\u0009\u0009\u0009WHERE {\n\u0009\u0009\u0009\u0009\u0009SELECT DISTINCT ?label ?tax\n\u0009\u0009\u0009\u0009\u0009FROM <http://togogenome.org/graph/uniprot>\n\u0009\u0009\u0009\u0009\u0009WHERE {\n\u0009\u0009\u0009\u0009\u0009\u0009VALUES ?tax { @@taxvalues@@ }\n\u0009\u0009\u0009\u0009\u0009\u0009?up up:organism ?tax .\n\u0009\u0009\u0009\u0009\u0009\u0009@@aspect@@\n\u0009\u0009\u0009\u0009\u0009}\n\u0009\u0009\u0009\u0009\u0009ORDER BY ?tax\n\u0009\u0009\u0009\u0009}\n\u0009\u0009\u0009}\n\u0009\u0009\u0009ORDER BY DESC(?count)'
+  step2: '\u0009\u0009\u0009DEFINE sql:select-option "order"\n\u0009\u0009\u0009\n\u0009\u0009\u0009PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\u0009\u0009\u0009PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\u0009\u0009\u0009PREFIX up: <http://purl.uniprot.org/core/>\n\u0009\u0009\u0009PREFIX tax: <http://purl.uniprot.org/taxonomy/>\n\u0009\u0009\u0009PREFIX db: <http://purl.uniprot.org/database/>\n\u0009\u0009\u0009\n\u0009\u0009\u0009SELECT DISTINCT ?label ?sum ?orgs\n\u0009\u0009\u0009WHERE {\n\u0009\u0009\u0009\u0009{\n\u0009\u0009\u0009\u0009\u0009SELECT ?label (SUM(?count) AS ?sum) (GROUP_CONCAT(REPLACE(STR(?tax), tax:, "") ;\u0009separator=", ") AS ?orgs)\n\u0009\u0009\u0009\u0009\u0009WHERE {\n\u0009\u0009\u0009\u0009\u0009\u0009SELECT ?label ?tax (COUNT(?up) AS ?count)\n\u0009\u0009\u0009\u0009\u0009\u0009WHERE {\n\u0009\u0009\u0009\u0009\u0009\u0009\u0009SELECT DISTINCT ?label ?tax ?up\n\u0009\u0009\u0009\u0009\u0009\u0009\u0009FROM <http://togogenome.org/graph/uniprot>\n\u0009\u0009\u0009\u0009\u0009\u0009\u0009WHERE {\n\u0009\u0009\u0009\u0009\u0009\u0009\u0009\u0009VALUES ?tax { @@taxvalues@@ }\n\u0009\u0009\u0009\u0009\u0009\u0009\u0009\u0009?up up:organism ?tax .\n\u0009\u0009\u0009\u0009\u0009\u0009\u0009\u0009@@aspect@@\n\u0009\u0009\u0009\u0009\u0009\u0009\u0009}\n\u0009\u0009\u0009\u0009\u0009\u0009}\n\u0009\u0009\u0009\u0009\u0009\u0009ORDER BY ?tax\n\u0009\u0009\u0009\u0009\u0009}\n\u0009\u0009\u0009\u0009}\n\u0009\u0009\u0009\u0009FILTER (?orgs = "@@taxfilter@@")\n\u0009\u0009\u0009}\n\u0009\u0009\u0009ORDER BY DESC(?sum)'
+  step3: '\u0009\u0009\u0009DEFINE sql:select-option "order"\n\u0009\u0009\u0009\n\u0009\u0009\u0009PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\u0009\u0009\u0009PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\u0009\u0009\u0009PREFIX up: <http://purl.uniprot.org/core/>\n\u0009\u0009\u0009PREFIX tax: <http://purl.uniprot.org/taxonomy/>\n\u0009\u0009\u0009PREFIX db: <http://purl.uniprot.org/database/>\n\u0009\u0009\u0009\n\u0009\u0009\u0009#SELECT DISTINCT ?tg_id ?up_id ?tax_id ?up ?tax\n\u0009\u0009\u0009SELECT DISTINCT ?tg_id ?up_id ?tax_id\n\u0009\u0009\u0009WHERE {\n\u0009\u0009\u0009\u0009GRAPH <http://togogenome.org/graph/uniprot> {\n\u0009\u0009\u0009\u0009\u0009VALUES ?label { @@category@@ }\n\u0009\u0009\u0009\u0009\u0009VALUES ?tax { @@taxvalues@@ }\n\u0009\u0009\u0009\u0009\u0009?up up:organism ?tax .\n\u0009\u0009\u0009\u0009\u0009@@aspect@@\n\u0009\u0009\u0009\u0009}\n\u0009\u0009\u0009\u0009GRAPH <http://togogenome.org/graph/tgup> {\n\u0009\u0009\u0009\u0009\u0009?up_id rdfs:seeAlso ?up .\n\u0009\u0009\u0009\u0009\u0009?tg_id rdfs:seeAlso ?up_id .\n\u0009\u0009\u0009\u0009\u0009?tg_id rdfs:seeAlso ?tax_id .\n\u0009\u0009\u0009\u0009\u0009?tax_id a <http://identifiers.org/taxonomy> .\n\u0009\u0009\u0009\u0009}\n\u0009\u0009\u0009}\n\u0009\u0009\u0009ORDER BY (?tax_id)'
+LINKS_TO_HEADER_LABEL_MAPPING =
+  tg_id: 'TogoGenome ID'
+  up_id: 'UniProt ID'
+  tax_id: 'Taxonomy ID'
+application = undefined
+
+wrapInner = (html) ->
+  '<div class="inner">' + html + '</div>'
+
+###*
+# ノードリストから指定された名を持つノードを検索して返す
+# ノードリストに該当する名が存在しない場合は新規にノードを生成
+# @param	nodes:Array
+# @param	name:String
+###
+
+getNodeWithName = (nodes, name, isSelected) ->
+  hasNode = false
+  index = undefined
+  param = {}
+  index = 0
+  while index < nodes.length
+    if nodes[index].name == name
+      hasNode = true
+      break
+    index++
+  if !hasNode
+#*
+    param.name = name
+    param.isLeaf = false
+    if isSelected
+      param.children = []
+    else
+      param._children = []
+    nodes.push param
+  if nodes[index]._children then nodes[index]._children else nodes[index].children
+
+intersect = (rect1, rect2) ->
+  sx = undefined
+  sy = undefined
+  ex = undefined
+  ey = undefined
+  w = undefined
+  h = undefined
+  sx = Math.max(rect1.x, rect2.x)
+  sy = Math.max(rect1.y, rect2.y)
+  ex = Math.min(rect1.x + rect1.width, rect2.x + rect2.width)
+  ey = Math.min(rect1.y + rect1.height, rect2.y + rect2.height)
+  w = ex - sx
+  h = ey - sy
+  if w > 0 and h > 0
+    {
+      x: sx
+      y: sy
+      width: w
+      height: h
+    }
+  else
+    {
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    }
+
+###*
+# Tree class
+# D3.js の treeを管理するクラス
+# @param	data:Object	taxonomy の json データ
+###
+
+Tree = (data) ->
+#window.console.log(data);
+  deepest = 0
+  species = undefined
+  clades = undefined
+  node = undefined
+  isSelected = undefined
+  isOpened = true
+  # taxonomyの生成
+  # 界の生成
+  i = 0
+  while i < data.length
+# 界の取得
+    species = data[i]
+    isSelected = DEFAULT.species.indexOf(parseInt(species.taxid)) != -1
+    clades = species.clade
+    node = getNodeWithName(@taxonomy.children, species.domain, isSelected)
+    deepest = if deepest > clades.length then deepest else clades.length
+    # 系統樹の生成
+    j = 0
+    while j < clades.length
+      node = getNodeWithName(node, clades[j], isSelected)
+      j++
+    # 種の生成
+    species.name = species.common_name
+    species.isLeaf = true
+    node.push species
+    i++
+  deepest += 3
+  # 系統樹の生成
+  #var svgWidth = data.length * TREE.lineHeight,
+  #		svgHeight = deepest * TREE.width,
+  svgWidth = TREE.svgHeight
+  svgHeight = 320
+  translate = [
+    100
+    0
+  ]
+  zoom = undefined
+  # zoom
+  zoom = d3.behavior.zoom().translate(translate).scaleExtent([
+    0.25
+    8
+  ]).on('zoom', (->
+    @treeGroup.attr 'transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')'
+    return
+  ).bind(this))
+  # svg
+  @svg = d3.select('#species-selector').append('svg')
+  @svg.append('rect').attr('class', 'event-capture').call zoom
+  @treeGroup = @svg.append('g').attr('transform', 'translate(' + translate + ')')
+  # tree
+  @tree = d3.layout.tree().nodeSize([
+    TREE.width
+    TREE.lineHeight
+  ]).separation((a, b) ->
+    if a.parent == b.parent then 1 else 1.5
+  ).size([
+    svgWidth
+    svgHeight
+  ])
+  # diagonal
+  @diagonal = d3.svg.diagonal().projection((d) ->
+    [
+      d.y
+      d.x
+    ]
+  )
+  # make tree
+  @taxonomy.x0 = svgHeight / 2
+  @taxonomy.y0 = 0
+  @update @taxonomy
+  # 表示切替ボタン
+  @$speciesSelector = $('#species-selector')
+  @speciesSelectorWidthMargin = window.innerWidth - @$speciesSelector.width()
+  @$speciesSelector.find('.toggle-button').on 'click', (->
+    if isOpened
+      @$speciesSelector.css('width', '').addClass 'closed'
+      $(window).off 'resize.species-selector'
+    else
+      @$speciesSelector.removeClass 'closed'
+      $(window).on('resize.species-selector', @resize.bind(this)).triggerHandler 'resize.species-selector'
+    isOpened = !isOpened
+    window.setTimeout (->
+      $(window).triggerHandler 'scroll.headingNavigation'
+      return
+    ), DURATION.css + 100
+    return
+  ).bind(this)
+  $(window).on('resize.species-selector', @resize.bind(this)).triggerHandler 'resize.species-selector'
+  return
+
+###*
+# Species class
+#
+# @param	data:Object	taxonomy の json データ
+###
+
+Species = (data, index, targetNode) ->
+  html = undefined
+  @index = index
+  @data = data
+  #this.commonName = data.common_name;
+  #this.scientificName = data.scientific_name;
+  @taxId = data.taxid
+  @wikipedia = data.wikipedia
+  @targetNode = targetNode
+  # htmlの生成
+  if !@$container
+    @$container = $('#section-species').children('.species-container')
+  html = '<div class="species" data-index="@@index@@">\u0009\u0009\u0009<div class="color-ball"></div>\u0009\u0009\u0009<h3>@@common_name@@</h3>\u0009\u0009\u0009<p class="scientific-name">@@scientific_name@@</p>\u0009\u0009\u0009<div class="close-button"></div>\u0009\u0009</div>'.replace(/@@index@@/, @index + '').replace(/@@common_name@@/, data.common_name + '').replace(/@@scientific_name@@/, data.scientific_name)
+  @$container.append html
+  @$ = @$container.children('.species').last()
+  @$.find('.close-button').on 'click', @clickCloseButton.bind(this)
+  return
+
+###*
+# VennDiagram class
+#
+# @param	elm:HTMLElement
+# @param	parentElm:HTMLElement
+###
+
+VennDiagram = (elm, parentElm) ->
+  @vennDiagram = elm
+  @$vennDiagram = $(elm)
+  @$parent = $(parentElm)
+  @vennDiagramHeight = @$vennDiagram.height()
+  #$(window).on('scroll.venn-diagram', this.scroll.bind(this));
+  return
+
+###*
+# Heading Navigation class
+# 見出しによるナビゲーション
+# 画面上下に吸着し、ナビゲーションとして機能
+# @param	data:Object	taxonomy の json データ
+###
+
+HeadingNavigation = ->
+  self = this
+  headingHeight = $('.section > header').height()
+  $section = $('.section')
+  @sections = []
+  @$window = $(window)
+  @$scroll = $('body, html')
+  $section.each (index) ->
+    $this = $(this)
+    $heading = $this.children('header')
+    self.sections.push
+      $section: $this
+      $heading: $heading
+      top: headingHeight * index
+      bottom: headingHeight * ($section.length - 1 - index)
+      position: undefined
+    $heading.data('index', index).on 'click', ->
+      if $this.hasClass('disabled')
+        return
+      self.scrollTo $(this).data('index')
+      return
+    return
+  @$window.on('scroll.headingNavigation', @scroll.bind(this)).triggerHandler 'scroll.headingNavigation'
+  return
+
+###*
+# Application class
+# アプリ全体を管理するクラス
+###
+
+Application = ->
+
+Tree.prototype =
+  DURATION: 750
+  taxonomy:
+    name: 'Taxonomy'
+    children: []
+    isLeaf: false
+  nodeIndex: 0
+  svg: undefined
+  treeGroup: undefined
+  tree: undefined
+  diagonal: undefined
+  update: (source) ->
+    nodes = undefined
+    node = undefined
+    nodeEnter = undefined
+    nodeUpdate = undefined
+    nodeExit = undefined
+    leafNode = undefined
+    links = undefined
+    link = undefined
+    self = this
+    nodes = @tree.nodes(@taxonomy).reverse()
+    links = @tree.links(nodes)
+    # Normalize for fixed-depth.
+    nodes.forEach (d) ->
+      d.y = d.depth * 180
+      return
+    # Update the nodes…
+    node = @treeGroup.selectAll('g.node').data(nodes, ((d) ->
+      d.id or (d.id = ++@nodeIndex)
+    ).bind(this))
+    # Enter any new nodes at the parent's previous position.
+    nodeEnter = node.enter().append('g').attr(
+      class: (d) ->
+        'node' + (if d.isLeaf then ' leaf' else '') + (if d._children then ' collapsed' else '') + (if d.children then ' expanded' else '')
+      transform: ->
+        'translate(' + [
+          source.y0
+          source.x0
+        ] + ')'
+    ).on('click', (d) ->
+      if d.isLeaf
+        if d.isSelected
+# 選択を解除
+          window.console.log this, d3.select(this)
+          d.isSelected = false
+          d3.select(this).classed selected: false
+          application.deleteSpecies d, this
+        else
+# 種を選択
+          if application.setSpecies(d, this)
+# 選択に成功したら、選択状態に
+            d.isSelected = true
+            d3.select(this).classed selected: true
+      else
+        if d._children
+# 閉じてる
+          d3.select(this).classed
+            collapsed: false
+            expanded: true
+          d.children = d._children
+          d._children = null
+        else
+# 開いてる
+          d3.select(this).classed
+            collapsed: true
+            expanded: false
+          d._children = d.children
+          d.children = null
+        self.update d
+      return
+    )
+    #.on('click', this.click.bind(this));
+    nodeEnter.append('circle').attr 'r', 1e-6
+    nodeEnter.append('text').attr('text-anchor', (d) ->
+      if d.isLeaf then 'start' else 'end'
+    ).text((d) ->
+      d.name
+    ).style 'fill-opacity', 1e-6
+    # Transition nodes to their new position.
+    nodeUpdate = node.transition().duration(@DURATION).attr('transform', (d) ->
+      'translate(' + [
+        d.y
+        d.x
+      ] + ')'
+    )
+    nodeUpdate.select('circle').attr 'r', TREE.nodeSize - (TREE.nodeStrokeWidth)
+    nodeUpdate.select('text').style 'fill-opacity', 1
+    # Transition exiting nodes to the parent's new position.
+    nodeExit = node.exit().transition().duration(@DURATION).attr('transform', ->
+      'translate(' + [
+        source.y
+        source.x
+      ] + ')'
+    ).remove()
+    nodeExit.select('circle').attr 'r', 1e-6
+    nodeExit.select('text').style 'fill-opacity', 1e-6
+    # leaf
+    leafNode = @treeGroup.selectAll('.node.leaf')
+    leafNode.attr 'data-tax-id', (d) ->
+      d.taxid
+    leafNode.selectAll('circle').attr 'r', TREE.nodeSize
+    leafNode.append('rect').attr
+      class: 'plus1'
+      width: 2
+      height: 8
+    leafNode.append('rect').attr
+      class: 'plus2'
+      width: 8
+      height: 2
+    # link
+    # Update the links…
+    link = @treeGroup.selectAll('path.link').data(links, (d) ->
+#window.console.log(d.target.id);
+      d.target.id
+    )
+    # Enter any new links at the parent's previous position.
+    link.enter().insert('path', 'g').attr
+      class: 'link'
+      d: (->
+        o =
+          x: source.x0
+          y: source.y0
+        @diagonal
+          source: o
+          target: o
+      ).bind(this)
+    # Transition links to their new position.
+    link.transition().duration(@DURATION).attr 'd', @diagonal
+    # Transition exiting nodes to the parent's new position.
+    link.exit().transition().duration(@DURATION).attr('d', (->
+      o =
+        x: source.x
+        y: source.y
+      @diagonal
+        source: o
+        target: o
+    ).bind(this)).remove()
+    # Stash the old positions for transition.
+    nodes.forEach (d) ->
+      d.x0 = d.x
+      d.y0 = d.y
+      return
+    return
+  resize: ->
+    @$speciesSelector.width window.innerWidth - (@speciesSelectorWidthMargin)
+    return
+Species.prototype =
+  $container: undefined
+  clickCloseButton: ->
+    event = new MouseEvent('click')
+    @targetNode.dispatchEvent event
+    return
+  updateByDeleteTaxId: (taxId, index) ->
+    if taxId == @data.taxid
+      window.console.log '消す'
+      @$.remove()
+      true
+    else
+      @index = index
+      @$.attr 'data-index', index
+      false
+VennDiagram.prototype =
+  MARGIN_TOP: 80
+  MARGIN_BOTTOM: 80
+  FIXED_TOP: 110
+  scroll: ->
+    window.console.log window.scrollY, @$vennDiagram.offset().top
+    if window.scrollY + @MARGIN_TOP > @$parent.offset().top
+      @$vennDiagram.css
+        position: 'fixed'
+        top: @FIXED_TOP
+    else
+      @$vennDiagram.css
+        position: ''
+        top: ''
+    return
+HeadingNavigation.prototype =
+  scroll: ->
+    scrollTop = @$window.scrollTop()
+    windowHeight = @$window.innerHeight()
+    @sections.forEach (section) ->
+      top = section.$section.offset().top
+      height = section.$heading.height()
+      position = 0
+      if scrollTop > top - (section.top)
+        position = -1
+      if scrollTop + windowHeight < top + height + section.bottom
+        position = 1
+      if section.position != position
+        section.position = position
+        switch position
+          when -1
+            section.$section.addClass('sticked').removeClass 'bottom'
+            section.$heading.css
+              top: section.top
+              bottom: ''
+          when 0
+            section.$section.removeClass('sticked').addClass 'bottom'
+            section.$heading.css
+              top: ''
+              bottom: ''
+          when 1
+            section.$section.addClass 'sticked bottom'
+            section.$heading.css
+              top: ''
+              bottom: section.bottom
+      return
+    return
+  scrollTo: (index) ->
+    @$scroll.animate { scrollTop: @sections[index].$section.offset().top - (@sections[index].top) + 2 }, duration: DURATION.scroll
+    return
+Application.prototype =
+  MAX_OF_TAXON: 5
+  initialize: (data) ->
+#window.console.log(data);
+    self = this
+    treeLeafNode = undefined
+    #this.species = []; // TODO: デフォルトを定義
+    # reference
+    @$aspectH2 = $('#section-aspect h2 strong')
+    @$speciesH2 = $('#section-species h2 strong')
+    @$combinationH2 = $('#section-combination h2 strong')
+    @$categoryH2 = $('#section-category h2 strong')
+    @$sectionSpecies = $('#section-species')
+    @$sectionSpecies.attr 'data-number-of-species', 0
+    @$sectionCombination = $('#section-combination')
+    @$combinationResultsGraph = $('#combination-results-graph')
+    @d3VennDiagrams = d3.selectAll('.venn-diagram')
+    @d3VennDiagramTexts = @d3VennDiagrams.selectAll('text')
+    @$sectionCategory = $('#section-category')
+    @$categoryContainer = $('#category-container')
+    @$sectionLinkTo = $('#section-link-to')
+    @$linkToContainer = $('#link-to-container')
+    @$sectionCombination.addClass 'disabled'
+    @$sectionCategory.addClass 'disabled'
+    @$sectionLinkTo.addClass 'disabled'
+    # cache
+    @data = data
+    @cache =
+      aspect: undefined
+      species: []
+      taxIds: undefined
+    # タクソンツリーの生成
+    @tree = new Tree(data)
+    # ベン図
+    @vennDiagram = new VennDiagram(document.getElementById('venn-diagrams'), document.getElementById('section-combination'))
+    # ナビゲーション
+    @HeadingNavigation = new HeadingNavigation
+    # インタラクション：Aspect の選択
+    $('#aspects-selector input[type="radio"]').click ->
+      $parent = $(this).parent()
+      labelText = $parent.text()
+      smallText = $parent.find('small').text()
+      labelText = labelText.replace(smallText, '')
+      self.setAspect labelText, @value
+      return
+    treeLeafNode = @$sectionSpecies.find('g.node.leaf')
+    # デフォルトの選択
+    $('#aspects-selector').find('input[value="' + DEFAULT.aspect + '"]').trigger 'click'
+    DEFAULT.species.forEach (d) ->
+      $g = treeLeafNode.filter('[data-tax-id="' + d + '"]')
+      event = new MouseEvent('click')
+      $g.get(0).dispatchEvent event
+      return
+    return
+  getValueWithKeyValue: (key1, key2, value) ->
+    value = value + ''
+    i = 0
+    while i < @data.length
+      if @data[i][key2] == value
+        return @data[i][key1]
+      i++
+    return
+  setAspect: (label, value) ->
+    @$aspectH2.text label
+    @cache.aspect = value
+    @step1()
+    return
+  setSpecies: (data, targetNode) ->
+    species = undefined
+    if @cache.species.length >= @MAX_OF_TAXON
+      window.alert 'Species は5種までしか選択できません'
+      false
+    else
+      species = new Species(data, @cache.species.length, targetNode)
+      @cache.species.push species
+      @updateSpecies()
+      true
+  deleteSpecies: (data, targetNode) ->
+    newSpecies = []
+    isLDead = undefined
+    @cache.species.forEach (species, index) ->
+      isLDead = species.updateByDeleteTaxId(data.taxid, newSpecies.length)
+      if !isLDead
+        newSpecies.push species
+      return
+    @cache.species = newSpecies
+    @updateSpecies()
+    return
+  updateSpecies: ->
+    html = if @cache.species.length == 0 then '--' else ''
+    # data
+    @$sectionSpecies.attr 'data-number-of-species', @cache.species.length
+    @$sectionCombination.attr 'data-number-of-species', @cache.species.length
+    # heading
+    @cache.species.forEach (species, index, array) ->
+      html += '<span data-index="@@index@@">@@name@@</span>'.replace(/@@index@@/, species.index).replace(/@@name@@/, species.data.common_name + (if index < array.length - 1 then ',' else ''))
+      return
+    @$speciesH2.html html
+    @step1()
+    return
+  aspectSparql: (aspect) ->
+    sparql = ''
+    mapping =
+      interpro: 'InterPro'
+      pfam: 'Pfam'
+      supfam: 'SUPFAM'
+      prosite: 'PROSITE'
+      reactome: 'Reactome'
+      ctd: 'CTD'
+      cazy: 'CAZy'
+      brenda: 'BRENDA'
+      eggnog: 'eggNOG'
+      genetree: 'GeneTree'
+      hogenom: 'HOGENOM'
+      hovergen: 'HOVERGEN'
+      inparanoid: 'InParanoid'
+      ko: 'KO'
+      oma: 'OMA'
+      orthodb: 'OrthoDB'
+      phylomedb: 'PhylomeDB'
+      treefam: 'TreeFam'
+      nextbio: 'NextBio'
+      paxdb: 'PaxDb'
+      pride: 'PRIDE'
+    switch aspect
+      when 'pathway'
+        sparql = '?up up:annotation ?annotation .\n\u0009?annotation rdf:type up:Pathway_Annotation .\n\u0009?annotation rdfs:comment ?label .'
+      when 'location'
+        sparql = '?up up:annotation ?annotation .\n\u0009?annotation a up:Subcellular_Location_Annotation .\n\u0009?annotation up:locatedIn/up:cellularComponent ?location .\n\u0009?location up:alias ?label .'
+      when 'geneontology'
+        sparql = '?up up:classifiedWith ?go .\n\u0009?go up:database db:go .\n\u0009?go rdfs:label ?label .'
+      when 'interpro', 'pfam', 'supfam', 'prosite', 'reactome', 'cazy'
+        sparql = @dbsparql(mapping[aspect])
+      when 'ctd', 'brenda', 'eggnog', 'genetree', 'hogenom', 'hovergen', 'inparanoid', 'ko', 'oma', 'orthodb', 'phylomedb', 'treefam', 'nextbio', 'paxdb', 'pride'
+        sparql = @dbsparql_link(mapping[aspect])
+    sparql
+  dbsparql: (db) ->
+    '\u0009\u0009\u0009?up rdfs:seeAlso ?link .\n\u0009\u0009\u0009?link up:database db:@@database@@ .\n\u0009\u0009\u0009?link rdfs:comment ?label .'.replace /@@database@@/, db
+  dbsparql_link: (db) ->
+    '\u0009\u0009\u0009?up rdfs:seeAlso ?label .\n\u0009\u0009\u0009?label up:database db:@@database@@ .'.replace /@@database@@/, db
+  step1: ->
+    self = this
+    taxIds = undefined
+    commonNames = undefined
+    sparql = undefined
+    # 既存の結果の削除
+    @$combinationH2.empty()
+    @$combinationResultsGraph.empty()
+    @$sectionCategory.addClass 'disabled'
+    @$categoryContainer.empty()
+    @$categoryH2.empty()
+    @$sectionLinkTo.addClass 'disabled'
+    @$linkToContainer.empty()
+    if !@cache.aspect or @cache.species.length == 0
+      @$sectionCombination.addClass 'disabled'
+      return
+    @$sectionCombination.addClass 'loading'
+    # クエリ
+    taxIds = @cache.species.map((taxon) ->
+      taxon.taxId
+    )
+    commonNames = @cache.species.map((taxon) ->
+      taxon.data.common_name
+    )
+    sparql = SPARQLS.step1.replace(/@@taxvalues@@/, 'tax:' + taxIds.join(' tax:')).replace(/@@aspect@@/, @aspectSparql(@cache.aspect))
+    d3sparql.query ENDPOINT, sparql, ((response) ->
+      html = ''
+      results = response.results.bindings
+      setPrefix = 'set' + @cache.species.length + '-'
+      unsortedTaxIds = undefined
+      count = []
+      max = undefined
+      commonNames2 = undefined
+      setValue = undefined
+      barWidth = undefined
+      # 有効化
+      @$sectionCombination.removeClass 'disabled loading'
+      @d3VennDiagramTexts.text ''
+      # 結果のソート
+      results.forEach (d) ->
+        unsortedTaxIds = d.orgs.value.split(', ')
+        d.taxIds = []
+        d.taxIdIndices = []
+        taxIds.forEach (taxId, index) ->
+          if unsortedTaxIds.indexOf(taxId) != -1
+            d.taxIds.push taxId
+            d.taxIdIndices.push index
+          return
+        count.push parseInt(d.count.value)
+        return
+      max = Math.max.apply(null, count)
+      results.sort (a, b) ->
+        if a.taxIds.length > b.taxIds.length
+          return -1
+        if a.taxIds.length < b.taxIds.length
+          return 1
+        0
+      # 結果の描画
+      results.forEach (d) ->
+# 結果の描画：図表
+        commonNames2 = d.taxIdIndices.map((taxIdIndex) ->
+          commonNames[taxIdIndex]
+        )
+        setValue = setPrefix + d.taxIdIndices.join('_')
+        barWidth = parseInt(d.count.value) / max * 100
+        html += '\u0009\u0009\u0009\u0009\u0009<div class="bar-chart set' + d.taxIds.length + '" data-set="' + setValue + '" data-value="' + d.orgs.value + '">\u0009\u0009\u0009\u0009\u0009\u0009<p class="bar-name">' + commonNames2.join('<span class="sign">∩</span>') + '</p>\u0009\u0009\u0009\u0009\u0009\u0009<div class="color-ball ' + setValue + '"></div>\u0009\u0009\u0009\u0009\u0009\u0009<div class="bar' + (if barWidth >= 50 then ' over-half' else '') + '" style="width: ' + barWidth + '%;"><span>' + d.count.value + '</span></div>\u0009\u0009\u0009\u0009\u0009</div>'
+        # 結果の描画：ベン図
+        d3.select('#venn-text-' + setPrefix + d.taxIdIndices.join('_')).text d.count.value
+        return
+      @$combinationResultsGraph.empty().append wrapInner(html)
+      # イベント
+      @$combinationResultsGraph.find('.bar-chart').on
+        mouseenter: ->
+          self.$sectionCombination.addClass 'hovering'
+          if !@d3TargetShape
+            @d3TargetShape = d3.select('#venn-shape-' + @dataset.set)
+            @d3TargetText = d3.select('#venn-text-' + @dataset.set)
+          @d3TargetShape.classed relative: true
+          @d3TargetText.classed relative: true
+          return
+        mouseleave: ->
+          self.$sectionCombination.removeClass 'hovering'
+          @d3TargetShape.classed relative: false
+          @d3TargetText.classed relative: false
+          return
+        click: ->
+          $(this).siblings().removeClass('selected').end().addClass 'selected'
+          self.step2 @dataset.value
+          return
+      @d3VennDiagrams.selectAll('.part').on('mouseenter', ->
+        self.$sectionCombination.addClass 'hovering'
+        setName = @id.replace('venn-shape-', '')
+        @$targetBar = self.$combinationResultsGraph.find('[data-set="' + setName + '"]')
+        @d3TargetText = d3.select('#venn-text-' + setName)
+        @$targetBar.addClass 'relative'
+        @d3TargetText.classed relative: true
+        return
+      ).on('mouseleave', ->
+        self.$sectionCombination.removeClass 'hovering'
+        @$targetBar.removeClass 'relative'
+        @d3TargetText.classed relative: false
+        return
+      ).on 'click', ->
+        $(@$targetBar).trigger 'click'
+        return
+      return
+    ).bind(this)
+    return
+  step2: (taxIds) ->
+    self = this
+    sparql = undefined
+    html = ''
+    results = undefined
+    barWidth = undefined
+    sum = undefined
+    max = undefined
+    @cache.taxIds = taxIds
+    # 有効化
+    taxIds2 = @cache.taxIds.split(', ').map((taxId) ->
+      parseInt taxId
+    )
+    commonNames = taxIds2.map((taxId) ->
+      self.getValueWithKeyValue 'common_name', 'taxid', taxId
+    )
+    @$combinationH2.html commonNames.join('<span class="sign">∩</span>')
+    #this.$sectionCategory.removeClass('disabled');
+    # 既存の結果の削除
+    @$categoryContainer.empty()
+    @$categoryH2.empty()
+    @$sectionLinkTo.addClass 'disabled'
+    @$linkToContainer.empty()
+    @$sectionCategory.addClass 'loading'
+    # クエリ
+    sparql = SPARQLS.step2.replace(/@@taxvalues@@/, @taxIdsWithString(@cache.taxIds)).replace(/@@taxfilter@@/, @cache.taxIds).replace(/@@aspect@@/, @aspectSparql(@cache.aspect))
+    d3sparql.query ENDPOINT, sparql, (response) ->
+      results = response.results.bindings
+      # 有効化
+      self.$sectionCategory.removeClass 'disabled loading'
+      # 最大値
+      sum = results.map((result) ->
+        parseInt result.sum.value
+      )
+      max = Math.max.apply(null, sum)
+      # グラフの描画
+      results.forEach (d) ->
+        barWidth = parseInt(d.sum.value) / max * 100
+        html += '\u0009\u0009\u0009\u0009\u0009<div class="bar-chart" data-value="' + d.label.value + '">\u0009\u0009\u0009\u0009\u0009\u0009<p class="bar-name">' + d.label.value + '</p>\u0009\u0009\u0009\u0009\u0009\u0009<div class="bar' + (if barWidth >= 50 then ' over-half' else '') + '" style="width: ' + barWidth + '%;"><span>' + d.sum.value + '</span></div>\u0009\u0009\u0009\u0009\u0009</div>'
+        return
+      self.$categoryContainer.html wrapInner(html)
+      # イベント
+      self.$categoryContainer.find('.bar-chart').on 'click', ->
+        $(this).siblings().removeClass('selected').end().addClass 'selected'
+        self.step3 @dataset.value
+        return
+      return
+    return
+  step3: (category) ->
+    self = this
+    sparql = undefined
+    header = undefined
+    results = undefined
+    html = undefined
+    # 有効化
+    @$categoryH2.text category
+    # 既存の結果の削除
+    @$linkToContainer.empty()
+    @$sectionLinkTo.addClass 'loading'
+    # クエリ
+    if category.indexOf('http://purl.uniprot.org') < 0
+      @category = '"' + category + '"'
+    else
+      @category = '<' + category + '>'
+    sparql = SPARQLS.step3.replace(/@@taxvalues@@/, @taxIdsWithString(@cache.taxIds)).replace(/@@category@@/, @category).replace(/@@aspect@@/, @aspectSparql(@cache.aspect))
+    d3sparql.query ENDPOINT, sparql, (response) ->
+# 有効化
+      self.$sectionLinkTo.removeClass 'disabled loading'
+      header = response.head.vars
+      results = response.results.bindings
+      html = '<table><thead>@@thead@@</thead><tbody>@@tbody@@</tbody></table>'.replace(/@@thead@@/, header.map((value) ->
+        '<th>' + LINKS_TO_HEADER_LABEL_MAPPING[value] + '</th>'
+      ).join('')).replace(/@@tbody@@/, results.map((value) ->
+        tr = header.map((headerEml) ->
+          '<td><a href="@@uri@@" target="_blank">@@uri@@</a></td>'.replace /@@uri@@/g, value[headerEml].value
+        ).join('')
+        '<tr>' + tr + '</tr>'
+      ).join(''))
+      self.$linkToContainer.html wrapInner(html)
+      return
+    return
+  taxIdsWithArray: (array) ->
+    array.map((d) ->
+      'tax:' + d
+    ).join ' '
+  taxIdsWithString: (string) ->
+    string.split(', ').map((d) ->
+      'tax:' + d
+    ).join ' '
+$ ->
+  application = new Application
+  # taxon の読み込み
+  d3.json 'taxonomy.json', (data) ->
+    application.initialize data
+    return
+  return
