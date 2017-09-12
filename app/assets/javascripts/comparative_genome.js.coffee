@@ -144,7 +144,7 @@ Tree = (data) ->
   ).bind(this))
   # svg
   @svg = d3.select('#species-selector').append('svg')
-  @svg.append('rect').attr('class', 'event-capture').call zoom
+  @svg.append('rect').attr('class', 'event-capture')
   @treeGroup = @svg.append('g').attr('transform', 'translate(' + translate + ')')
   # tree
   @tree = d3.layout.tree().nodeSize([
