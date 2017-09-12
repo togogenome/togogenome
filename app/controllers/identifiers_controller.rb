@@ -1,7 +1,7 @@
 class IdentifiersController < ApplicationController
   def convert(identifiers, databases)
     @identifiers, @databases = identifiers, databases
-    @hits_count    = Identifier.count(identifiers, databases)
+    @hits_count = Identifier.count(identifiers, databases)
 
     respond_to do |format|
       format.js do

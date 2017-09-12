@@ -19,9 +19,7 @@ class Identifier
     def convert(identifiers, db_names, limit=100, offset=0)
       sparql = <<-SPARQL.strip_heredoc
         DEFINE sql:select-option "order"
-
         #{build_convert_sparql(identifiers, db_names)}
-
         LIMIT #{limit}
         OFFSET #{offset}
       SPARQL
@@ -30,35 +28,23 @@ class Identifier
     end
 
     def sample(db_names)
-      input_database, *convert_databases = db_names
-
       sparql = <<-SPARQL.strip_heredoc
         DEFINE sql:select-option "order"
-        SELECT DISTINCT #{select_target(db_names)}
-        FROM #{SPARQLUtil::ONTOLOGY[:edgestore]}
-        WHERE {
-          ?node0 rdf:type <http://identifiers.org/#{input_database}> .
-          #{mapping(convert_databases)}
-        }
+        SELECT DISTINCT ?node0
+        #{make_sample_where_clause(db_names)}
         LIMIT 2
       SPARQL
 
-      query(sparql).uniq_by {|i| i[:node0] }
+      identifiers = query(sparql).map { |h| h[:node0].split('/').last }
+      convert(identifiers, db_names, 100, 0)
     end
 
     private
 
     def build_convert_sparql(identifiers, db_names)
-      input_database, *convert_databases = db_names
-      values = identifiers.map {|identifier| "<http://identifiers.org/#{input_database}/#{identifier}>" }.join(' ')
-
       <<-SPARQL.strip_heredoc
         SELECT DISTINCT #{select_target(db_names)}
-        FROM #{SPARQLUtil::ONTOLOGY[:edgestore]}
-        WHERE {
-          VALUES ?node0 { #{values} }
-          #{mapping(convert_databases)}
-        }
+        #{make_convert_where_clause(identifiers, db_names)}
       SPARQL
     end
 
@@ -66,13 +52,73 @@ class Identifier
       db_names.count.times.map {|i| "?node#{i}" }.join(' ')
     end
 
-    def mapping(databases)
-      databases.map.with_index {|db_name, i|
-        <<-SPARQL
-          ?node#{i} ?seeAlso ?node#{i.succ} .
+    def mapping(db_names, start_index = 0)
+      db_names.map.with_index(start_index) { |db_name, i|
+        <<-EOS
+          ?node#{i} rdfs:seeAlso ?node#{i.succ} .
           ?node#{i.succ} rdf:type <http://identifiers.org/#{db_name}> .
-        SPARQL
-      }.join("\n")
+        EOS
+      }.join
+    end
+
+    def make_graph(db_names)
+      g = [make_tgup_graph(db_names), make_edgestore_graph(db_names)]
+      (db_names.first == 'togogenome' ? g : g.reverse).join
+    end
+
+    def make_sample_where_clause(db_names)
+      <<-EOS
+        WHERE {
+          #{make_graph(db_names)}
+        }
+      EOS
+    end
+
+    def make_convert_where_clause(identifiers, db_names)
+      <<-EOS
+        WHERE {
+          VALUES ?node0 { #{make_values(db_names.first, identifiers)} }
+          #{make_graph(db_names)}
+        }
+      EOS
+    end
+
+    def make_values(input_database, identifiers)
+      if input_database == 'togogenome'
+        identifiers.map { |identifier| "<http://togogenome.org/gene/#{identifier}>" }
+      else
+        identifiers.map { |identifier| "<http://identifiers.org/#{input_database}/#{identifier}>" }
+      end.join(' ')
+    end
+
+    def make_edgestore_graph(db_names)
+      input_database, *convert_databases = db_names
+
+      if input_database == 'togogenome'
+        <<-EOS
+          GRAPH #{SPARQLUtil::ONTOLOGY[:edgestore]} {
+            ?node1 rdf:type <http://identifiers.org/uniprot> .
+            #{mapping(convert_databases.drop(1), 1)}
+          }
+        EOS
+      else
+        convert_databases.pop if convert_databases.last == 'togogenome'
+        <<-EOS
+          GRAPH #{SPARQLUtil::ONTOLOGY[:edgestore]} {
+            ?node0 rdf:type <http://identifiers.org/#{input_database}> .
+            #{mapping(convert_databases)}
+          }
+        EOS
+      end
+    end
+
+    def make_tgup_graph(db_names)
+      return '' unless db_names.include?('togogenome')
+      <<-EOS
+        GRAPH #{SPARQLUtil::ONTOLOGY[:tgup]} {
+          ?#{"node#{db_names.index('togogenome')}"} rdfs:seeAlso ?#{"node#{db_names.index('uniprot')}"} .
+        }
+      EOS
     end
   end
 end
