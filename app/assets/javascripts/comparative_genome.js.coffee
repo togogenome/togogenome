@@ -410,7 +410,7 @@ Tree.prototype =
       return
     return
   resize: ->
-    @$speciesSelector.width window.innerWidth - (@speciesSelectorWidthMargin)
+    @$speciesSelector.width 'calc(100% - 24px)'
     return
 Species.prototype =
   $container: undefined
@@ -446,11 +446,12 @@ HeadingNavigation.prototype =
   scroll: ->
     scrollTop = @$window.scrollTop()
     windowHeight = @$window.innerHeight()
+    PADDING_TOP = 46
     @sections.forEach (section) ->
       top = section.$section.offset().top
       height = section.$heading.height()
       position = 0
-      if scrollTop > top - (section.top)
+      if scrollTop > top - (section.top) - PADDING_TOP
         position = -1
       if scrollTop + windowHeight < top + height + section.bottom
         position = 1
@@ -460,7 +461,7 @@ HeadingNavigation.prototype =
           when -1
             section.$section.addClass('sticked').removeClass 'bottom'
             section.$heading.css
-              top: section.top
+              top: section.top + PADDING_TOP
               bottom: ''
           when 0
             section.$section.removeClass('sticked').addClass 'bottom'
@@ -816,6 +817,8 @@ Application.prototype =
     ).join ' '
 $ ->
   application = new Application
+  # TogoGenome 埋め込みにあたっての処置
+  $('#search-methods-selector').css zIndex: 10000
   # taxon の読み込み
   d3.json 'taxonomy.json', (data) ->
     application.initialize data
