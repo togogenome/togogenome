@@ -9,8 +9,9 @@ module Sequence
         genomes = Sequence::GggenomeSearch.search(sequence)
 
         # sparqls = build_sparqls(genomes)
-        sparqls = next_gene_build_sparqls(genomes)
-        results = sparqls.flat_map {|sparql| query(sparql) }
+        #sparqls = next_gene_build_sparqls(genomes)
+        sparqls = overlap_gene_build_sparqls(genomes)
+        results = sparqls.flat_map { |sparql| query(sparql) }
 
         genomes.map do |genome|
           so = results.select {|r| r[:name] == genome.name }
@@ -67,47 +68,82 @@ module Sequence
       #       }
       #     SPARQL
       # end
-      def next_gene_build_sparqls(gggenome)
+
+      # def next_gene_build_sparqls(gggenome)
+      #   gggenome.each_slice(300).map do |sub_results|
+      #     <<-SPARQL.strip_heredoc
+      #       DEFINE sql:select-option "order"
+      #       #{SPARQLUtil::PREFIX[:insdc]}
+      #       #{SPARQLUtil::PREFIX[:faldo]}
+      #       #{SPARQLUtil::PREFIX[:obo]}
+      #       #{SPARQLUtil::PREFIX[:refseq]}
+      #
+      #       SELECT ?refseq_uri ?seq_label ?togogenome ?gene_name ?faldo_begin ?faldo_end
+      #       FROM #{SPARQLUtil::ONTOLOGY[:tgup]}
+      #       FROM #{SPARQLUtil::ONTOLOGY[:refseq]}
+      #       {
+      #         {
+      #           SELECT ?refseq_uri (MIN(?faldo_begin) AS ?min_pos)
+      #           FROM #{SPARQLUtil::ONTOLOGY[:tgup]}
+      #           FROM #{SPARQLUtil::ONTOLOGY[:refseq]}
+      #           WHERE {
+      #             VALUES (?refseq_uri ?begin ?end ?dummy1 ?dummy2) {
+      #              #{bind_values(sub_results)}
+      #             }
+      #             ?refseq_uri insdc:sequence ?seq .
+      #             ?feature obo:so_part_of ?seq;
+      #               rdfs:label ?gene_name;
+      #               faldo:location ?loc.
+      #             ?loc faldo:begin/faldo:position ?faldo_begin;
+      #               faldo:end/faldo:position ?faldo_end.
+      #             FILTER(
+      #               ?faldo_begin != 1 && (?end < ?faldo_begin && ?end < ?faldo_end)
+      #             )
+      #           } GROUP BY ?refseq_uri
+      #         }
+      #         ?refseq_uri insdc:sequence ?seq ;
+      #           rdfs:label ?seq_label .
+      #         ?feature obo:so_part_of ?seq;
+      #           rdfs:label ?gene_name;
+      #           faldo:location ?loc.
+      #         ?loc faldo:begin/faldo:position ?faldo_begin;
+      #           faldo:end/faldo:position ?faldo_end.
+      #         ?togogenome skos:exactMatch ?feature .
+      #         FILTER( ?faldo_begin = ?min_pos || ?faldo_end = ?min_pos)
+      #       }
+      #     SPARQL
+      #   end
+      # end
+
+      def overlap_gene_build_sparqls(gggenome)
         gggenome.each_slice(300).map do |sub_results|
           <<-SPARQL.strip_heredoc
             DEFINE sql:select-option "order"
-            #{SPARQLUtil::PREFIX[:insdc]}
-            #{SPARQLUtil::PREFIX[:faldo]}
-            #{SPARQLUtil::PREFIX[:obo]}
-            #{SPARQLUtil::PREFIX[:refseq]}
+            PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>
+            PREFIX faldo: <http://biohackathon.org/resource/faldo#>
+            PREFIX obo: <http://purl.obolibrary.org/obo/>
+            PREFIX refseq: <http://identifiers.org/refseq/>
 
-            SELECT ?refseq_uri ?seq_label ?togogenome ?gene_name ?faldo_begin ?faldo_end
-            FROM #{SPARQLUtil::ONTOLOGY[:tgup]}
-            FROM #{SPARQLUtil::ONTOLOGY[:refseq]}
-            {
-              {
-                SELECT ?refseq_uri (MIN(?faldo_begin) AS ?min_pos)
-                FROM #{SPARQLUtil::ONTOLOGY[:tgup]}
-                FROM #{SPARQLUtil::ONTOLOGY[:refseq]}
-                WHERE {
-                  VALUES (?refseq_uri ?begin ?end ?dummy1 ?dummy2) {
-                   #{bind_values(sub_results)}
-                  }
-                  ?refseq_uri insdc:sequence ?seq .
-                  ?feature obo:so_part_of ?seq;
-                    rdfs:label ?gene_name;
-                    faldo:location ?loc.
-                  ?loc faldo:begin/faldo:position ?faldo_begin;
-                    faldo:end/faldo:position ?faldo_end.
-                  FILTER(
-                    ?faldo_begin != 1 && (?end < ?faldo_begin && ?end < ?faldo_end)
-                  )
-                } GROUP BY ?refseq_uri
-              }
-              ?refseq_uri insdc:sequence ?seq ;
-                rdfs:label ?seq_label .
-              ?feature obo:so_part_of ?seq;
-                rdfs:label ?gene_name;
-                faldo:location ?loc.
-              ?loc faldo:begin/faldo:position ?faldo_begin;
-                faldo:end/faldo:position ?faldo_end.
-              ?togogenome skos:exactMatch ?feature .
-              FILTER( ?faldo_begin = ?min_pos || ?faldo_end = ?min_pos)
+            SELECT ?togogenome ?gene_name
+              FROM <http://togogenome.org/graph/tgup>
+              FROM <http://togogenome.org/graph/refseq>
+              WHERE {
+               VALUES (?refseq_uri ?begin ?end ?dummy1 ?dummy2) {
+                #{bind_values(sub_results)}
+               }
+               ?refseq_uri insdc:sequence ?seq .
+               ?feature obo:so_part_of ?seq;
+                 rdfs:label ?gene_name;
+                 faldo:location ?loc.
+               ?loc faldo:begin/faldo:position ?faldo_begin;
+                 faldo:end/faldo:position ?faldo_end.
+               ?togogenome skos:exactMatch ?feature .
+               FILTER(
+                ?faldo_begin != 1 &&
+                ! ( (?faldo_begin < ?begin && ?faldo_end < ?begin) ||
+                    (?end < ?faldo_begin && ?end < ?faldo_end) ) ||
+                    (?faldo_begin < ?begin && ?end < ?faldo_end )
+                )
             }
           SPARQL
         end
