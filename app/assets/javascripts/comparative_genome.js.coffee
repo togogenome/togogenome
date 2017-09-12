@@ -603,7 +603,7 @@ Application.prototype =
       pride: 'PRIDE'
     switch aspect
       when 'pathway'
-        sparql = '?up up:annotation ?annotation .\n\u0009?annotation rdf:type up:Pathway_Annotation .\n\u0009?annotation rdfs:comment ?label .'
+        sparql = '?up up:annotation ?annotation .\n\t?annotation rdf:type up:Pathway_Annotation .\n\t?annotation rdfs:seeAlso ?pathway .\n\t?pathway rdfs:label ?label .'
       when 'location'
         sparql = '?up up:annotation ?annotation .\n\u0009?annotation a up:Subcellular_Location_Annotation .\n\u0009?annotation up:locatedIn/up:cellularComponent ?location .\n\u0009?location up:alias ?label .'
       when 'geneontology'
