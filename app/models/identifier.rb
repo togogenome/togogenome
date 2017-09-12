@@ -30,12 +30,13 @@ class Identifier
     def sample(db_names)
       sparql = <<-SPARQL.strip_heredoc
         DEFINE sql:select-option "order"
-        SELECT DISTINCT #{select_target(db_names)}
+        SELECT DISTINCT ?node0
         #{make_sample_where_clause(db_names)}
         LIMIT 2
       SPARQL
 
-      query(sparql).uniq_by {|i| i[:node0] }
+      identifiers = query(sparql).map { |h| h[:node0].split('/').last }
+      convert(identifiers, db_names, 100, 0)
     end
 
     private
