@@ -2,19 +2,22 @@
   :javascript
     $(function() {
       var result_table = $("#phenotype_results");
-      drawInfo.phenotype = {
-        dataTable: result_table.DataTable({
-          ajax: {
-            url: Routes.report_type_phenotypes_path({format: 'json'})
-          },
-          columns: [
-            {data: "category"},
-            {data: "phenotype_link"},
-            {data: "definition"},
-            {data: "organisms", className: "numeric"}
-          ]
-        }),
-        downloadCSV: Routes.report_type_phenotypes_path({format: 'csv'})
+      drawInfo.phenotype = function() {
+        return {
+          dataTable: $("#phenotype_results").DataTable({
+            retrieve: true,
+            ajax: {
+              url: Routes.report_type_phenotypes_path({format: 'json'})
+            },
+            columns: [
+              {data: "category"},
+              {data: "phenotype_link"},
+              {data: "definition"},
+              {data: "organisms", className: "numeric"}
+            ]
+          }),
+          downloadCSV: Routes.report_type_phenotypes_path({format: 'csv'})
+        };
       };
 
       result_table.parent().find(".result-download-container").append("<a><i class='icon-file'></i> Download CSV</a>");

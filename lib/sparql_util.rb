@@ -26,6 +26,7 @@ module SPARQLUtil
     insdc:  'PREFIX insdc: <http://ddbj.nig.ac.jp/ontologies/nucleotide/>',
     stats:  'PREFIX stats:<http://togogenome.org/stats/>',
     faldo:  'PREFIX faldo: <http://biohackathon.org/resource/faldo#>',
-    obo:    'PREFIX obo: <http://purl.obolibrary.org/obo/>'
+    obo:    'PREFIX obo: <http://purl.obolibrary.org/obo/>',
+    refseq: 'PREFIX refseq: <http://identifiers.org/refseq/>'
   }
 end

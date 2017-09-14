@@ -407,7 +407,7 @@
         .text-center.padding
           .tg-button.clear#facet-all-clear-button Clear
 
-  - report_types = %w(gene organism phenotype environment)
+  - report_types = %w(organism gene phenotype environment)
   #genomes.row-fluid
     %ul#result_tabs.nav.nav-tabs
       - report_types.each do |report_type|
@@ -418,3 +418,11 @@
       - report_types.each do |report_type|
         .tab-pane{id: report_type}
           = render partial: "report_type/#{report_type.pluralize}/results", locals: { results: [] }
+
+= content_for :javascript do
+  :javascript
+    $(function() {
+      var defaultTab = 'organism';
+      $("#result_tabs").find('a[href="#' + defaultTab + '"]').tab('show');
+      window.drawInfo[defaultTab].call().dataTable.draw()
+    });

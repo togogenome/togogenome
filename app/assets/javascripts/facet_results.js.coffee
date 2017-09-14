@@ -2,7 +2,7 @@
 window.drawInfo = {}
 
 $ ->
-  currentKey = "gene"
+  currentKey = "organism"
 
   # DataTable のデフォルト値を設定
   $.extend $.fn.dataTable.defaults,
@@ -33,7 +33,7 @@ $ ->
       # Donwload CSV のリンク生成
       params = {}
       setting.ajax.data params
-      url = drawInfo[currentKey].downloadCSV + "?" + $.param(params)
+      url = drawInfo[currentKey].call().downloadCSV + "?" + $.param(params)
       pane.find(".result-download-container > a").attr "href", url
 
       # テーブル毎に paginationSlider を持つ
@@ -187,7 +187,7 @@ $ ->
     false
 
   window.query = ->
-    drawInfo[currentKey].dataTable.draw()
+    drawInfo[currentKey].call().dataTable.draw()
     return
 
   $("#result_tabs").on "click", (e) ->
