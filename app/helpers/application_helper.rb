@@ -9,4 +9,13 @@ module ApplicationHelper
       {id: :text,      name: 'Text',               path: text_index_path}
     ]
   end
+
+  def report_tabs
+    [
+      {type: 'organism'},
+      {type: 'gene'},
+      {type: 'phenotype'},
+      {type: 'environment'}
+    ]
+  end
 end
