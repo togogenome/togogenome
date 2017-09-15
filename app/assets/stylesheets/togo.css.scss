@@ -22,6 +22,9 @@ body {
   background-color: #f4f3f2;
   font-family: "Arial",san-serif;
 }
+.navbar-fixed-top, .navbar-fixed-bottom {
+  z-index: 20000;
+}
 
 a {
   color: #309DB0;

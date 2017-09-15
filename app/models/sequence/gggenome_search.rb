@@ -6,7 +6,7 @@ module Sequence
 
   module GggenomeSearch
     class << self
-      def search(sequence, url = 'http://gggenome.dbcls.jp/prok', format = 'json')
+      def search(sequence, url = 'http://gggenome.dbcls.jp/togogenome', format = 'json')
         result = Rails.cache.fetch Digest::MD5.hexdigest(sequence), expires_in: 1.day do
           client = HTTPClient.new
           client.get_content("#{url}/#{sequence}.#{format}")

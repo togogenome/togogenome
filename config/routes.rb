@@ -16,6 +16,8 @@ TogoGenome::Application.routes.draw do
     get :search, on: :collection
   end
 
+  get '/compare', to: 'comparative_genome#index'
+
   get '/sequence', as: :sequence_index, to: 'sequence#index'
   get '/sequence/search', as: :sequence_search, to: 'sequence#search'
 

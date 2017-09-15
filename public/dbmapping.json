@@ -1,5 +1,10 @@
 {
 	"category": {
+		"togogenome": {
+			"label": "TogoGenome",
+			"color": { "hue": 189, "saturation": 57, "lightness": 54},
+			"links": [ "togogenome"]
+		},
 		"chemicalCompound": {
 			"label": "Chemical compound",
 			"color": { "hue": 66, "saturation": 100, "lightness": 40 },
@@ -87,7 +92,14 @@
 		}
 	},
 	"DBs": {
-				"3dmet": {
+		"togogenome": {
+			"identifiers": "http://togogenome.org/gene/",
+			"label": "TogoGenome",
+			"primary": true,
+			"category": "togogenome",
+			"links": ["uniprot"]
+		},
+		"3dmet": {
 			"identifiers": "http://identifiers.org/3dmet",
 			"label": "3DMET",
 			"primary": false,
@@ -484,7 +496,7 @@
 			"label": "UniProt",
 			"primary": true,
 			"category": "protein",
-			"links": ["3dmet", "asap", "beetlebase", "biocyc", "chebi", "chembl.compound", "cmr.gene", "dictybase.gene", "ec-code", "ecogene", "ensembl", "epd", "flybase", "genedb", "hgnc", "hmdb", "hprd", "insdc", "jcsd", "knapsack", "lipidmaps", "maizegdb.locus", "massbank", "mgd", "myco.tuber", "ncbigene", "ncbiprotein", "omim", "pdb-ccd", "pdb", "pfam", "plasmodb", "pseudomonas", "pubchem.substance", "pubmed", "refseq", "rgd", "tair.locus", "taxonomy", "tgd", "unigene", "wormbase", "xenbase"]
+			"links": ["3dmet", "asap", "beetlebase", "biocyc", "chebi", "chembl.compound", "cmr.gene", "dictybase.gene", "ec-code", "ecogene", "ensembl", "epd", "flybase", "genedb", "hgnc", "hmdb", "hprd", "insdc", "jcsd", "knapsack", "lipidmaps", "maizegdb.locus", "massbank", "mgd", "myco.tuber", "ncbigene", "ncbiprotein", "omim", "pdb-ccd", "pdb", "pfam", "plasmodb", "pseudomonas", "pubchem.substance", "pubmed", "refseq", "rgd", "tair.locus", "taxonomy", "tgd", "unigene", "wormbase", "xenbase", "togogenome"]
 		},
 		"pfam": {
 			"identifiers": "http://identifiers.org/pfam",
@@ -530,3 +542,4 @@
 		}
 	}
 }
+

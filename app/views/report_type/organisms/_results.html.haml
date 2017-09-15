@@ -2,26 +2,29 @@
   :javascript
     $(function() {
       var result_table = $("#organism_results");
-      drawInfo.organism = {
-        dataTable: result_table.DataTable({
-          ajax: {
-            url: Routes.report_type_organisms_path({format: 'json'})
-          },
-          columns: [
-            {data: "category"},
-            {data: "organism_link"},
-            {data: "genome_size", className: "numeric"},
-            {data: "gene_num", className: "numeric"},
-            {data: "rrna_num", className: "numeric"},
-            {data: "trna_num", className: "numeric"},
-            {data: "ncrna_num", className: "numeric"},
-            {data: "environment_links"},
-            {data: "temperature"},
-            {data: "morphologies"},
-            {data: "energy_sources"}
-          ]
-        }),
-        downloadCSV: Routes.report_type_organisms_path({format: 'csv'})
+      drawInfo.organism = function() {
+        return {
+          dataTable: $("#organism_results").DataTable({
+            retrieve: true,
+            ajax: {
+              url: Routes.report_type_organisms_path({format: 'json'})
+            },
+            columns: [
+              {data: "category"},
+              {data: "organism_link"},
+              {data: "genome_size", className: "numeric"},
+              {data: "gene_num", className: "numeric"},
+              {data: "rrna_num", className: "numeric"},
+              {data: "trna_num", className: "numeric"},
+              {data: "ncrna_num", className: "numeric"},
+              {data: "environment_links"},
+              {data: "temperature"},
+              {data: "morphologies"},
+              {data: "energy_sources"}
+            ]
+          }),
+          downloadCSV: Routes.report_type_organisms_path({format: 'csv'})
+        };
       };
 
       result_table.parent().find(".result-download-container").append("<a><i class='icon-file'></i> Download CSV</a>");
