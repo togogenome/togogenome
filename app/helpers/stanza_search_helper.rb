@@ -34,8 +34,8 @@ module StanzaSearchHelper
     }
 
     [
-      ['Genes',        'gene',        {'data-search-target' => 'category'}],
       ['Organisms',    'organism',    {'data-search-target' => 'category'}],
+      ['Genes',        'gene',        {'data-search-target' => 'category'}],
       ['Phenotypes',   'phenotype',   {'data-search-target' => 'category'}],
       ['Environments', 'environment', {'data-search-target' => 'category'}],
       ['--------------', {disabled: 'disabled'}]

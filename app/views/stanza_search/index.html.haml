@@ -12,13 +12,14 @@
       .alert.alert-error
         = @error
     - if @stanzas
+      - report_types = report_tabs.map { |hash| hash[:type] }
       %ul.nav.nav-tabs
-        - %w(gene organism phenotype environment).each do |type|
+        - report_types.each do |type|
           %li{class: params[:category] == type ? 'active' : nil}
             %a{href: "##{type}", data: {toggle: :tab, category: type.to_sym}}= type.capitalize
 
       .tab-content
-        - %w(gene organism phenotype environment).each do |type|
+        - report_types.each do |type|
           .tab-pane{id: type, class: params[:category] == type ? 'active' : nil}
             = render 'count_list', query: params[:q], stanzas: @stanzas[type.pluralize]
 
