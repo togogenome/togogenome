@@ -1,6 +1,5 @@
 %article.facet(data-name=name data-facet-name=name)
-  %h3.icon-search
-    %span= facet_title(name)
+  = content_tag(:legend, fa_icon(:search, text: facet_title(name)))
   .selected
     %div
       %span.add-on{id: "_#{name}_clear", style: 'display:none'}

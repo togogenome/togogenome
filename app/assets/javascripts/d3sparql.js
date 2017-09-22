@@ -2023,10 +2023,10 @@ d3sparql.toggle = function() {
   var elem = d3.select("#sparql")
   if (elem.style("display") === "none") {
     elem.style("display", "inline")
-    button.attr("class", "icon-chevron-up")
+    button.attr("class", "fa fa-chevron-up")
   } else {
     elem.style("display", "none")
-    button.attr("class", "icon-chevron-down")
+    button.attr("class", "fa fa-chevron-down")
   }
 }
 

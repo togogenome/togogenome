@@ -1234,12 +1234,12 @@ $(function(){
         $("#message").html('');
 
         if (identifiers.length === 0 && route.length === 0) {
-          $("#message").html("<div class='alert'><i class='icon-warning-sign'> Input identifiers to be converted and select target and intermediate databases.</i></div>");
+          $("#message").html("<div class='alert'><i class='fa fa-exclamation-triangle'> Input identifiers to be converted and select target and intermediate databases.</i></div>");
           return;
         };
 
         if (route.length === 0 ) {
-          $("#message").html("<div class='alert'><i class='icon-warning-sign'> Select target and intermediate databases.</i></div>");
+          $("#message").html("<div class='alert'><i class='fa fa-exclamation-triangle'> Select target and intermediate databases.</i></div>");
           return;
         };
 

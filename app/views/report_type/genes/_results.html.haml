@@ -21,7 +21,7 @@
         };
       };
 
-      result_table.parent().find(".result-download-container").append("<a><i class='icon-file'></i> Download CSV</a>");
+      result_table.parent().find(".result-download-container").append("#{content_tag(:a, fa_icon(:file, text: 'Download CSV'))}");
     });
 
 %table#gene_results.table.table-striped.table-bordered.table-hover.table-condensed
