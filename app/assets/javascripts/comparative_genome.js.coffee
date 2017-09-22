@@ -718,23 +718,19 @@ Application.prototype =
           ?go rdfs:label ?label .
         '''
       when 'interpro', 'pfam', 'supfam', 'prosite', 'reactome', 'cazy'
-        sparql = @dbsparql(mapping[aspect])
+        sparql = '''
+          ?up rdfs:seeAlso ?link .
+          ?link up:database db:@@database@@ .
+          ?link rdfs:comment ?label .
+          BIND ( ?link as ?ex_link )
+        '''.replace(/@@database@@/, mapping[aspect])
       when 'ctd', 'brenda', 'eggnog', 'genetree', 'hogenom', 'hovergen', 'inparanoid', 'ko', 'oma', 'orthodb', 'phylomedb', 'treefam', 'nextbio', 'paxdb', 'pride'
-        sparql = @dbsparql_link(mapping[aspect])
+        sparql = '''
+          ?up rdfs:seeAlso ?label .
+          ?label up:database db:@@database@@ .
+          BIND ( ?label as ?ex_link )
+        '''.replace(/@@database@@/, mapping[aspect])
     sparql
-
-  dbsparql: (db) ->
-    '''
-      ?up rdfs:seeAlso ?link .
-      ?link up:database db:@@database@@ .
-      ?link rdfs:comment ?label .
-    '''.replace(/@@database@@/, db)
-
-  dbsparql_link: (db) ->
-    '''
-      ?up rdfs:seeAlso ?label .
-      ?label up:database db:@@database@@ .
-    '''.replace(/@@database@@/, db)
 
   step1: ->
     self = this
