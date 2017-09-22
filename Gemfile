@@ -17,10 +17,10 @@ gem 'rsolr'
 gem 'settingslogic'
 gem 'test-unit', '~> 3.0'
 gem 'unicorn'
+gem 'font-awesome-rails'
 
 group :assets do
   gem 'bootstrap-sass'
-  gem 'font-awesome-rails'
   gem 'jqtree-rails'
   gem 'jquery-datatables-rails'
   gem 'jquery-ui-rails'
