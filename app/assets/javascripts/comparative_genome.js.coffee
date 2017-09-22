@@ -806,7 +806,7 @@ Application.prototype =
             <div class="bar#{if barWidth >= 50 then ' over-half' else ''}" style="width: #{barWidth}%">
               <span>#{d.count.value}</span>
             </div>
-          </div>'
+          </div>
         """
         # 結果の描画：ベン図
         d3.select('#venn-text-' + setPrefix + d.taxIdIndices.join('_')).text d.count.value
