@@ -3,7 +3,8 @@
 ###global d3, CodeMirror, d3sparql ###
 ###jshint multistr: true ###
 
-ENDPOINT = 'http://dev.togogenome.org/sparql-test'
+ENDPOINT = 'http://dev.togogenome.org/sparql-test' # TODO use URL from endpoint.yml
+
 DEFAULT =
   aspect: 'pathway'
   species: [
@@ -11,19 +12,96 @@ DEFAULT =
     10090
     10116
   ]
+
 DURATION =
   scroll: 250
   css: 200
+
 TREE =
   svgHeight: 320
   lineHeight: 32
   width: 200
   nodeSize: 8
   nodeStrokeWidth: 2
+
 SPARQLS =
-  step1: 'DEFINE sql:select-option "order"\n\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX up: <http://purl.uniprot.org/core/>\nPREFIX tax: <http://purl.uniprot.org/taxonomy/>\nPREFIX db: <http://purl.uniprot.org/database/>\n\nSELECT ?orgs (COUNT(?orgs) AS ?count)\nWHERE {\nSELECT ?label (GROUP_CONCAT(REPLACE(STR(?tax), tax:, "") ;separator=", ") AS ?orgs)\nWHERE {\nSELECT DISTINCT ?label ?tax\nFROM <http://togogenome.org/graph/uniprot>\nWHERE {\nVALUES ?tax { @@taxvalues@@ }\n?up up:organism ?tax .\n@@aspect@@\n}\nORDER BY ?tax\n}\n}\nORDER BY DESC(?count)'
-  step2: 'DEFINE sql:select-option "order"\n\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX up: <http://purl.uniprot.org/core/>\nPREFIX tax: <http://purl.uniprot.org/taxonomy/>\nPREFIX db: <http://purl.uniprot.org/database/>\n\nSELECT DISTINCT ?label ?sum ?orgs\nWHERE {\n{\nSELECT ?label (SUM(?count) AS ?sum) (GROUP_CONCAT(REPLACE(STR(?tax), tax:, "") ;separator=", ") AS ?orgs)\nWHERE {\nSELECT ?label ?tax (COUNT(?up) AS ?count)\nWHERE {\nSELECT DISTINCT ?label ?tax ?up\nFROM <http://togogenome.org/graph/uniprot>\nWHERE {\nVALUES ?tax { @@taxvalues@@ }\n?up up:organism ?tax .\n@@aspect@@\n}\n}\nORDER BY ?tax\n}\n}\nFILTER (?orgs = "@@taxfilter@@")\n}\nORDER BY DESC(?sum)'
-  step3: 'DEFINE sql:select-option "order"\n\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX up: <http://purl.uniprot.org/core/>\nPREFIX tax: <http://purl.uniprot.org/taxonomy/>\nPREFIX db: <http://purl.uniprot.org/database/>\n\n#SELECT DISTINCT ?tg_id ?up_id ?tax_id ?up ?tax\nSELECT DISTINCT ?tg_id ?up_id ?tax_id\nWHERE {\nGRAPH <http://togogenome.org/graph/uniprot> {\nVALUES ?label { @@category@@ }\nVALUES ?tax { @@taxvalues@@ }\n?up up:organism ?tax .\n@@aspect@@\n}\nGRAPH <http://togogenome.org/graph/tgup> {\n?up_id rdfs:seeAlso ?up .\n?tg_id rdfs:seeAlso ?up_id .\n?tg_id rdfs:seeAlso ?tax_id .\n?tax_id a <http://identifiers.org/taxonomy> .\n}\n}\nORDER BY (?tax_id)'
+  step1: '''
+    DEFINE sql:select-option "order"
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX up: <http://purl.uniprot.org/core/>
+    PREFIX tax: <http://purl.uniprot.org/taxonomy/>
+    PREFIX db: <http://purl.uniprot.org/database/>
+    SELECT ?orgs (COUNT(?orgs) AS ?count)
+    WHERE {
+      SELECT ?label (GROUP_CONCAT(REPLACE(STR(?tax), tax:, "") ;separator=", ") AS ?orgs)
+      WHERE {
+        SELECT DISTINCT ?label ?tax
+        FROM <http://togogenome.org/graph/uniprot>
+        WHERE {
+          VALUES ?tax { @@taxvalues@@ }
+          ?up up:organism ?tax .
+          @@aspect@@
+        }
+        ORDER BY ?tax
+      }
+    }
+    ORDER BY DESC(?count)
+  '''
+  step2: '''
+    DEFINE sql:select-option "order"
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX up: <http://purl.uniprot.org/core/>
+    PREFIX tax: <http://purl.uniprot.org/taxonomy/>
+    PREFIX db: <http://purl.uniprot.org/database/>
+    SELECT DISTINCT ?label ?sum ?orgs
+    WHERE {
+      {
+        SELECT ?label (SUM(?count) AS ?sum) (GROUP_CONCAT(REPLACE(STR(?tax), tax:, "") ;separator=", ") AS ?orgs)
+        WHERE {
+          SELECT ?label ?tax (COUNT(?up) AS ?count)
+          WHERE {
+            SELECT DISTINCT ?label ?tax ?up
+            FROM <http://togogenome.org/graph/uniprot>
+            WHERE {
+              VALUES ?tax { @@taxvalues@@ }
+              ?up up:organism ?tax .
+              @@aspect@@
+            }
+          }
+          ORDER BY ?tax
+        }
+      }
+      FILTER (?orgs = "@@taxfilter@@")
+    }
+    ORDER BY DESC(?sum)
+  '''
+  step3: '''
+    DEFINE sql:select-option "order"
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX up: <http://purl.uniprot.org/core/>
+    PREFIX tax: <http://purl.uniprot.org/taxonomy/>
+    PREFIX db: <http://purl.uniprot.org/database/>
+    SELECT DISTINCT ?tg_id ?up_id ?tax_id
+    WHERE {
+      GRAPH <http://togogenome.org/graph/uniprot> {
+        VALUES ?label { @@category@@ }
+        VALUES ?tax { @@taxvalues@@ }
+        ?up up:organism ?tax .
+        @@aspect@@
+      }
+      GRAPH <http://togogenome.org/graph/tgup> {
+        ?up_id rdfs:seeAlso ?up .
+        ?tg_id rdfs:seeAlso ?up_id .
+        ?tg_id rdfs:seeAlso ?tax_id .
+        ?tax_id a <http://identifiers.org/taxonomy> .
+      }
+    }
+    ORDER BY (?tax_id)
+  '''
+
 LINKS_TO_HEADER_LABEL_MAPPING =
   tg_id: 'TogoGenome ID'
   up_id: 'UniProt ID'
@@ -96,7 +174,6 @@ intersect = (rect1, rect2) ->
 ###
 
 Tree = (data) ->
-#window.console.log(data);
   deepest = 0
   species = undefined
   clades = undefined
@@ -205,7 +282,17 @@ Species = (data, index, targetNode) ->
   # htmlの生成
   if !@$container
     @$container = $('#section-species').children('.species-container')
-  html = '<div class="species" data-index="@@index@@">\u0009\u0009\u0009<div class="color-ball"></div>\u0009\u0009\u0009<h3>@@common_name@@</h3>\u0009\u0009\u0009<p class="scientific-name">@@scientific_name@@</p>\u0009\u0009\u0009<div class="close-button"></div>\u0009\u0009</div>'.replace(/@@index@@/, @index + '').replace(/@@common_name@@/, data.common_name + '').replace(/@@scientific_name@@/, data.scientific_name)
+  html = '''
+    <div class="species" data-index="@@index@@">
+      <div class="color-ball"></div>
+      <h3>@@common_name@@</h3>
+      <p class="scientific-name">@@scientific_name@@</p>
+      <div class="close-button"></div>
+    </div>
+  '''.
+    replace(/@@index@@/, @index + '').
+    replace(/@@common_name@@/, data.common_name + '').
+    replace(/@@scientific_name@@/, data.scientific_name)
   @$container.append html
   @$ = @$container.children('.species').last()
   @$.find('.close-button').on 'click', @clickCloseButton.bind(this)
@@ -308,26 +395,26 @@ Tree.prototype =
     ).on('click', (d) ->
       if d.isLeaf
         if d.isSelected
-# 選択を解除
+          # 選択を解除
           d.isSelected = false
           d3.select(this).classed selected: false
           application.deleteSpecies d, this
         else
-# 種を選択
+          # 種を選択
           if application.setSpecies(d, this)
-# 選択に成功したら、選択状態に
+            # 選択に成功したら、選択状態に
             d.isSelected = true
             d3.select(this).classed selected: true
       else
         if d._children
-# 閉じてる
+          # 閉じてる
           d3.select(this).classed
             collapsed: false
             expanded: true
           d.children = d._children
           d._children = null
         else
-# 開いてる
+          # 開いてる
           d3.select(this).classed
             collapsed: true
             expanded: false
@@ -377,7 +464,6 @@ Tree.prototype =
     # link
     # Update the links…
     link = @treeGroup.selectAll('path.link').data(links, (d) ->
-#window.console.log(d.target.id);
       d.target.id
     )
     # Enter any new links at the parent's previous position.
@@ -411,6 +497,7 @@ Tree.prototype =
   resize: ->
     @$speciesSelector.width 'calc(100% - 24px)'
     return
+
 Species.prototype =
   $container: undefined
   clickCloseButton: ->
@@ -419,13 +506,13 @@ Species.prototype =
     return
   updateByDeleteTaxId: (taxId, index) ->
     if taxId == @data.taxid
-      window.console.log '消す'
       @$.remove()
       true
     else
       @index = index
       @$.attr 'data-index', index
       false
+
 VennDiagram.prototype =
   MARGIN_TOP: 80
   MARGIN_BOTTOM: 80
@@ -440,6 +527,7 @@ VennDiagram.prototype =
         position: ''
         top: ''
     return
+
 HeadingNavigation.prototype =
   scroll: ->
     scrollTop = @$window.scrollTop()
@@ -476,13 +564,13 @@ HeadingNavigation.prototype =
   scrollTo: (index) ->
     @$scroll.animate { scrollTop: @sections[index].$section.offset().top - (@sections[index].top) + 2 }, duration: DURATION.scroll
     return
+
 Application.prototype =
   MAX_OF_TAXON: 5
+
   initialize: (data) ->
-#window.console.log(data);
     self = this
     treeLeafNode = undefined
-    #this.species = []; // TODO: デフォルトを定義
     # reference
     @$aspectH2 = $('#section-aspect h2 strong')
     @$speciesH2 = $('#section-species h2 strong')
@@ -530,6 +618,7 @@ Application.prototype =
       $g.get(0).dispatchEvent event
       return
     return
+
   getValueWithKeyValue: (key1, key2, value) ->
     value = value + ''
     i = 0
@@ -538,11 +627,13 @@ Application.prototype =
         return @data[i][key1]
       i++
     return
+
   setAspect: (label, value) ->
     @$aspectH2.text label
     @cache.aspect = value
     @step1()
     return
+
   setSpecies: (data, targetNode) ->
     species = undefined
     if @cache.species.length >= @MAX_OF_TAXON
@@ -553,6 +644,7 @@ Application.prototype =
       @cache.species.push species
       @updateSpecies()
       true
+
   deleteSpecies: (data, targetNode) ->
     newSpecies = []
     isLDead = undefined
@@ -564,6 +656,7 @@ Application.prototype =
     @cache.species = newSpecies
     @updateSpecies()
     return
+
   updateSpecies: ->
     html = if @cache.species.length == 0 then '--' else ''
     # data
@@ -571,11 +664,14 @@ Application.prototype =
     @$sectionCombination.attr 'data-number-of-species', @cache.species.length
     # heading
     @cache.species.forEach (species, index, array) ->
-      html += '<span data-index="@@index@@">@@name@@</span>'.replace(/@@index@@/, species.index).replace(/@@name@@/, species.data.common_name + (if index < array.length - 1 then ',' else ''))
+      html += '<span data-index="@@index@@">@@name@@</span>'.
+        replace(/@@index@@/, species.index).
+        replace(/@@name@@/, species.data.common_name + (if index < array.length - 1 then ',' else ''))
       return
     @$speciesH2.html html
     @step1()
     return
+
   aspectSparql: (aspect) ->
     sparql = ''
     mapping =
@@ -602,20 +698,44 @@ Application.prototype =
       pride: 'PRIDE'
     switch aspect
       when 'pathway'
-        sparql = '?up up:annotation ?annotation .\n\t?annotation rdf:type up:Pathway_Annotation .\n\t?annotation rdfs:seeAlso ?pathway .\n\t?pathway rdfs:label ?label .'
+        sparql = '''
+          ?up up:annotation ?annotation .
+          ?annotation rdf:type up:Pathway_Annotation .
+          ?annotation rdfs:seeAlso ?pathway .
+          ?pathway rdfs:label ?label .
+        '''
       when 'location'
-        sparql = '?up up:annotation ?annotation .\n\u0009?annotation a up:Subcellular_Location_Annotation .\n\u0009?annotation up:locatedIn/up:cellularComponent ?location .\n\u0009?location up:alias ?label .'
+        sparql = '''
+          ?up up:annotation ?annotation .
+          ?annotation a up:Subcellular_Location_Annotation .
+          ?annotation up:locatedIn/up:cellularComponent ?location .
+          ?location up:alias ?label .
+        '''
       when 'geneontology'
-        sparql = '?up up:classifiedWith ?go .\n\u0009?go up:database db:go .\n\u0009?go rdfs:label ?label .'
+        sparql = '''
+          ?up up:classifiedWith ?go .
+          ?go up:database db:go .
+          ?go rdfs:label ?label .
+        '''
       when 'interpro', 'pfam', 'supfam', 'prosite', 'reactome', 'cazy'
         sparql = @dbsparql(mapping[aspect])
       when 'ctd', 'brenda', 'eggnog', 'genetree', 'hogenom', 'hovergen', 'inparanoid', 'ko', 'oma', 'orthodb', 'phylomedb', 'treefam', 'nextbio', 'paxdb', 'pride'
         sparql = @dbsparql_link(mapping[aspect])
     sparql
+
   dbsparql: (db) ->
-    '\u0009\u0009\u0009?up rdfs:seeAlso ?link .\n\u0009\u0009\u0009?link up:database db:@@database@@ .\n\u0009\u0009\u0009?link rdfs:comment ?label .'.replace /@@database@@/, db
+    '''
+      ?up rdfs:seeAlso ?link .
+      ?link up:database db:@@database@@ .
+      ?link rdfs:comment ?label .
+    '''.replace(/@@database@@/, db)
+
   dbsparql_link: (db) ->
-    '\u0009\u0009\u0009?up rdfs:seeAlso ?label .\n\u0009\u0009\u0009?label up:database db:@@database@@ .'.replace /@@database@@/, db
+    '''
+      ?up rdfs:seeAlso ?label .
+      ?label up:database db:@@database@@ .
+    '''.replace(/@@database@@/, db)
+
   step1: ->
     self = this
     taxIds = undefined
@@ -640,7 +760,9 @@ Application.prototype =
     commonNames = @cache.species.map((taxon) ->
       taxon.data.common_name
     )
-    sparql = SPARQLS.step1.replace(/@@taxvalues@@/, 'tax:' + taxIds.join(' tax:')).replace(/@@aspect@@/, @aspectSparql(@cache.aspect))
+    sparql = SPARQLS.step1.
+      replace(/@@taxvalues@@/, 'tax:' + taxIds.join(' tax:')).
+      replace(/@@aspect@@/, @aspectSparql(@cache.aspect))
     d3sparql.query ENDPOINT, sparql, ((response) ->
       html = ''
       results = response.results.bindings
@@ -675,13 +797,21 @@ Application.prototype =
         0
       # 結果の描画
       results.forEach (d) ->
-# 結果の描画：図表
+        # 結果の描画：図表
         commonNames2 = d.taxIdIndices.map((taxIdIndex) ->
           commonNames[taxIdIndex]
         )
         setValue = setPrefix + d.taxIdIndices.join('_')
         barWidth = parseInt(d.count.value) / max * 100
-        html += '\u0009\u0009\u0009\u0009\u0009<div class="bar-chart set' + d.taxIds.length + '" data-set="' + setValue + '" data-value="' + d.orgs.value + '">\u0009\u0009\u0009\u0009\u0009\u0009<p class="bar-name">' + commonNames2.join('<span class="sign">∩</span>') + '</p>\u0009\u0009\u0009\u0009\u0009\u0009<div class="color-ball ' + setValue + '"></div>\u0009\u0009\u0009\u0009\u0009\u0009<div class="bar' + (if barWidth >= 50 then ' over-half' else '') + '" style="width: ' + barWidth + '%;"><span>' + d.count.value + '</span></div>\u0009\u0009\u0009\u0009\u0009</div>'
+        html += """
+          <div class="bar-chart set#{d.taxIds.length} data-set="#{setValue}" data-value="#{d.orgs.value}">
+            <p class="bar-name">#{commonNames2.join('<span class="sign">∩</span>')}</p>
+            <div class="color-ball #{setValue}"></div>
+            <div class="bar#{if barWidth >= 50 then ' over-half' else ''}" style="width: #{barWidth}%">
+              <span>#{d.count.value}</span>
+            </div>
+          </div>'
+        """
         # 結果の描画：ベン図
         d3.select('#venn-text-' + setPrefix + d.taxIdIndices.join('_')).text d.count.value
         return
@@ -724,6 +854,7 @@ Application.prototype =
       return
     ).bind(this)
     return
+
   step2: (taxIds) ->
     self = this
     sparql = undefined
@@ -749,7 +880,10 @@ Application.prototype =
     @$linkToContainer.empty()
     @$sectionCategory.addClass 'loading'
     # クエリ
-    sparql = SPARQLS.step2.replace(/@@taxvalues@@/, @taxIdsWithString(@cache.taxIds)).replace(/@@taxfilter@@/, @cache.taxIds).replace(/@@aspect@@/, @aspectSparql(@cache.aspect))
+    sparql = SPARQLS.step2.
+      replace(/@@taxvalues@@/, @taxIdsWithString(@cache.taxIds)).
+      replace(/@@taxfilter@@/, @cache.taxIds).
+      replace(/@@aspect@@/, @aspectSparql(@cache.aspect))
     d3sparql.query ENDPOINT, sparql, (response) ->
       results = response.results.bindings
       # 有効化
@@ -762,7 +896,14 @@ Application.prototype =
       # グラフの描画
       results.forEach (d) ->
         barWidth = parseInt(d.sum.value) / max * 100
-        html += '\u0009\u0009\u0009\u0009\u0009<div class="bar-chart" data-value="' + d.label.value + '">\u0009\u0009\u0009\u0009\u0009\u0009<p class="bar-name">' + d.label.value + '</p>\u0009\u0009\u0009\u0009\u0009\u0009<div class="bar' + (if barWidth >= 50 then ' over-half' else '') + '" style="width: ' + barWidth + '%;"><span>' + d.sum.value + '</span></div>\u0009\u0009\u0009\u0009\u0009</div>'
+        html += """
+          <div class="bar-chart" data-value="#{d.label.value}">
+            <p class="bar-name">#{d.label.value}</p>
+            <div class="bar#{if barWidth >= 50 then ' over-half' else ''}" style="width: #{barWidth}%">
+              <span>#{d.sum.value}</span>
+            </div>
+          </div>
+        """
         return
       self.$categoryContainer.html wrapInner(html)
       # イベント
@@ -772,6 +913,7 @@ Application.prototype =
         return
       return
     return
+
   step3: (category) ->
     self = this
     sparql = undefined
@@ -788,31 +930,41 @@ Application.prototype =
       @category = '"' + category + '"'
     else
       @category = '<' + category + '>'
-    sparql = SPARQLS.step3.replace(/@@taxvalues@@/, @taxIdsWithString(@cache.taxIds)).replace(/@@category@@/, @category).replace(/@@aspect@@/, @aspectSparql(@cache.aspect))
+
+    sparql = SPARQLS.step3.
+      replace(/@@taxvalues@@/, @taxIdsWithString(@cache.taxIds)).
+      replace(/@@category@@/, @category).
+      replace(/@@aspect@@/, @aspectSparql(@cache.aspect))
+
     d3sparql.query ENDPOINT, sparql, (response) ->
-# 有効化
+      # 有効化
       self.$sectionLinkTo.removeClass 'disabled loading'
       header = response.head.vars
       results = response.results.bindings
-      html = '<table><thead>@@thead@@</thead><tbody>@@tbody@@</tbody></table>'.replace(/@@thead@@/, header.map((value) ->
-        '<th>' + LINKS_TO_HEADER_LABEL_MAPPING[value] + '</th>'
-      ).join('')).replace(/@@tbody@@/, results.map((value) ->
-        tr = header.map((headerEml) ->
-          '<td><a href="@@uri@@" target="_blank">@@uri@@</a></td>'.replace /@@uri@@/g, value[headerEml].value
-        ).join('')
-        '<tr>' + tr + '</tr>'
-      ).join(''))
+      html = '<table><thead>@@thead@@</thead><tbody>@@tbody@@</tbody></table>'.
+        replace(/@@thead@@/, header.map((value) ->
+          '<th>' + LINKS_TO_HEADER_LABEL_MAPPING[value] + '</th>'
+        ).join('')).
+        replace(/@@tbody@@/, results.map((value) ->
+          tr = header.map((headerEml) ->
+            '<td><a href="@@uri@@" target="_blank">@@uri@@</a></td>'.replace(/@@uri@@/g, value[headerEml].value)
+          ).join('')
+          '<tr>' + tr + '</tr>'
+        ).join(''))
       self.$linkToContainer.html wrapInner(html)
       return
     return
+
   taxIdsWithArray: (array) ->
     array.map((d) ->
       'tax:' + d
     ).join ' '
+
   taxIdsWithString: (string) ->
     string.split(', ').map((d) ->
       'tax:' + d
     ).join ' '
+
 $ ->
   application = new Application
   # TogoGenome 埋め込みにあたっての処置
