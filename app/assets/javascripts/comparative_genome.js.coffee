@@ -55,14 +55,14 @@ SPARQLS =
     PREFIX up: <http://purl.uniprot.org/core/>
     PREFIX tax: <http://purl.uniprot.org/taxonomy/>
     PREFIX db: <http://purl.uniprot.org/database/>
-    SELECT DISTINCT ?label ?sum ?orgs
+    SELECT DISTINCT ?label ?sum ?orgs ?ex_link
     WHERE {
       {
-        SELECT ?label (SUM(?count) AS ?sum) (GROUP_CONCAT(REPLACE(STR(?tax), tax:, "") ;separator=", ") AS ?orgs)
+        SELECT ?label (SUM(?count) AS ?sum) (GROUP_CONCAT(REPLACE(STR(?tax), tax:, "") ;separator=", ") AS ?orgs) ?ex_link
         WHERE {
-          SELECT ?label ?tax (COUNT(?up) AS ?count)
+          SELECT ?label ?tax (COUNT(?up) AS ?count) ?ex_link
           WHERE {
-            SELECT DISTINCT ?label ?tax ?up
+            SELECT DISTINCT ?label ?tax ?up ?ex_link
             FROM <http://togogenome.org/graph/uniprot>
             WHERE {
               VALUES ?tax { @@taxvalues@@ }
@@ -703,6 +703,7 @@ Application.prototype =
           ?annotation rdf:type up:Pathway_Annotation .
           ?annotation rdfs:seeAlso ?pathway .
           ?pathway rdfs:label ?label .
+          BIND ( ?pathway as ?ex_link )
         '''
       when 'location'
         sparql = '''
@@ -710,12 +711,14 @@ Application.prototype =
           ?annotation a up:Subcellular_Location_Annotation .
           ?annotation up:locatedIn/up:cellularComponent ?location .
           ?location up:alias ?label .
+          BIND ( ?location as ?ex_link )
         '''
       when 'geneontology'
         sparql = '''
           ?up up:classifiedWith ?go .
           ?go up:database db:go .
           ?go rdfs:label ?label .
+          BIND ( ?go as ?ex_link )
         '''
       when 'interpro', 'pfam', 'supfam', 'prosite', 'reactome', 'cazy'
         sparql = '''
@@ -875,11 +878,16 @@ Application.prototype =
     @$sectionLinkTo.addClass 'disabled'
     @$linkToContainer.empty()
     @$sectionCategory.addClass 'loading'
+
     # クエリ
     sparql = SPARQLS.step2.
       replace(/@@taxvalues@@/, @taxIdsWithString(@cache.taxIds)).
       replace(/@@taxfilter@@/, @cache.taxIds).
       replace(/@@aspect@@/, @aspectSparql(@cache.aspect))
+
+    external_link = (uri) ->
+      """ <a href="#{uri}" target="_blank"><i class="fa fa-external-link"></i></a>"""
+
     d3sparql.query ENDPOINT, sparql, (response) ->
       results = response.results.bindings
       # 有効化
@@ -892,9 +900,10 @@ Application.prototype =
       # グラフの描画
       results.forEach (d) ->
         barWidth = parseInt(d.sum.value) / max * 100
+        link = external_link(d.ex_link.value)
         html += """
           <div class="bar-chart" data-value="#{d.label.value}">
-            <p class="bar-name">#{d.label.value}</p>
+            <p class="bar-name">#{d.label.value}#{link if (link)}</p>
             <div class="bar#{if barWidth >= 50 then ' over-half' else ''}" style="width: #{barWidth}%">
               <span>#{d.sum.value}</span>
             </div>
