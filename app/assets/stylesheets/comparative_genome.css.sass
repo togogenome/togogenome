@@ -1,0 +1,1031 @@
+@charset "UTF-8"
+
+@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300)
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video
+  margin: 0
+  padding: 0
+  border: 0
+  //font: inherit
+  font-size: 100%
+  vertical-align: baseline
+
+html
+  line-height: 1
+
+ol, ul
+  list-style: none
+
+table
+  border-collapse: collapse
+  border-spacing: 0
+
+caption, th, td
+  text-align: left
+  font-weight: normal
+  vertical-align: middle
+
+q, blockquote
+  quotes: none
+
+q
+  &:before, &:after
+    content: ""
+    content: none
+
+blockquote
+  &:before, &:after
+    content: ""
+    content: none
+
+a img
+  border: none
+
+article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary
+  display: block
+
+html
+  height: 100%
+
+.main-container
+  margin-top: 85px
+
+#comparative-genome
+  font-family: 'Roboto Condensed', sans-serif
+  font-weight: 300
+  margin-top: -8px
+  /* UI: drill down
+  /* modal window
+  a
+    color: #5D90C2
+  h1
+    text-align: center
+    font-size: 30px
+    line-height: 30px
+    padding: 17px 0 13px
+    background-color: rgba(222, 230, 229, 0.9)
+    color: #3C7177
+    font-weight: 400
+    &:before
+      content: image-url("logomark.png")
+      position: relative
+      vertical-align: middle
+      display: inline-block
+      top: -2px
+      margin: -22px 0
+    strong
+      color: #000
+      font-weight: 700
+  main .section
+    padding: 0
+    position: relative
+    overflow: hidden
+    header
+      position: relative
+      cursor: pointer
+      background-color: rgba(222, 230, 229, 0.9)
+      width: calc(100vw - 55px)
+      height: 30px
+      z-index: 1000
+      -moz-transition: background-color 0.2s ease-out, opacity 0.2s ease-out
+      -o-transition: background-color 0.2s ease-out, opacity 0.2s ease-out
+      -webkit-transition: background-color 0.2s ease-out, opacity 0.2s ease-out
+      transition: background-color 0.2s ease-out, opacity 0.2s ease-out
+      &:hover
+        background-color: #fff6c8
+      h2
+        font-size: 18px
+        line-height: 30px
+        font-weight: 400
+        color: #3C7177
+        text-align: left
+        border-top: solid 1px rgba(119, 80, 60, 0.25)
+        position: relative
+        padding-left: 18px
+        padding-right: 40px
+        white-space: nowrap
+        overflow: hidden
+        -o-text-overflow: ellipsis
+        text-overflow: ellipsis
+        em
+          font-weight: bold
+          margin-right: .5em
+        strong
+          color: #000
+          font-weight: bold
+          span
+            + span
+              margin-left: 0.5em
+            &.sign
+              font-weight: normal
+              margin: 0 0.25em
+      .heading-button
+        display: inline-block
+        width: 30px
+        height: 30px
+        vertical-align: middle
+        cursor: pointer
+        position: absolute
+        top: 1px
+        right: 5px
+        -moz-transition: -moz-transform 0.2s ease-out, opacity 0.2s ease-out
+        -o-transition: -o-transform 0.2s ease-out, opacity 0.2s ease-out
+        -webkit-transition: -webkit-transform 0.2s ease-out, opacity 0.2s ease-out
+        transition: transform 0.2s ease-out, opacity 0.2s ease-out
+        &:before, &:after
+          content: ""
+          display: block
+          position: absolute
+          border-top: solid 2px #3C7177
+          width: 8px
+          -moz-transition: -moz-transform 0.2s ease-out
+          -o-transition: -o-transform 0.2s ease-out
+          -webkit-transition: -webkit-transform 0.2s ease-out
+          transition: transform 0.2s ease-out
+        &:before
+          -moz-transform: translate(8px, 13px) rotate(135deg)
+          -ms-transform: translate(8px, 13px) rotate(135deg)
+          -webkit-transform: translate(8px, 13px) rotate(135deg)
+          transform: translate(8px, 13px) rotate(135deg)
+        &:after
+          -moz-transform: translate(13px, 13px) rotate(45deg)
+          -ms-transform: translate(13px, 13px) rotate(45deg)
+          -webkit-transform: translate(13px, 13px) rotate(45deg)
+          transform: translate(13px, 13px) rotate(45deg)
+    &.sticked
+      padding-top: 31px
+      header
+        position: fixed
+    &.bottom header .heading-button
+      -moz-transform: rotate(180deg)
+      -ms-transform: rotate(180deg)
+      -webkit-transform: rotate(180deg)
+      transform: rotate(180deg)
+    &.disabled header
+      cursor: default
+      &:hover
+        background-color: rgba(222, 230, 229, 0.9)
+      h2
+        opacity: 0.2
+      .heading-button
+        opacity: 0
+    &.loading header
+      &:before
+        content: image-url("loading.gif")
+        z-index: 1001
+        position: absolute
+        left: 50%
+        margin-left: -30px
+        top: 5px
+      .heading-button
+        opacity: 0
+  .bar-chart
+    border-top: solid 1px #DEE6E5
+    padding: 4px 0 8px
+    position: relative
+    cursor: pointer
+    -moz-transition: background-color 0.2s ease-out
+    -o-transition: background-color 0.2s ease-out
+    -webkit-transition: background-color 0.2s ease-out
+    transition: background-color 0.2s ease-out
+    &:first-child
+      border-top: none
+    .bar-name
+      font-size: 14px
+      font-weight: bold
+      line-height: 18px
+      margin-bottom: 2px
+      span.sign
+        font-weight: normal
+        margin: 0 4px
+      a
+        font-weight: normal
+        margin-left: 5px
+        &:hover
+          color: #95c8ce
+    .color-ball
+      position: absolute
+      width: 18px
+      height: 18px
+      box-sizing: border-box
+      border-radius: 100%
+      bottom: 6px
+      left: 0
+    .bar
+      background-color: #95c8ce
+      height: 14px
+      position: relative
+      -moz-transition: background-color 0.2s ease-out
+      -o-transition: background-color 0.2s ease-out
+      -webkit-transition: background-color 0.2s ease-out
+      transition: background-color 0.2s ease-out
+      span
+        color: #3C7177
+        font-size: 12px
+        font-weight: bold
+        line-height: 14px
+        position: absolute
+        left: 100%
+        margin-left: 4px
+      &.over-half span
+        color: #fff
+        right: 4px
+        left: auto
+        margin-left: auto
+    &:hover, &.selected
+      background-color: #FFF6C8
+    &:hover .bar, &.selected .bar
+      background-color: #3C7177
+  #aspects-selector
+    margin: 16px 40px 30px
+    label
+      display: inline-block
+      width: 49%
+      text-align: left
+      border-bottom: solid 1px #DEE6E5
+      line-height: 16px
+      padding: 8px 0
+      cursor: pointer
+      vertical-align: top
+      &:hover
+        background-color: #FFF4D3
+      small
+        font-size: 12px
+        color: #96948D
+  #section-species
+    header h2 strong span:before
+      content: ""
+      display: inline-block
+      width: 14px
+      height: 14px
+      border-radius: 100%
+      margin-right: 3px
+    .species-container
+      position: relative
+      text-align: center
+      padding: 0 40px
+      .species
+        display: inline-block
+        vertical-align: top
+        height: 200px
+        text-align: center
+        border-left: solid 1px #DEE6E5
+        border-right: solid 1px #DEE6E5
+        margin-right: -1px
+        .color-ball
+          width: 20px
+          height: 20px
+          border-radius: 100%
+          background-color: #DEE6E5
+          margin: 64px auto 4px
+          -moz-transition: background-color 0.2s ease-out
+          -o-transition: background-color 0.2s ease-out
+          -webkit-transition: background-color 0.2s ease-out
+          transition: background-color 0.2s ease-out
+        h3
+          font-size: 24px
+          line-height: 28px
+          font-weight: bold
+        p.scientific-name
+          font-size: 12px
+          line-height: 14px
+          color: #3C7177
+        .close-button
+          cursor: pointer
+          position: relative
+          height: 20px
+          width: 20px
+          margin: 14px auto
+          opacity: 0.25
+          &:before, &:after
+            content: ""
+            display: block
+            width: 14px
+            border-top: solid 1px #3C7177
+            position: absolute
+            margin: 9px 0 0 3px
+          &:before
+            -moz-transform: rotate(45deg)
+            -ms-transform: rotate(45deg)
+            -webkit-transform: rotate(45deg)
+            transform: rotate(45deg)
+          &:after
+            -moz-transform: rotate(135deg)
+            -ms-transform: rotate(135deg)
+            -webkit-transform: rotate(135deg)
+            transform: rotate(135deg)
+          &:hover
+            opacity: 1
+    #species-selector
+      position: relative
+      box-sizing: border-box
+      margin: 0 12px 12px
+      box-shadow: 0 2px 1px rgba(0, 0, 0, 0.3)
+      background-color: #3C7177
+      height: 320px
+      left: 0%
+      -moz-transition: width 0.2s ease-out, height 0.2s ease-out, left 0.2s ease-out, margin-top 0.2s ease-out, -moz-transform 0.2s ease-out
+      -o-transition: width 0.2s ease-out, height 0.2s ease-out, left 0.2s ease-out, margin-top 0.2s ease-out, -o-transform 0.2s ease-out
+      -webkit-transition: width 0.2s ease-out, height 0.2s ease-out, left 0.2s ease-out, margin-top 0.2s ease-out, -webkit-transform 0.2s ease-out
+      transition: width 0.2s ease-out, height 0.2s ease-out, left 0.2s ease-out, margin-top 0.2s ease-out, transform 0.2s ease-out
+      &:before
+        content: ""
+        display: block
+        position: absolute
+        right: 5px
+        top: -7px
+        width: 14px
+        height: 14px
+        background-color: #3C7177
+        -moz-transform: translateX(-50%) rotate(45deg)
+        -ms-transform: translateX(-50%) rotate(45deg)
+        -webkit-transform: translateX(-50%) rotate(45deg)
+        transform: translateX(-50%) rotate(45deg)
+      .toggle-button
+        width: 30px
+        height: 30px
+        position: absolute
+        top: 4px
+        right: 4px
+        cursor: pointer
+        z-index: 1
+        &:before, &:after
+          content: ""
+          display: block
+          position: absolute
+          border-top: solid 2px #fff
+          width: 12px
+          -moz-transition: -moz-transform 0.2s ease-out
+          -o-transition: -o-transform 0.2s ease-out
+          -webkit-transition: -webkit-transform 0.2s ease-out
+          transition: transform 0.2s ease-out
+        &:before
+          -moz-transform: translate(9px, 14px) rotate(135deg)
+          -ms-transform: translate(9px, 14px) rotate(135deg)
+          -webkit-transform: translate(9px, 14px) rotate(135deg)
+          transform: translate(9px, 14px) rotate(135deg)
+        &:after
+          -moz-transform: translate(9px, 14px) rotate(45deg)
+          -ms-transform: translate(9px, 14px) rotate(45deg)
+          -webkit-transform: translate(9px, 14px) rotate(45deg)
+          transform: translate(9px, 14px) rotate(45deg)
+      &.closed
+        width: 40px
+        height: 40px
+        margin-top: -52px
+        left: 100%
+        transform: translateX(-64px)
+        .toggle-button
+          &:before
+            -moz-transform: translate(9px, 14px) rotate(90deg)
+            -ms-transform: translate(9px, 14px) rotate(90deg)
+            -webkit-transform: translate(9px, 14px) rotate(90deg)
+            transform: translate(9px, 14px) rotate(90deg)
+          &:after
+            -moz-transform: translate(9px, 14px) rotate(0deg)
+            -ms-transform: translate(9px, 14px) rotate(0deg)
+            -webkit-transform: translate(9px, 14px) rotate(0deg)
+            transform: translate(9px, 14px) rotate(0deg)
+    svg
+      width: 100%
+      height: 100%
+      position: relative
+      fill: transparent
+      rect.event-capture
+        width: 100%
+        height: 100%
+      path.link
+        stroke: rgba(255, 254, 245, 0.2)
+        fill: transparent
+      .node
+        margin-bottom: 20px
+        circle
+          stroke: #FFFEF5
+          stroke-width: 2px
+          fill: #3C7177
+        text
+          font-size: 14px
+          font-style: italic
+          fill: rgba(255, 254, 245, 0.6)
+          -moz-transform: translate(-13px, 5px)
+          -ms-transform: translate(-13px, 5px)
+          -webkit-transform: translate(-13px, 5px)
+          transform: translate(-13px, 5px)
+        &.collapsed circle
+          fill: #AFCFCC
+        &.leaf
+          cursor: pointer
+          &.selected
+            circle
+              fill: #AFCFCC
+              stroke: #AFCFCC
+            text
+              opacity: 0.2
+            rect.plus1
+              display: none
+          circle
+            fill: #FFFEF5
+          text
+            font-style: normal
+            fill: #FFFEF5
+            -moz-transform: translate(13px, 5px)
+            -ms-transform: translate(13px, 5px)
+            -webkit-transform: translate(13px, 5px)
+            transform: translate(13px, 5px)
+          rect
+            fill: #3C7177
+            &.plus1
+              -moz-transform: translate(-1px, -4px)
+              -ms-transform: translate(-1px, -4px)
+              -webkit-transform: translate(-1px, -4px)
+              transform: translate(-1px, -4px)
+            &.plus2
+              -moz-transform: translate(-4px, -1px)
+              -ms-transform: translate(-4px, -1px)
+              -webkit-transform: translate(-4px, -1px)
+              transform: translate(-4px, -1px)
+    &[data-number-of-species="0"] #species-selector
+      margin-top: 12px
+    &[data-number-of-species="1"]
+      header h2 strong span[data-index="0"]:before
+        background-color: #96938D
+      .species
+        width: 99%
+        &[data-index="0"] .color-ball
+          background-color: #96938D
+    &[data-number-of-species="2"]
+      header h2 strong span
+        &[data-index="0"]:before
+          background-color: #804040
+        &[data-index="1"]:before
+          background-color: #408080
+      .species
+        width: 49%
+        &[data-index="0"] .color-ball
+          background-color: #804040
+        &[data-index="1"] .color-ball
+          background-color: #408080
+    &[data-number-of-species="3"]
+      header h2 strong span
+        &[data-index="0"]:before
+          background-color: #804040
+        &[data-index="1"]:before
+          background-color: #408040
+        &[data-index="2"]:before
+          background-color: #404080
+      .species
+        width: 33%
+        &[data-index="0"] .color-ball
+          background-color: #804040
+        &[data-index="1"] .color-ball
+          background-color: #408040
+        &[data-index="2"] .color-ball
+          background-color: #404080
+    &[data-number-of-species="4"]
+      header h2 strong span
+        &[data-index="0"]:before
+          background-color: #807040
+        &[data-index="1"]:before
+          background-color: #408050
+        &[data-index="2"]:before
+          background-color: #405080
+        &[data-index="3"]:before
+          background-color: #804070
+      .species
+        width: 24%
+        &[data-index="0"] .color-ball
+          background-color: #807040
+        &[data-index="1"] .color-ball
+          background-color: #408050
+        &[data-index="2"] .color-ball
+          background-color: #405080
+        &[data-index="3"] .color-ball
+          background-color: #804070
+    &[data-number-of-species="5"]
+      header h2 strong span
+        &[data-index="0"]:before
+          background-color: #804040
+        &[data-index="1"]:before
+          background-color: #738040
+        &[data-index="2"]:before
+          background-color: #40805A
+        &[data-index="3"]:before
+          background-color: #405A80
+        &[data-index="4"]:before
+          background-color: #734080
+      .species
+        width: 19%
+        &[data-index="0"] .color-ball
+          background-color: #804040
+        &[data-index="1"] .color-ball
+          background-color: #738040
+        &[data-index="2"] .color-ball
+          background-color: #40805A
+        &[data-index="3"] .color-ball
+          background-color: #405A80
+        &[data-index="4"] .color-ball
+          background-color: #734080
+  #section-combination
+    .combination-results
+      min-height: 335px
+      position: relative
+      padding-right: 380px
+    #combination-results-graph
+      position: relative
+      > .inner
+        margin: 15px 20px 20px 40px
+      .bar-chart
+        padding-left: 24px
+        .bar-name
+          margin-left: -24px
+    svg
+      width: 365px
+      height: 365px
+      position: absolute
+      right: 0
+      top: -14px
+      .venn-diagram
+        visibility: hidden
+        opacity: 0
+        -moz-transition: opacity 0.2s ease-out
+        -o-transition: opacity 0.2s ease-out
+        -webkit-transition: opacity 0.2s ease-out
+        transition: opacity 0.2s ease-out
+        circle, path
+          cursor: pointer
+        circle, path
+          -moz-transition: opacity 0.2s ease-out
+          -o-transition: opacity 0.2s ease-out
+          -webkit-transition: opacity 0.2s ease-out
+          transition: opacity 0.2s ease-out
+        text
+          -moz-transition: opacity 0.2s ease-out
+          -o-transition: opacity 0.2s ease-out
+          -webkit-transition: opacity 0.2s ease-out
+          transition: opacity 0.2s ease-out
+          font-size: 14px
+          font-weight: bold
+          fill: #000
+          pointer-events: none
+      #venn-shape-set1-0
+        fill: #96938D
+      #venn-shape-set2-0
+        fill: #804040
+      #venn-shape-set2-1
+        fill: #408080
+      #venn-shape-set3-0
+        fill: #804040
+      #venn-shape-set3-1
+        fill: #408040
+      #venn-shape-set3-2
+        fill: #404080
+      #venn-shape-set3-0_1
+        fill: #AAAA68
+      #venn-shape-set3-0_2
+        fill: #AA68AA
+      #venn-shape-set3-1_2
+        fill: #68AAAA
+      #venn-shape-set4-0
+        fill: #807040
+      #venn-shape-set4-1
+        fill: #408050
+      #venn-shape-set4-2
+        fill: #405080
+      #venn-shape-set4-3
+        fill: #804070
+      #venn-shape-set4-0_1
+        fill: #AAC67A
+      #venn-shape-set4-0_2
+        fill: #AAA6AA
+      #venn-shape-set4-0_3
+        fill: #CE9B9B
+      #venn-shape-set4-1_2
+        fill: #68B4B4
+      #venn-shape-set4-1_3
+        fill: #AAAAA6
+      #venn-shape-set4-2_3
+        fill: #AA7AC6
+      #venn-shape-set4-0_1_2
+        fill: #D1E6D7
+      #venn-shape-set4-0_1_3
+        fill: #E7E3CF
+      #venn-shape-set4-0_2_3
+        fill: #E7CFE3
+      #venn-shape-set4-1_2_3
+        fill: #D1D7E6
+      #venn-shape-set5-0
+        fill: #804040
+      #venn-shape-set5-1
+        fill: #738040
+      #venn-shape-set5-2
+        fill: #40805A
+      #venn-shape-set5-3
+        fill: #405A80
+      #venn-shape-set5-4
+        fill: #734080
+      #venn-shape-set5-0_1
+        fill: #C6AA61
+      #venn-shape-set5-0_2
+        fill: #ACAC81
+      #venn-shape-set5-0_3
+        fill: #AC85AC
+      #venn-shape-set5-0_4
+        fill: #C869A8
+      #venn-shape-set5-1_2
+        fill: #9ECD88
+      #venn-shape-set5-1_3
+        fill: #9CBAA9
+      #venn-shape-set5-1_4
+        fill: #C1A9AA
+      #venn-shape-set5-2_3
+        fill: #6FBAB2
+      #venn-shape-set5-2_4
+        fill: #A0AAB7
+      #venn-shape-set5-3_4
+        fill: #9F85CB
+      #venn-shape-set5-0_1_2
+        fill: #E3E6B5
+      #venn-shape-set5-0_1_3
+        fill: #E3DAD1
+      #venn-shape-set5-0_1_4
+        fill: #EED1D1
+      #venn-shape-set5-0_2_3
+        fill: #D1DADB
+      #venn-shape-set5-0_2_4
+        fill: #E3D1DB
+      #venn-shape-set5-0_3_4
+        fill: #E3B7E7
+      #venn-shape-set5-1_2_3
+        fill: #C8ECDB
+      #venn-shape-set5-1_2_4
+        fill: #DEE7DB
+      #venn-shape-set5-1_3_4
+        fill: #DEDAE7
+      #venn-shape-set5-2_3_4
+        fill: #C8DAEC
+      #venn-shape-set5-0_1_2_3
+        fill: #F3F6EF
+      #venn-shape-set5-0_1_2_4
+        fill: #F6F4EF
+      #venn-shape-set5-0_1_3_4
+        fill: #F6EFF4
+      #venn-shape-set5-0_2_3_4
+        fill: #F3EFF6
+      #venn-shape-set5-1_2_3_4
+        fill: #F0F6F6
+      #venn-shape-set2-0_1, #venn-shape-set3-0_1_2, #venn-shape-set4-0_1_2_3, #venn-shape-set5-0_1_2_3_4
+        fill: #fff
+    &[data-number-of-species="0"] .combination-results
+      min-height: auto
+    &[data-number-of-species="1"]
+      .bar-chart .color-ball.set1-0
+        background-color: #96938D
+      #venn-diagram1
+        visibility: visible
+        opacity: 1
+    &[data-number-of-species="2"]
+      .bar-chart .color-ball
+        &.set2-0
+          background-color: #804040
+        &.set2-1
+          background-color: #408080
+      #venn-diagram2
+        visibility: visible
+        opacity: 1
+    &[data-number-of-species="3"]
+      .bar-chart .color-ball
+        &.set3-0
+          background-color: #804040
+        &.set3-1
+          background-color: #408040
+        &.set3-2
+          background-color: #404080
+        &.set3-0_1
+          background-color: #AAAA68
+        &.set3-0_2
+          background-color: #AA68AA
+        &.set3-1_2
+          background-color: #68AAAA
+      #venn-diagram3
+        visibility: visible
+        opacity: 1
+    &[data-number-of-species="4"]
+      .bar-chart .color-ball
+        &.set4-0
+          background-color: #807040
+        &.set4-1
+          background-color: #408050
+        &.set4-2
+          background-color: #405080
+        &.set4-3
+          background-color: #804070
+        &.set4-0_1
+          background-color: #AAC67A
+        &.set4-0_2
+          background-color: #AAA6AA
+        &.set4-0_3
+          background-color: #CE9B9B
+        &.set4-1_2
+          background-color: #68B4B4
+        &.set4-1_3
+          background-color: #AAAAA6
+        &.set4-2_3
+          background-color: #AA7AC6
+        &.set4-0_1_2
+          background-color: #D1E6D7
+        &.set4-0_1_3
+          background-color: #E7E3CF
+        &.set4-0_2_3
+          background-color: #E7CFE3
+        &.set4-1_2_3
+          background-color: #D1D7E6
+      #venn-diagram4
+        visibility: visible
+        opacity: 1
+    &[data-number-of-species="5"]
+      .bar-chart .color-ball
+        &.set5-0
+          background-color: #804040
+        &.set5-1
+          background-color: #738040
+        &.set5-2
+          background-color: #40805A
+        &.set5-3
+          background-color: #405A80
+        &.set5-4
+          background-color: #734080
+        &.set5-0_1
+          background-color: #C6AA61
+        &.set5-0_2
+          background-color: #ACAC81
+        &.set5-0_3
+          background-color: #AC85AC
+        &.set5-0_4
+          background-color: #C869A8
+        &.set5-1_2
+          background-color: #9ECD88
+        &.set5-1_3
+          background-color: #9CBAA9
+        &.set5-1_4
+          background-color: #C1A9AA
+        &.set5-2_3
+          background-color: #6FBAB2
+        &.set5-2_4
+          background-color: #A0AAB7
+        &.set5-3_4
+          background-color: #9F85CB
+        &.set5-0_1_2
+          background-color: #E3E6B5
+        &.set5-0_1_3
+          background-color: #E3DAD1
+        &.set5-0_1_4
+          background-color: #EED1D1
+        &.set5-0_2_3
+          background-color: #D1DADB
+        &.set5-0_2_4
+          background-color: #E3D1DB
+        &.set5-0_3_4
+          background-color: #E3B7E7
+        &.set5-1_2_3
+          background-color: #C8ECDB
+        &.set5-1_2_4
+          background-color: #DEE7DB
+        &.set5-1_3_4
+          background-color: #DEDAE7
+        &.set5-2_3_4
+          background-color: #C8DAEC
+        &.set5-0_1_2_3
+          background-color: #F3F6EF
+        &.set5-0_1_2_4
+          background-color: #F6F4EF
+        &.set5-0_1_3_4
+          background-color: #F6EFF4
+        &.set5-0_2_3_4
+          background-color: #F3EFF6
+        &.set5-1_2_3_4
+          background-color: #F0F6F6
+      #venn-diagram5
+        visibility: visible
+        opacity: 1
+    .bar-chart
+      -moz-transition: opacity 0.2s ease-out
+      -o-transition: opacity 0.2s ease-out
+      -webkit-transition: opacity 0.2s ease-out
+      transition: opacity 0.2s ease-out
+      .color-ball
+        &.set2-0_1, &.set3-0_1_2, &.set4-0_1_2_3, &.set5-0_1_2_3_4
+          background-color: #fff
+          border: solid 1px #000
+      &.set5 + .set4, &.set4 + .set3, &.set3 + .set2, &.set2 + .set1
+        border-top-color: #000
+    &.hovering
+      .bar-chart
+        opacity: 0.2
+        &:hover, &.relative
+          opacity: 1
+      svg .venn-diagram
+        circle, path, text
+          opacity: 0.2
+        circle
+          &:hover, &.relative
+            opacity: 1
+        path
+          &:hover, &.relative
+            opacity: 1
+        text
+          &:hover, &.relative
+            opacity: 1
+  #section-category #category-container
+    position: relative
+    > .inner
+      margin: 15px 40px
+  #section-link-to #link-to-container
+    > .inner
+      padding: 15px 40px
+    table
+      font-size: 14px
+      line-height: 18px
+      width: 100%
+      th, td
+        padding: 5px 1em 5px 1px
+        word-wrap: break-word
+      thead th
+        font-weight: bold
+      tbody tr
+        border-top: solid 1px #DEE6E5
+        &:first-child
+          border-top-color: #333
+  footer
+    text-align: center
+    font-size: 10px
+    padding: 20px 0
+    background-color: #DEE6E5
+    border-top: solid 1px rgba(119, 80, 60, 0.25)
+  .ui-drill-down-menu
+    padding: 0 0 0 0
+    height: 100%
+    position: relative
+    .ui-pop-drill-down-menu
+      position: fixed
+      width: 40px
+      height: 40px
+      top: 6px
+      left: 0
+      text-align: center
+      font-size: 20px
+      cursor: pointer
+      &:after
+        content: ""
+        font-family: 'FontAwesome'
+        font-style: normal
+        font-size: 20px
+        color: #3C7177
+        line-height: 40px
+    menu
+      list-style: none
+      li.item
+        font-size: 16px
+        line-height: 18px
+        padding: 10px 10px
+        border-top: solid 1px rgba(119, 80, 60, 0.2)
+        position: relative
+        background-color: #fff
+        cursor: pointer
+        -moz-transition: background-color 0.2s ease-out
+        -o-transition: background-color 0.2s ease-out
+        -webkit-transition: background-color 0.2s ease-out
+        transition: background-color 0.2s ease-out
+        &:after
+          font-family: 'FontAwesome'
+          font-style: normal
+          display: block
+          position: absolute
+          color: #3C7177
+          right: 13px
+          top: 50%
+          transform: translateY(-50%)
+        &.item-terminal
+          font-weight: 400
+          &:after
+            content: ""
+        &.has-children
+          font-style: italic
+          &:after
+            content: ""
+        &:hover
+          background-color: #DEE6E5
+  .modal-window-container
+    position: fixed
+    width: 100%
+    height: 100%
+    background-color: rgba(0, 0, 0, 0.85)
+    top: 0
+    left: 0
+    -moz-animation-name: modal-window-container
+    -webkit-animation-name: modal-window-container
+    animation-name: modal-window-container
+    -moz-animation-duration: 0.5s
+    -webkit-animation-duration: 0.5s
+    animation-duration: 0.5s
+    -moz-animation-timing-function: ease-out
+    -webkit-animation-timing-function: ease-out
+    animation-timing-function: ease-out
+    -moz-animation-iteration-count: 1
+    -webkit-animation-iteration-count: 1
+    animation-iteration-count: 1
+    .modal-window
+      width: 500px
+      margin: 0 auto
+      max-height: 200px
+      overflow-y: scroll
+      background-color: #fff
+      border-radius: 10px
+      position: fixed
+      top: 50%
+      left: 50%
+      transform: translate(-50%, -50%)
+      overflow: hidden
+      -moz-transition: -moz-transform 0.2s ease-out, height 0.2s ease-out
+      -o-transition: -o-transform 0.2s ease-out, height 0.2s ease-out
+      -webkit-transition: -webkit-transform 0.2s ease-out, height 0.2s ease-out
+      transition: transform 0.2s ease-out, height 0.2s ease-out
+      -moz-animation-name: show-modal-window
+      -webkit-animation-name: show-modal-window
+      animation-name: show-modal-window
+      -moz-animation-duration: 0.5s
+      -webkit-animation-duration: 0.5s
+      animation-duration: 0.5s
+      -moz-animation-timing-function: ease-out
+      -webkit-animation-timing-function: ease-out
+      animation-timing-function: ease-out
+      -moz-animation-iteration-count: 1
+      -webkit-animation-iteration-count: 1
+      animation-iteration-count: 1
+
+@-moz-keyframes modal-window-container
+  0%
+    opacity: 0
+
+  100%
+    opacity: 1
+
+
+@-webkit-keyframes modal-window-container
+  0%
+    opacity: 0
+
+  100%
+    opacity: 1
+
+
+@keyframes modal-window-container
+  0%
+    opacity: 0
+
+  100%
+    opacity: 1
+
+
+@-moz-keyframes show-modal-window
+  0%
+    opacity: 0
+    top: 47.5%
+
+  100%
+    opacity: 1
+    top: 50%
+
+
+@-webkit-keyframes show-modal-window
+  0%
+    opacity: 0
+    top: 47.5%
+
+  100%
+    opacity: 1
+    top: 50%
+
+
+@keyframes show-modal-window
+  0%
+    opacity: 0
+    top: 47.5%
+
+  100%
+    opacity: 1
+    top: 50%
+
+
+/*# sourceMappingURL=comparativegenome.css.map

@@ -66,9 +66,8 @@ GEM
     eventmachine (1.0.4)
     execjs (1.4.0)
       multi_json (~> 1.0)
-    font-awesome-sass-rails (3.0.2.2)
-      railties (>= 3.1.1)
-      sass-rails (>= 3.1.1)
+    font-awesome-rails (4.7.0.2)
+      railties (>= 3.2, < 5.2)
     fssm (0.2.10)
     haml (4.0.0)
       tilt
@@ -219,7 +218,7 @@ DEPENDENCIES
   compass-rails
   csv_builder
   dalli
-  font-awesome-sass-rails
+  font-awesome-rails
   haml-rails
   httpclient
   jbuilder
@@ -244,4 +243,4 @@ DEPENDENCIES
   unicorn
 
 BUNDLED WITH
-   1.10.6
+   1.15.3

@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import "compass";
-@import "font-awesome";
+
 $color_base_blue: #45b8cc;
 $color_base_blue_dark: #33717f;
 $color_pale_blue: #ecf8fa;
@@ -21,6 +21,9 @@ body {
   padding-top: 85px;
   background-color: #f4f3f2;
   font-family: "Arial",san-serif;
+}
+.navbar-fixed-top, .navbar-fixed-bottom {
+  z-index: 20000;
 }
 
 a {
@@ -648,7 +651,8 @@ footer address {
     }
   }
 }
-h3[class^="icon-"], h3[class*=" icon-"] {
+
+.facet legend {
   font-family: "Myriad Pro","Helvetica Neue",san-serif;
   font-size: 16px;
   font-weight: bold;
@@ -659,11 +663,12 @@ h3[class^="icon-"], h3[class*=" icon-"] {
   text-align: right;
   position: absolute;
   left: 0;
+  border: none;
 }
-.icon-search::before {
+.facet legend::before {
   content: none;
 }
-.icon-search::after {
+.facet legend::after {
   content: "▶";
   font-size: 8px;
   padding-left: 1em;

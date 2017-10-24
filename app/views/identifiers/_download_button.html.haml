@@ -1,4 +1,3 @@
 %span.result-download-container
   %a{href: identifiers_convert_path(identifiers: @identifiers, databases: @databases, format: 'csv')}
-    %i.icon-file
-    Download CSV
+    = fa_icon(:file, text: 'Download CSV')

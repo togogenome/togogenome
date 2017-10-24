@@ -2,31 +2,26 @@
   :javascript
     $(function() {
       var result_table = $("#gene_results");
-      drawInfo.gene = {
-        dataTable: result_table.DataTable({
-          ajax: {
-            url: Routes.report_type_genes_path({format: 'json'})
-          },
-          columns: [
-            {data: "gene_link"},
-            {data: "protein_links", width: "100px"},
-            {data: "protein_names", width: "220px"},
-            {data: "go_links"},
-            {data: "organism_link"}
-          ],
-          initComplete: function (setting) {
-            #{
-              # DataTableの生成後にタブを描画しないと Table に width が固定で設定されてしまう。
-              # しかし、描画後に paginationSlider を再描画しないと正しくスライダーが表示されない(崩れて表示される)
-            }
-            $('#result_tabs a[href="#gene"]').tab('show');
-            setting.oInit.paginationSlider.render();
-          }
-        }),
-        downloadCSV: Routes.report_type_genes_path({format: 'csv'})
+      drawInfo.gene = function() {
+        return {
+          dataTable: $("#gene_results").DataTable({
+            retrieve: true,
+            ajax: {
+              url: Routes.report_type_genes_path({format: 'json'})
+            },
+            columns: [
+              {data: "gene_link"},
+              {data: "protein_links", width: "100px"},
+              {data: "protein_names", width: "220px"},
+              {data: "go_links"},
+              {data: "organism_link"}
+            ]
+          }),
+          downloadCSV: Routes.report_type_genes_path({format: 'csv'})
+        };
       };
 
-      result_table.parent().find(".result-download-container").append("<a><i class='icon-file'></i> Download CSV</a>");
+      result_table.parent().find(".result-download-container").append("<a><i class='fa fa-file'></i> Download CSV</a>");
     });
 
 %table#gene_results.table.table-striped.table-bordered.table-hover.table-condensed

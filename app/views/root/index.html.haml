@@ -407,14 +407,22 @@
         .text-center.padding
           .tg-button.clear#facet-all-clear-button Clear
 
-  - report_types = %w(gene organism phenotype environment)
+  - report_types = report_tabs.map { |hash| hash[:type] }
   #genomes.row-fluid
     %ul#result_tabs.nav.nav-tabs
-      - report_types.each do |report_type|
+      - report_types.each do |type|
         %li
-          %a{href: "##{report_type}", data: {toggle: 'tab', key: report_type}}= report_type.humanize
+          %a{href: "##{type}", data: {toggle: 'tab', key: type}}= type.humanize
 
     .tab-content#result_panes
-      - report_types.each do |report_type|
-        .tab-pane{id: report_type}
-          = render partial: "report_type/#{report_type.pluralize}/results", locals: { results: [] }
+      - report_types.each do |type|
+        .tab-pane{id: type}
+          = render partial: "report_type/#{type.pluralize}/results", locals: { results: [] }
+
+= content_for :javascript do
+  :javascript
+    $(function() {
+      var defaultTab = 'organism';
+      $("#result_tabs").find('a[href="#' + defaultTab + '"]').tab('show');
+      window.drawInfo[defaultTab].call().dataTable.draw()
+    });

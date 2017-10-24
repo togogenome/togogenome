@@ -2,22 +2,25 @@
   :javascript
     $(function() {
       var result_table = $("#environment_results");
-      drawInfo.environment = {
-        dataTable: result_table.DataTable({
-          ajax: {
-            url: Routes.report_type_environments_path({format: 'json'})
-          },
-          columns: [
-            {data: "category"},
-            {data: "environment_link"},
-            {data: "definition"},
-            {data: "inhabitants", className: "numeric"}
-          ]
-        }),
-        downloadCSV: Routes.report_type_environments_path({format: 'csv'})
+      drawInfo.environment = function() {
+        return {
+          dataTable: $("#environment_results").DataTable({
+            retrieve: true,
+            ajax: {
+              url: Routes.report_type_environments_path({format: 'json'})
+            },
+            columns: [
+              {data: "category"},
+              {data: "environment_link"},
+              {data: "definition"},
+              {data: "inhabitants", className: "numeric"}
+            ]
+          }),
+          downloadCSV: Routes.report_type_environments_path({format: 'csv'})
+        };
       };
 
-      result_table.parent().find(".result-download-container").append("<a><i class='icon-file'></i> Download CSV</a>");
+      result_table.parent().find(".result-download-container").append("<a><i class='fa fa-file'></i> Download CSV</a>");
     });
 
 %table#environment_results.table.table-striped.table-bordered.table-hover.table-condensed

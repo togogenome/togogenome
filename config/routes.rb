@@ -16,6 +16,8 @@ TogoGenome::Application.routes.draw do
     get :search, on: :collection
   end
 
+  get '/compare', to: 'comparative_genome#index'
+
   get '/sequence', as: :sequence_index, to: 'sequence#index'
   get '/sequence/search', as: :sequence_search, to: 'sequence#search'
 
@@ -26,7 +28,6 @@ TogoGenome::Application.routes.draw do
 
   get '/text', as: :text_index, to: 'stanza_search#index'
   get '/text/search', as: :text_search, to: 'stanza_search#show'
-  get '/compare', to: 'comparative_genome#show'
 
   # 複数形にしたい所だけど、利用者にはこちらの方が分かりやすいらしい
   resources :gene,        only: %w(show), constraints: { id: /[\w\-\:\.\/]+/ }

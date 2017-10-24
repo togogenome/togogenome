@@ -1,5 +1,5 @@
 defaults: &defaults
-  sparqlendpoint: 'http://dev.togogenome.org/sparql-test'
+  sparqlendpoint: 'http://dev.togogenome.org/sparql-app'
   fulltextsearch: 'http://example.com/test'
 
 development:
