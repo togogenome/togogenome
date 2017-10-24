@@ -14,9 +14,6 @@
               {data: "organism_link"},
               {data: "genome_size", className: "numeric"},
               {data: "gene_num", className: "numeric"},
-              {data: "rrna_num", className: "numeric"},
-              {data: "trna_num", className: "numeric"},
-              {data: "ncrna_num", className: "numeric"},
               {data: "environment_links"},
               {data: "temperature"},
               {data: "morphologies"},
@@ -36,15 +33,11 @@
       %th{rowspan: 2} Taxonomy
       %th{rowspan: 2} Organism
       %th{rowspan: 2} Genome size (bp)
-      %th{colspan: 4} Number of genes
+      %th{rowspan: 2} Number of genes
       %th{rowspan: 2} Environments
       %th{colspan: 3} Phenotypes
 
     %tr
-      %th Gene
-      %th tRNA
-      %th rRNA
-      %th ncRNA
       %th Temperature
       %th Morphology
       %th Energy source
