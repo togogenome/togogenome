@@ -5,6 +5,9 @@
 
 ENDPOINT = '<%= Endpoint.sparqlendpoint %>'
 
+APPLICATION =
+  MARGIN_TOP: 40
+
 DEFAULT =
   aspect: 'pathway'
   species: [
@@ -562,7 +565,7 @@ HeadingNavigation.prototype =
       return
     return
   scrollTo: (index) ->
-    @$scroll.animate { scrollTop: @sections[index].$section.offset().top - (@sections[index].top) + 2 }, duration: DURATION.scroll
+    @$scroll.animate { scrollTop: @sections[index].$section.offset().top - (@sections[index].top) - APPLICATION.MARGIN_TOP }, duration: DURATION.scroll
     return
 
 Application.prototype =
@@ -775,6 +778,7 @@ Application.prototype =
       # 有効化
       @$sectionCombination.removeClass 'disabled loading'
       @d3VennDiagramTexts.text ''
+      # @$sectionCombination.find('header').trigger('click')
       # 結果のソート
       results.forEach (d) ->
         unsortedTaxIds = d.orgs.value.split(', ')
@@ -892,6 +896,7 @@ Application.prototype =
       results = response.results.bindings
       # 有効化
       self.$sectionCategory.removeClass 'disabled loading'
+      self.$sectionCategory.find('header').trigger('click')
       # 最大値
       sum = results.map((result) ->
         parseInt result.sum.value
@@ -944,6 +949,7 @@ Application.prototype =
     d3sparql.query ENDPOINT, sparql, (response) ->
       # 有効化
       self.$sectionLinkTo.removeClass 'disabled loading'
+      self.$sectionLinkTo.find('header').trigger('click')
       header = response.head.vars
       results = response.results.bindings
       html = '<table><thead>@@thead@@</thead><tbody>@@tbody@@</tbody></table>'.
