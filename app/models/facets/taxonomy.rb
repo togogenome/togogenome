@@ -49,7 +49,6 @@ module Facets
                 ?target rdfs:label ?name .
                 FILTER(LANG(?name) = "" || LANGMATCHES(LANG(?name), "en")) .
               }
-              LIMIT 16
             }
             GRAPH <http://togogenome.org/graph/taxonomy_lite> {
               FILTER EXISTS { ?target rdfs:subClassOf ?_parent } .
