@@ -42,16 +42,23 @@ module Facets
         sparql = <<-SPARQL.strip_heredoc
           SELECT ?target ?name ?parent ?parent_name ?step
           WHERE {
-            GRAPH <http://togogenome.org/graph/taxonomy> {
-              SELECT ?target ?name
-              WHERE {
-                FILTER regex(?name, "#{word}", "i") .
-                ?target rdfs:label ?name .
-                FILTER(LANG(?name) = "" || LANGMATCHES(LANG(?name), "en")) .
-              }
+            {
+              SELECT DISTINCT ?target ?name
+              {
+                GRAPH <http://togogenome.org/graph/taxonomy> {
+                  SELECT ?target ?name
+                  WHERE {
+                    FILTER regex(?name, "#{word}", "i") .
+                    ?target rdfs:label ?name .
+                    FILTER(LANG(?name) = "" || LANGMATCHES(LANG(?name), "en")) .
+                  }
+                }
+                GRAPH <http://togogenome.org/graph/taxonomy_lite> {
+                  ?target rdfs:subClassOf ?_parent .
+                }
+              } LIMIT 16
             }
             GRAPH <http://togogenome.org/graph/taxonomy_lite> {
-              FILTER EXISTS { ?target rdfs:subClassOf ?_parent } .
               ?target rdfs:subClassOf ?parent  OPTION (TRANSITIVE, T_DIRECTION 1, T_MIN(0), T_STEP("step_no") AS ?step) .
             }
             GRAPH <http://togogenome.org/graph/taxonomy> {
