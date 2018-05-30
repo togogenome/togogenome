@@ -637,7 +637,7 @@ Application.prototype =
   setSpecies: (data, targetNode) ->
     species = undefined
     if @cache.species.length >= @MAX_OF_TAXON
-      window.alert 'Species は5種までしか選択できません'
+      window.alert 'You can choose up to 5 species.'
       false
     else
       species = new Species(data, @cache.species.length, targetNode)
