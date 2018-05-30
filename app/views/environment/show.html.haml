@@ -20,7 +20,12 @@
     %section{id: stanza.uri.split('/').last}
       .page-header
         %h2= stanza.name
-      %div{data: {stanza: stanza.uri, stanza_meo_id: @meo_id}}
+      - if stanza.key?('version') && stanza.version == 'js'
+        %link{rel: "import", href: stanza.uri}
+        = tag "togostanza-#{stanza.uri.split('/').last}", {meo_id: @meo_id}
+      - else
+        %div{data: {stanza: stanza.uri, stanza_meo_id: @meo_id}}
 
 = content_for :javascript do
   = javascript_include_tag "http://togostanza.org/stanza/assets/stanza.js"
+  = javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.15/webcomponents.min.js"

@@ -132,11 +132,13 @@ defaults: &defaults
 
       togostanza:
         -
-          uri: http://togostanza.org/stanza/environment_attributes
+          uri: http://togostanza.org/stanza/environment-attributes/
           name: Environment attributes
+          version: js
         -
-          uri: http://togostanza.org/stanza/environment_inhabitants_statistics
+          uri: http://togostanza.org/stanza/environment-inhabitants-statistics/
           name: Inhabitants statistics
+          version: js
         -
           uri: http://togostanza.org/stanza/environment_inhabitants
           name: Inhabitants
