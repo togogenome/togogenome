@@ -880,10 +880,12 @@ Application.prototype =
     @$sectionCategory.addClass 'loading'
 
     # クエリ
-    sparql = SPARQLS.step2.
-      replace(/@@taxvalues@@/, @taxIdsWithString(@cache.taxIds)).
-      replace(/@@taxfilter@@/, @cache.taxIds).
-      replace(/@@aspect@@/, @aspectSparql(@cache.aspect))
+    sparql = SPARQLS.step2
+      .replace(/@@taxvalues@@/, @cache.species.map((s) ->
+        'tax:' + s.taxId
+      ).join(' '))
+      .replace(/@@taxfilter@@/, @cache.taxIds)
+      .replace(/@@aspect@@/, @aspectSparql(@cache.aspect))
 
     external_link = (uri) ->
       """ <a href="#{uri}" target="_blank"><i class="fa fa-external-link"></i></a>"""
