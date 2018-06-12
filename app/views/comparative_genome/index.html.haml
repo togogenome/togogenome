@@ -18,26 +18,26 @@
             .heading-button
           #aspects-selector.inner
             %label
-              %input{name: 'aspect', type: 'radio', value: 'pathway'}/
-              Pathway annotations
-            %label
-              %input{name: 'aspect', type: 'radio', value: 'location'}/
-              Sub-cellular location
-            %label
-              %input{name: 'aspect', type: 'radio', value: 'geneontology'}/
-              Gene ontology
+              %input{name: 'aspect', type: 'radio', value: 'pfam'}/
+              Pfam motifs
             %label
               %input{name: 'aspect', type: 'radio', value: 'interpro'}/
               InterPro motifs
-            %label
-              %input{name: 'aspect', type: 'radio', value: 'pfam'}/
-              Pfam motifs
             %label
               %input{name: 'aspect', type: 'radio', value: 'supfam'}/
               SUPFAM motifs
             %label
               %input{name: 'aspect', type: 'radio', value: 'prosite'}/
               PROSITE motifs
+            %label
+              %input{name: 'aspect', type: 'radio', value: 'geneontology'}/
+              Gene ontology
+            %label
+              %input{name: 'aspect', type: 'radio', value: 'location'}/
+              Sub-cellular location
+            %label
+              %input{name: 'aspect', type: 'radio', value: 'pathway'}/
+              Pathway annotations
             %label
               %input{name: 'aspect', type: 'radio', value: 'reactome'}/
               Reactome reactions
@@ -69,10 +69,6 @@
               HOVERGEN orthologs
               %small URI, only for vertebrates
             %label
-              %input{name: 'aspect', type: 'radio', value: 'inparanoid'}/
-              InParanoid orthologs
-              %small URI, only for each organism
-            %label
               %input{name: 'aspect', type: 'radio', value: 'ko'}/
               KO orthologs
               %small URI
@@ -84,10 +80,6 @@
               %input{name: 'aspect', type: 'radio', value: 'orthodb'}/
               OrthoDB orthology
               %small URI
-            %label
-              %input{name: 'aspect', type: 'radio', value: 'phylomedb'}/
-              PhylomeDB orthologs
-              %small URI, only for each organism
             %label
               %input{name: 'aspect', type: 'radio', value: 'treefam'}/
               TreeFam orthologs
