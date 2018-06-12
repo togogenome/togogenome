@@ -869,11 +869,11 @@ Application.prototype =
     max = undefined
     @cache.taxIds = taxIds
     # 有効化
-    taxIds2 = @cache.taxIds.split(', ').map((taxId) ->
-      parseInt taxId
-    )
-    commonNames = taxIds2.map((taxId) ->
-      self.getValueWithKeyValue 'common_name', 'taxid', taxId
+    taxIds2 = @cache.taxIds.split(', ')
+    commonNames = @cache.species.filter((x) ->
+      taxIds2.includes(x.taxId)
+    ).map((x) ->
+      x.data.common_name
     )
     @$combinationH2.html commonNames.join('<span class="sign">∩</span>')
     #this.$sectionCategory.removeClass('disabled');
