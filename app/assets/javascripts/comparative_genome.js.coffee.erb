@@ -58,11 +58,11 @@ SPARQLS =
     SELECT DISTINCT ?label ?sum ?orgs ?ex_link
     WHERE {
       {
-        SELECT ?label (SUM(?count) AS ?sum) (GROUP_CONCAT(REPLACE(STR(?tax), tax:, "") ;separator=", ") AS ?orgs) ?ex_link
+        SELECT ?label (SUM(?count) AS ?sum) (GROUP_CONCAT(REPLACE(STR(?tax), tax:, "") ;separator=", ") AS ?orgs) (SAMPLE(?link) AS ?ex_link)
         WHERE {
-          SELECT ?label ?tax (COUNT(?up) AS ?count) ?ex_link
+          SELECT ?label ?tax (COUNT(?up) AS ?count) ?link
           WHERE {
-            SELECT DISTINCT ?label ?tax ?up ?ex_link
+            SELECT DISTINCT ?label ?tax ?up ?link
             FROM <http://togogenome.org/graph/uniprot>
             WHERE {
               VALUES ?tax { @@taxvalues@@ }
@@ -703,7 +703,7 @@ Application.prototype =
           ?annotation rdf:type up:Pathway_Annotation .
           ?annotation rdfs:seeAlso ?pathway .
           ?pathway rdfs:label ?label .
-          BIND ( ?pathway as ?ex_link )
+          BIND ( ?pathway as ?link )
         '''
       when 'location'
         sparql = '''
@@ -711,27 +711,26 @@ Application.prototype =
           ?annotation a up:Subcellular_Location_Annotation .
           ?annotation up:locatedIn/up:cellularComponent ?location .
           ?location up:alias ?label .
-          BIND ( ?location as ?ex_link )
+          BIND ( ?location as ?link )
         '''
       when 'geneontology'
         sparql = '''
           ?up up:classifiedWith ?go .
           ?go up:database db:go .
           ?go rdfs:label ?label .
-          BIND ( ?go as ?ex_link )
+          BIND ( ?go as ?link )
         '''
       when 'interpro', 'pfam', 'supfam', 'prosite', 'reactome', 'cazy'
         sparql = '''
           ?up rdfs:seeAlso ?link .
           ?link up:database db:@@database@@ .
           ?link rdfs:comment ?label .
-          BIND ( ?link as ?ex_link )
         '''.replace(/@@database@@/, mapping[aspect])
       when 'ctd', 'brenda', 'eggnog', 'genetree', 'hogenom', 'hovergen', 'inparanoid', 'ko', 'oma', 'orthodb', 'phylomedb', 'treefam', 'nextbio', 'paxdb', 'pride'
         sparql = '''
           ?up rdfs:seeAlso ?label .
           ?label up:database db:@@database@@ .
-          BIND ( ?label as ?ex_link )
+          BIND ( ?label as ?link )
         '''.replace(/@@database@@/, mapping[aspect])
     sparql
 
