@@ -720,7 +720,13 @@ Application.prototype =
           ?go rdfs:label ?label .
           BIND ( ?go as ?link )
         '''
-      when 'interpro', 'pfam', 'supfam', 'prosite', 'reactome', 'cazy'
+      when 'interpro', 'pfam', 'supfam', 'prosite', 'cazy'
+        sparql = '''
+          ?up rdfs:seeAlso ?link .
+          ?link up:database db:@@database@@ .
+          ?link rdfs:comment ?label .
+        '''.replace(/@@database@@/, mapping[aspect])
+      when 'reactome'
         sparql = '''
           ?up rdfs:seeAlso ?link .
           ?link up:database db:@@database@@ .
