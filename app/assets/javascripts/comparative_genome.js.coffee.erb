@@ -562,7 +562,7 @@ HeadingNavigation.prototype =
       return
     return
   scrollTo: (index) ->
-    @$scroll.animate { scrollTop: @sections[index].$section.offset().top - (@sections[index].top) + 2 }, duration: DURATION.scroll
+    @$scroll.animate { scrollTop: @sections[index].$section.offset().top - (@sections[index].top) + 2 - 40 }, duration: DURATION.scroll
     return
 
 Application.prototype =
