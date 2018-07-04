@@ -21,11 +21,6 @@ TogoGenome::Application.routes.draw do
   get '/sequence', as: :sequence_index, to: 'sequence#index'
   get '/sequence/search', as: :sequence_search, to: 'sequence#search'
 
-  get '/converter', as: :converter, to: 'converter#index'
-  get '/resolver', as: :resolver, to: 'resolver#index'
-  get '/identifiers/convert'
-  get '/identifiers/teach'
-
   get '/text', as: :text_index, to: 'stanza_search#index'
   get '/text/search', as: :text_search, to: 'stanza_search#show'
 
