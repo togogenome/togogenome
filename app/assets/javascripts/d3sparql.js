@@ -60,10 +60,12 @@ d3sparql.query = function(endpoint, sparql, callback) {
   if (d3sparql.debug) { console.log(endpoint) }
   if (d3sparql.debug) { console.log(url) }
   var mime = "application/sparql-results+json"
-  d3.xhr(url, mime, function(request) {
-    var json = request.responseText
-    if (d3sparql.debug) { console.log(json) }
-    callback(JSON.parse(json))
+  d3.json(url)
+    .header("Accept", mime)
+    .get(function(error, request) {
+       var json = request
+       if (d3sparql.debug) { console.log(json) }
+       callback(json)
   })
 /*
   d3.json(url, function(error, json) {
