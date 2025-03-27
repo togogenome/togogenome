@@ -23,7 +23,7 @@ limit = 100
       r.tax.category,
       r.tax.name,
       r.tax.id,
-      "http://togogenome.org/organism/#{r.tax.id}",
+      "https://togogenome.org/organism/#{r.tax.id}",
       r.stat.try(:genome_size),
       r.stat.try(:gene_num),
       r.stat.try(:rrna_num),
@@ -31,7 +31,7 @@ limit = 100
       r.stat.try(:ncrna_num),
       r.envs.map(&:name).join("\n"),
       r.envs.map(&:id).join("\n"),
-      r.envs.map {|env| "http://togogenome.org/environment/#{env.id}" }.join("\n"),
+      r.envs.map {|env| "https://togogenome.org/environment/#{env.id}" }.join("\n"),
       r.temperature.try(:label),
       r.morphologies.map(&:name).join("\n"),
       r.energy_sources.map(&:name).join("\n")

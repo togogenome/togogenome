@@ -14,7 +14,7 @@ limit = 100
       r.environment.category,
       r.environment.name,
       r.environment.id,
-      "http://togogenome.org/environment/#{r.environment.id}",
+      "https://togogenome.org/environment/#{r.environment.id}",
       r.environment.definition,
       r.environment.inhabitants
     ]
