@@ -26,7 +26,7 @@ limit = 100
       r.gos.map(&:uri).join("\n"),
       r.gene_and_taxonomy.taxonomy_name,
       r.gene_and_taxonomy.taxonomy_id,
-      "http://togogenome.org/organism/#{r.gene_and_taxonomy.taxonomy_id}",
+      "https://togogenome.org/organism/#{r.gene_and_taxonomy.taxonomy_id}",
     ]
   end
 end

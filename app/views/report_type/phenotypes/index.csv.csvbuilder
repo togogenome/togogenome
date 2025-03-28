@@ -14,7 +14,7 @@ limit = 100
       r.phenotype.category,
       r.phenotype.name,
       r.phenotype.id,
-      "http://togogenome.org/phenotype/#{r.phenotype.id}",
+      "https://togogenome.org/phenotype/#{r.phenotype.id}",
       r.phenotype.definition,
       r.phenotype.organisms
     ]
