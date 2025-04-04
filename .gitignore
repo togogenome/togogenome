@@ -8,3 +8,4 @@ config/stanza.yml
 log/*
 spec/tmp/*
 tmp/*
+public/assets/

@@ -99,7 +99,7 @@ GEM
     js-routes (1.1.1)
       railties (>= 3.2)
       sprockets-rails
-    json (1.8.3)
+    json (2.2)
     kaminari (0.14.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
