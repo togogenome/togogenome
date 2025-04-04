@@ -1,0 +1,20 @@
+services:
+  app:
+    container_name: togogenome_dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: togogenome_dev
+    user: ${UID:-0}:${GID:-0}
+    environment:
+      RAILS_ENV: development
+    volumes:
+      - .:/app
+    ports:
+      - "23000:3000"
+    # デフォルトコマンドを上書きしたい場合 (例: アセットプリコンパイル後に起動)
+    command: bash -c "
+      cp config/endpoint_dev.yml config/endpoint.yml && 
+      cp config/stanza_dev.yml config/stanza.yml && 
+      bundle exec rake assets:precompile &&
+      bundle exec rails server -b 0.0.0.0 -p 3000"
