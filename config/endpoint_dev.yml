@@ -1,6 +1,6 @@
 defaults: &defaults
-  sparqlendpoint: 'http://dev.togogenome.org/sparql-app'
-  fulltextsearch: 'http://dev.togogenome.org/solr'
+  sparqlendpoint: 'https://dev.togogenome.org/sparql-app'
+  fulltextsearch: 'https://dev.togogenome.org/solr'
 
 development:
   <<: *defaults

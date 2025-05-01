@@ -1,0 +1,12 @@
+defaults: &defaults
+  sparqlendpoint: 'https://sparql-app.togogenome.org/sparql'
+  fulltextsearch: 'https://togogenome.org/solr'
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
